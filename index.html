@@ -1535,7 +1535,7 @@ document.querySelector('.playbook-3d')?.addEventListener('click', () => {
   render();
 })();
 
-// Parallax effect on playbook - follows cursor movement
+// Parallax effect on playbook - only when cursor is near
 document.addEventListener('mousemove', (e) => {
   const book = document.querySelector('.playbook-3d');
   if (!book) return;
@@ -1544,18 +1544,20 @@ document.addEventListener('mousemove', (e) => {
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
   
-  // Calculate rotation based on cursor distance from center
-  const deltaX = (e.clientX - centerX) / window.innerWidth * 12;
-  const deltaY = (e.clientY - centerY) / window.innerHeight * 8;
+  // Check if cursor is within a reasonable distance (expanded hitbox)
+  const distanceX = Math.abs(e.clientX - centerX);
+  const distanceY = Math.abs(e.clientY - centerY);
+  const maxDistance = 400; // pixels from center
   
-  // Apply rotation with cursor offset
-  book.style.transform = `rotateY(${-18 + deltaX}deg) rotateX(${3 - deltaY}deg)`;
-});
-
-// Reset playbook rotation when mouse leaves the viewport
-document.addEventListener('mouseleave', () => {
-  const book = document.querySelector('.playbook-3d');
-  if (book) {
+  if (distanceX < maxDistance && distanceY < maxDistance) {
+    // Calculate rotation based on cursor distance from center
+    const deltaX = (e.clientX - centerX) / window.innerWidth * 12;
+    const deltaY = (e.clientY - centerY) / window.innerHeight * 8;
+    
+    // Apply rotation with cursor offset
+    book.style.transform = `rotateY(${-18 + deltaX}deg) rotateX(${3 - deltaY}deg)`;
+  } else {
+    // Reset to default when cursor is far away
     book.style.transform = 'rotateY(-18deg) rotateX(3deg)';
   }
 });
