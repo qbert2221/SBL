@@ -146,18 +146,45 @@
     color: var(--muted);
     cursor: pointer;
     margin-bottom: -1px;
-    transition: all 0.15s;
+    transition: all 0.2s;
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
   }
 
-  .tab:hover { color: var(--ink); }
+  .tab::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--green-bg);
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .tab:hover {
+    color: var(--ink);
+  }
+
+  .tab:hover::before {
+    opacity: 1;
+  }
 
   .tab.active {
     color: var(--ink);
     border-bottom-color: var(--green-2);
+    font-weight: 600;
+  }
+
+  .tab.active::before {
+    opacity: 0.5;
+  }
+
+  .tab * {
+    position: relative;
+    z-index: 1;
   }
 
   .tab .tab-num {
