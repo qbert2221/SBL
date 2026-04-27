@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator — SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  /* Calculator-specific layout */
+  .calc-shell {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 73px);
+  }
+
+  .calc-sidebar {
+    border-right: 1px solid var(--ink);
+    background: var(--paper);
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+    padding: 1.75rem 0;
+  }
+
+  .calc-sidebar::-webkit-scrollbar { width: 6px; }
+  .calc-sidebar::-webkit-scrollbar-track { background: transparent; }
+  .calc-sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  .sidebar-section {
+    padding: 0 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .sidebar-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .input-group {
+    margin-bottom: 1.125rem;
+  }
+
+  .input-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .input-label .lbl {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+  }
+
+  .input-label .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: var(--rule);
+    outline: none;
+    border-radius: 0;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--green);
+    transition: transform 0.1s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--green);
+  }
+
+  select {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  select:focus { border-color: var(--green-2); }
+
+  .calc-main {
+    padding: 2.5rem 3.5rem 5rem;
+    max-width: 1100px;
+  }
+
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 2.5rem;
+    gap: 0;
+  }
+
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.875rem 1.25rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.92rem;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tab:hover { color: var(--ink); }
+
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--green-2);
+  }
+
+  .tab .tab-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--green-2);
+  }
+
+  .tab-content { display: none; animation: fadeIn 0.3s ease; }
+  .tab-content.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Story flow visual */
+  .story-flow {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0 2.5rem;
+  }
+
+  .story-flow .head {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+  }
+
+  .story-flow .head em { color: var(--green-2); font-style: italic; }
+
+  /* Two-column for narrative + sidebar info */
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Mobile sidebar toggle */
+  .sidebar-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    z-index: 200;
+    box-shadow: 0 6px 20px var(--shadow-strong);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    .calc-shell { grid-template-columns: 1fr; }
+    .calc-sidebar {
+      position: fixed;
+      top: 73px;
+      left: 0;
+      width: 320px;
+      height: calc(100vh - 73px);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 150;
+      border-right: 1px solid var(--ink);
+      box-shadow: 4px 0 20px var(--shadow-strong);
+    }
+    .calc-sidebar.open { transform: translateX(0); }
+    .calc-main { padding: 2rem 1.5rem 4rem; }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html" class="active">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="signup.html" class="nav-cta">Get the Playbook</a>
+  </nav>
+</header>
+
+<button class="sidebar-toggle" onclick="toggleSidebar()">INPUTS</button>
+
+<div class="calc-shell">
+
+  <aside class="calc-sidebar" id="calcSidebar">
+
+    <div class="sidebar-section">
+      <h3>The Property</h3>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Home price</span><span class="val" id="v-homePrice">$450K</span></div>
+        <input type="range" id="homePrice" min="150000" max="2000000" step="10000" value="450000">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Loan term</span><span class="val" id="v-loanTerm">30 yrs</span></div>
+        <input type="range" id="loanTerm" min="10" max="30" step="5" value="30">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Mortgage rate</span><span class="val" id="v-rate">5.98%</span></div>
+        <input type="range" id="rate" min="3" max="10" step="0.125" value="5.98">
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Down Payment Shares</h3>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Shares pledged</span><span class="val" id="v-shares">10,000</span></div>
+        <input type="range" id="shares" min="1000" max="100000" step="500" value="10000">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Stock price / share</span><span class="val" id="v-stockPrice">$10.00</span></div>
+        <input type="range" id="stockPrice" min="1" max="200" step="0.5" value="10">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Dividend / share</span><span class="val" id="v-divPerShare">$0.12</span></div>
+        <input type="range" id="divPerShare" min="0.01" max="2" step="0.01" value="0.12">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Dividend frequency</span></div>
+        <select id="divFreq">
+          <option value="monthly" selected>Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annual">Annual</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Additional Capital (Optional)</h3>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Additional capital</span><span class="val" id="v-addCap">$100K</span></div>
+        <input type="range" id="addCap" min="0" max="1000000" step="5000" value="100000">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Leverage multiplier</span><span class="val" id="v-leverage">2.0×</span></div>
+        <input type="range" id="leverage" min="1" max="3" step="0.1" value="2">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span class="lbl">Margin rate (annual)</span><span class="val" id="v-marginRate">7.0%</span></div>
+        <input type="range" id="marginRate" min="3" max="12" step="0.25" value="7">
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="calc-main">
+
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--ink);">
+      <div>
+        <div class="eyebrow"><span class="num">№ 01</span>Live Calculator</div>
+        <h1 class="h-page">Your <em>numbers</em>, in real time.</h1>
+      </div>
+      <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 0.95rem; color: var(--muted); text-align: right; line-height: 1.4; max-width: 240px;">Adjust the sidebar inputs.<br>Every figure here updates instantly.</div>
+    </div>
+
+    <!-- ASSUMPTIONS BOX -->
+    <div class="callout" style="margin-bottom: 2rem; background: var(--pearl); border-left: 3px solid var(--green-2);">
+      <div class="tag">What this model assumes</div>
+      <div style="font-size: 0.9rem; line-height: 1.65; color: var(--ink-2);">
+        <strong style="display: block; margin-bottom: 0.75rem; color: var(--ink);">This calculator provides modeled scenarios, not guarantees:</strong>
+        • Stable dividend payments at the rate you specify<br>
+        • No forced liquidation of pledged assets<br>
+        • Margin/loan rates remain within your selected input range<br>
+        • Taxes, fees, insurance, maintenance, and vacancy are not included unless you model them separately<br>
+        • Portfolio value may fluctuate; this model focuses on income, not capital appreciation<br>
+        • Lender requirements and terms vary significantly by institution<br>
+        <strong style="display: block; margin-top: 0.75rem; color: var(--ink);">Use these projections to model scenarios, then review implementation with qualified professionals.</strong>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab active" onclick="showTab('snapshot', event)"><span class="tab-num">i.</span> Snapshot</button>
+      <button class="tab" onclick="showTab('story', event)"><span class="tab-num">ii.</span> The Story</button>
+      <button class="tab" onclick="showTab('breakdown', event)"><span class="tab-num">iii.</span> Breakdown</button>
+      <button class="tab" onclick="showTab('projection', event)"><span class="tab-num">iv.</span> Projection</button>
+      <button class="tab" onclick="showTab('verdict', event)"><span class="tab-num">v.</span> Verdict</button>
+    </div>
+
+    <!-- ============ TAB I: SNAPSHOT ============ -->
+    <div class="tab-content active" id="tab-snapshot">
+      <p class="lede" id="snapshot-lede">
+        Your <em><span id="lede-shares">10,000</span> pledged shares</em> generate <strong><span id="lede-divIncome">$1,200</span> in monthly dividend income</strong>, against a mortgage payment of <span id="lede-mortgage">$2,094</span>. With <span id="lede-leverage">2.0×</span> leverage on additional capital, your total dividend stream is <em><span id="lede-totalDiv">$3,017</span></em>, producing a coverage ratio of <strong><span id="lede-coverage">144%</span></strong>.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Mortgage payment</div>
+          <div class="value" id="stat-mortgage">$2,094</div>
+          <div class="delta" id="stat-mortgage-sub">$450K @ 5.98%</div>
+        </div>
+        <div class="stat">
+          <div class="label">Net dividend income</div>
+          <div class="value green" id="stat-netDiv">$3,017</div>
+          <div class="delta" id="stat-netDiv-sub">After margin cost</div>
+        </div>
+        <div class="stat">
+          <div class="label">Coverage ratio</div>
+          <div class="value" id="stat-coverage">144%</div>
+          <div class="delta" id="stat-coverage-sub">Mortgage covered</div>
+        </div>
+        <div class="stat">
+          <div class="label">Monthly surplus</div>
+          <div class="value green" id="stat-surplus">+$923</div>
+          <div class="delta" id="stat-surplus-sub">Corporate profit</div>
+        </div>
+      </div>
+
+      <!-- Coverage meter -->
+      <div class="coverage-block">
+        <div class="coverage-head">
+          <div class="lbl">
+            Mortgage coverage
+            <span class="name">How much of your payment dividends absorb</span>
+          </div>
+          <div class="pct green" id="cov-pct">144%</div>
+        </div>
+        <div class="coverage-bar-wrap">
+          <div class="coverage-bar" id="cov-bar" style="width: 100%;"></div>
+        </div>
+        <div class="coverage-marks">
+          <span>0%</span><span>50%</span><span>100% (break-even)</span><span>150%</span><span>200%+</span>
+        </div>
+        <div class="coverage-status">
+          <div class="text" id="cov-text">Your dividends cover the mortgage <strong>1.44x over</strong>. Each month, $923 in surplus accrues to the corporation as profit. Your paycheck never enters the equation.</div>
+          <span class="badge badge-green" id="cov-badge">Cash flow positive</span>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 1.1</span>
+        <h2>The strategic position</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="narrative dropcap" id="snapshot-narrative">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="callout">
+        <div class="tag">Editor's read</div>
+        <p id="snapshot-callout">Your position is structurally sound. The dividend engine substantially over-covers the mortgage payment, leaving room for both economic surprises and strategic optionality. The remaining question is whether to optimize the leverage further, build in additional safety margin, or deploy the surplus into a second property.</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB II: THE STORY ============ -->
+    <div class="tab-content" id="tab-story">
+      <p class="lede">
+        The Corporate Dividend Mortgage™ has <em>three engines</em> running simultaneously. Below, see how income flows in, expenses flow out, and what's left over each month — visualized as the equation it really is.
+      </p>
+
+      <div class="story-flow">
+        <div class="head">The <em>monthly equation</em>: how dividends meet the mortgage</div>
+        <div class="flow">
+          <div class="flow-card income">
+            <div class="lbl">Down Payment Div.</div>
+            <div class="val" id="flow-downDiv">$1,200</div>
+            <div class="sub" id="flow-downDiv-sub">10,000 shares</div>
+          </div>
+          <div class="flow-op">+</div>
+          <div class="flow-card income">
+            <div class="lbl">Leveraged Div. (net)</div>
+            <div class="val" id="flow-leveredDiv">$1,817</div>
+            <div class="sub" id="flow-leveredDiv-sub">After margin</div>
+          </div>
+          <div class="flow-op">−</div>
+          <div class="flow-card expense">
+            <div class="lbl">Mortgage P&I</div>
+            <div class="val" id="flow-mortPmt">$2,094</div>
+            <div class="sub" id="flow-mortPmt-sub">$450K loan</div>
+          </div>
+          <div class="flow-op">=</div>
+          <div class="flow-card result">
+            <div class="lbl">Monthly Surplus</div>
+            <div class="val" id="flow-surplus">$923</div>
+            <div class="sub" id="flow-surplus-sub">To the corp</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 2.1</span>
+        <h2>How the leverage works</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="narrative" id="story-leverage-narrative">
+        <!-- populated -->
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 2.2</span>
+        <h2>The two share blocks</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Share Block</th><th>Type</th><th>Shares</th><th>Monthly Div.</th></tr>
+        </thead>
+        <tbody id="shares-table">
+          <!-- populated -->
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="tag">The key distinction</div>
+        <p id="story-callout">The <strong>down payment shares</strong> sit unleveraged — they're the foundation, the lender's collateral, and they pay clean dividends with zero margin cost. The <strong>additional capital block</strong> uses broker margin to multiply buying power, generating more dividends but at a cost. The strategy works when <em>net leveraged dividends + clean dividends</em> exceed the mortgage payment.</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB III: BREAKDOWN ============ -->
+    <div class="tab-content" id="tab-breakdown">
+      <p class="lede">
+        Every dollar in, every dollar out — the full <em>monthly profit and loss</em> of your corporate mortgage structure.
+      </p>
+
+      <div class="section-h">
+        <span class="num">§ 3.1</span>
+        <h2>Monthly P&L</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Line item</th><th>Category</th><th>Annual</th><th>Monthly</th></tr>
+        </thead>
+        <tbody id="pl-table">
+          <!-- populated -->
+        </tbody>
+      </table>
+
+      <div class="section-h">
+        <span class="num">§ 3.2</span>
+        <h2>The leverage math, step by step</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="narrative" id="breakdown-leverage">
+        <!-- populated -->
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 3.3</span>
+        <h2>Dividend yield analysis</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Down payment value</div>
+          <div class="value" id="yield-dpVal">$100K</div>
+          <div class="delta">Pledged collateral</div>
+        </div>
+        <div class="stat">
+          <div class="label">Annual dividend yield</div>
+          <div class="value green" id="yield-annual">14.4%</div>
+          <div class="delta">On total portfolio</div>
+        </div>
+        <div class="stat">
+          <div class="label">Effective annual return</div>
+          <div class="value" id="yield-effective">36.2%</div>
+          <div class="delta">After leverage</div>
+        </div>
+        <div class="stat">
+          <div class="label">Margin cost burden</div>
+          <div class="value amber" id="yield-margin">19.4%</div>
+          <div class="delta">Of gross dividends</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="tag">Why this works</div>
+        <p id="breakdown-callout">The strategy is profitable when <strong>dividend yield exceeds margin cost</strong>. Right now, your stock yields <span id="bd-yield">14.4%</span> annually while your margin costs <span id="bd-mcost">7.0%</span> — a positive spread of roughly <span id="bd-spread">7.4%</span>. As long as that spread stays positive, leverage amplifies your returns. If margin costs ever rise above the dividend yield, the leverage works against you.</p>
+      </div>
+    </div>
+
+    <!-- ============ TAB IV: PROJECTION ============ -->
+    <div class="tab-content" id="tab-projection">
+      <p class="lede">
+        Run the strategy forward over the <em>full mortgage term</em>. Watch equity grow, cumulative cash flow accumulate, and the moment the corporation crosses into pure profit.
+      </p>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Total dividends collected</div>
+          <div class="value green" id="proj-totalDiv">$1.09M</div>
+          <div class="delta">Over loan term</div>
+        </div>
+        <div class="stat">
+          <div class="label">Total mortgage paid</div>
+          <div class="value" id="proj-totalMort">$754K</div>
+          <div class="delta">Principal + interest</div>
+        </div>
+        <div class="stat">
+          <div class="label">Cumulative net flow</div>
+          <div class="value green" id="proj-netFlow">+$332K</div>
+          <div class="delta">Surplus to corp</div>
+        </div>
+        <div class="stat">
+          <div class="label">Final net worth</div>
+          <div class="value" id="proj-netWorth">$650K</div>
+          <div class="delta">Equity + portfolio</div>
+        </div>
+      </div>
+
+      <div class="chart-block">
+        <div class="chart-head">
+          <h3>Cumulative dividends vs. mortgage payments</h3>
+          <span class="meta">Full loan term</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chart-cumulative"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-block">
+        <div class="chart-head">
+          <h3>Net worth trajectory</h3>
+          <span class="meta">Home equity + portfolio value</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chart-networth"></canvas>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 4.1</span>
+        <h2>What this projection assumes</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="narrative" id="projection-assumptions">
+        <!-- populated -->
+      </div>
+    </div>
+
+    <!-- ============ TAB V: VERDICT ============ -->
+    <div class="tab-content" id="tab-verdict">
+      <p class="lede" id="verdict-lede">
+        Based on your inputs, this strategy is <em><span id="verdict-status">strongly viable</span></em>. Below: what the numbers mean, the risks worth understanding, and what to do next.
+      </p>
+
+      <div class="section-h">
+        <span class="num">§ 5.1</span>
+        <h2>The verdict, in plain English</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <div class="narrative" id="verdict-narrative">
+        <!-- populated -->
+      </div>
+
+      <div class="section-h">
+        <span class="num">§ 5.2</span>
+        <h2>Risks worth knowing</h2>
+        <span class="rule-line"></span>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Risk</th><th>What happens</th><th>Mitigation</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Dividend cuts</strong></td>
+            <td>If the underlying stock cuts its dividend, your coverage ratio drops directly.</td>
+            <td class="muted-text">Diversify across 3–5 dividend payers. Build buffer.</td>
+          </tr>
+          <tr>
+            <td><strong>Margin call</strong></td>
+            <td>If pledged stock drops sharply, the broker may demand more collateral.</td>
+            <td class="muted-text">Lower leverage, hold cash reserve in corp.</td>
+          </tr>
+          <tr>
+            <td><strong>Margin rate increase</strong></td>
+            <td>Variable margin rates can rise, eating into net dividends.</td>
+            <td class="muted-text">Stress-test against +200bps rate shock.</td>
+          </tr>
+          <tr>
+            <td><strong>Vacancy (if renting)</strong></td>
+            <td>If you also rent the property, vacancy reduces secondary income.</td>
+            <td class="muted-text">Don't rely on rent in base coverage. Treat as upside.</td>
+          </tr>
+          <tr>
+            <td><strong>Stock price decline</strong></td>
+            <td>Doesn't directly affect dividends but reduces net worth.</td>
+            <td class="muted-text">Long horizon. Diversification. Quality screening.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cta-block">
+        <div class="content">
+          <div class="eyebrow">The next step</div>
+          <h2>Ready to <em>actually execute</em> this strategy?</h2>
+          <p>The Implementation Playbook covers everything the calculator can't: corporate structuring, lender selection criteria, the broker accounts to use, tax planning, the corp-sale exit advantage, and the exact playbook our most successful clients have used. <strong>Get the full playbook for $97</strong>, or read the free guide first.</p>
+          <div class="actions">
+            <a href="signup.html" class="btn btn-primary btn-large">Get the playbook →</a>
+            <a href="ebook-free.html" class="btn btn-secondary">Read the free guide</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="col">
+      <a href="index.html" class="brand" style="margin-bottom: 1rem;">
+        <div class="brand-mark">SBL</div>
+        <div class="brand-text">
+          <div class="name">sblmortgage<span class="tld">.com</span></div>
+          <div class="sub">Corporate Dividend Mortgage™</div>
+        </div>
+      </a>
+      <p class="tagline">A modern approach to home financing. Built for portfolio holders. Powered by dividends.</p>
+    </div>
+    <div class="col">
+      <h4>Strategy</h4>
+      <a href="index.html">How it works</a>
+      <a href="ebook-free.html">The free guide</a>
+      <a href="signup.html">The playbook</a>
+    </div>
+    <div class="col">
+      <h4>Tools</h4>
+      <a href="calculator.html">Calculator</a>
+      <a href="signup.html">Get notified</a>
+    </div>
+    <div class="col">
+      <h4>Legal</h4>
+      <a href="#">Disclosures</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational framework only. SBL Mortgage does not provide tax, legal, investment, or lending advice. Use the calculator to model scenarios, then review any implementation with qualified professionals. Securities lending involves risk including potential loss of pledged assets.
+  </div>
+</footer>
+
+<script>
+// ============= STATE =============
+const state = {
+  homePrice: 450000,
+  loanTerm: 30,
+  rate: 5.98,
+  shares: 10000,
+  stockPrice: 10,
+  divPerShare: 0.12,
+  divFreq: 'monthly',
+  addCap: 100000,
+  leverage: 2,
+  marginRate: 7
+};
+
+// ============= UTILS =============
+const fmt = n => {
+  if (n === undefined || isNaN(n)) return '$0';
+  const v = Math.round(n);
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(2) + 'M';
+  if (Math.abs(v) >= 10000) return '$' + (v/1000).toFixed(0) + 'K';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(1) + 'K';
+  return '$' + v.toLocaleString();
+};
+const fmtFull = n => '$' + Math.round(n).toLocaleString();
+const fmtShares = n => Math.round(n).toLocaleString();
+const fmtDol = n => '$' + n.toFixed(2);
+
+function calcMortgagePayment(principal, annualRatePct, years) {
+  const r = annualRatePct / 100 / 12;
+  const n = years * 12;
+  if (r === 0) return principal / n;
+  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+}
+
+function getFreqMultiplier(freq) {
+  return { monthly: 12, quarterly: 4, annual: 1 }[freq] || 12;
+}
+
+function calcMetrics() {
+  const m = {};
+
+  // Property & loan
+  m.loanAmount = state.homePrice; // assume full mortgage; the down payment is the pledged shares
+  m.mortgagePmt = calcMortgagePayment(m.loanAmount, state.rate, state.loanTerm);
+
+  // Down payment shares
+  m.dpShares = state.shares;
+  m.dpValue = state.shares * state.stockPrice;
+  m.freqMult = getFreqMultiplier(state.divFreq);
+  // Convert dividend to monthly dividend per share
+  m.monthlyDivPerShare = state.divPerShare * (m.freqMult / 12);
+  m.dpMonthlyDiv = m.dpShares * m.monthlyDivPerShare;
+  m.dpAnnualDiv = m.dpMonthlyDiv * 12;
+
+  // Additional capital
+  m.buyingPower = state.addCap * state.leverage;
+  m.borrowed = m.buyingPower - state.addCap;
+  m.addShares = state.stockPrice > 0 ? m.buyingPower / state.stockPrice : 0;
+  m.addGrossMonthly = m.addShares * m.monthlyDivPerShare;
+  m.addGrossAnnual = m.addGrossMonthly * 12;
+  m.marginCostMonthly = m.borrowed * (state.marginRate / 100) / 12;
+  m.marginCostAnnual = m.marginCostMonthly * 12;
+  m.addNetMonthly = m.addGrossMonthly - m.marginCostMonthly;
+  m.addNetAnnual = m.addGrossAnnual - m.marginCostAnnual;
+
+  // Totals
+  m.totalShares = m.dpShares + m.addShares;
+  m.totalGrossMonthly = m.dpMonthlyDiv + m.addGrossMonthly;
+  m.totalNetMonthly = m.dpMonthlyDiv + m.addNetMonthly;
+  m.totalNetAnnual = m.totalNetMonthly * 12;
+
+  // Coverage and surplus
+  m.coverage = m.mortgagePmt > 0 ? (m.totalNetMonthly / m.mortgagePmt) * 100 : 0;
+  m.monthlySurplus = m.totalNetMonthly - m.mortgagePmt;
+  m.annualSurplus = m.monthlySurplus * 12;
+
+  // Yields
+  const totalPortfolioValue = m.dpValue + m.buyingPower;
+  m.dpYieldAnnual = m.dpValue > 0 ? (m.dpAnnualDiv / m.dpValue) * 100 : 0;
+  m.portfolioYieldAnnual = totalPortfolioValue > 0 ? ((m.dpAnnualDiv + m.addGrossAnnual) / totalPortfolioValue) * 100 : 0;
+  m.effectiveReturnAnnual = state.addCap > 0 ? (m.addNetAnnual / state.addCap) * 100 : 0;
+  m.marginBurden = (m.dpAnnualDiv + m.addGrossAnnual) > 0 ? (m.marginCostAnnual / (m.dpAnnualDiv + m.addGrossAnnual)) * 100 : 0;
+  m.spread = m.portfolioYieldAnnual - state.marginRate;
+
+  // Projection over loan term
+  m.totalDividendsLoanTerm = m.totalNetAnnual * state.loanTerm;
+  m.totalMortgageLoanTerm = m.mortgagePmt * 12 * state.loanTerm;
+  m.cumulativeNetFlow = m.totalDividendsLoanTerm - m.totalMortgageLoanTerm;
+  m.finalNetWorth = state.homePrice + (m.dpValue + state.addCap) - m.borrowed;
+
+  return m;
+}
+
+// Status determination
+function getStatus(m) {
+  if (m.coverage >= 120) return { label: 'Strong cash flow positive', class: 'green', verdict: 'strongly viable' };
+  if (m.coverage >= 100) return { label: 'Cash flow positive', class: 'green', verdict: 'viable' };
+  if (m.coverage >= 80) return { label: 'Near break-even', class: 'amber', verdict: 'borderline' };
+  if (m.coverage >= 50) return { label: 'Subsidy required', class: 'amber', verdict: 'requires personal subsidy' };
+  return { label: 'Not viable', class: 'red', verdict: 'currently not viable' };
+}
+
+// ============= NARRATIVE GENERATORS =============
+
+function buildSnapshotNarrative(m) {
+  const status = getStatus(m);
+  const surplus = m.monthlySurplus;
+
+  let para1, para2, para3, para4;
+
+  if (m.coverage >= 120) {
+    para1 = `<p>Your structure is generating <strong>${fmtFull(m.totalNetMonthly)}</strong> in monthly net dividend income against a mortgage payment of <strong>${fmtFull(m.mortgagePmt)}</strong>. The coverage ratio of <em>${m.coverage.toFixed(0)}%</em> means dividends absorb the mortgage entirely and produce a meaningful surplus of <span class="num">${fmtFull(surplus)}</span> per month — capital that flows directly to the corporation as profit.</p>`;
+    para2 = `<p>This is a textbook positive carry. Each dollar of dividend income exceeds each dollar of mortgage obligation, with comfortable margin for adverse scenarios. Annualized, you're generating <strong>${fmtFull(m.annualSurplus)}</strong> in surplus that the corporation can deploy: into additional principal payments, into a reserve fund against margin call risk, into a second property, or into expanding the dividend portfolio itself.</p>`;
+  } else if (m.coverage >= 100) {
+    para1 = `<p>Your structure is generating <strong>${fmtFull(m.totalNetMonthly)}</strong> in monthly net dividend income against a mortgage payment of <strong>${fmtFull(m.mortgagePmt)}</strong>. The coverage ratio of <em>${m.coverage.toFixed(0)}%</em> means dividends fully absorb the mortgage with a thin surplus of <span class="num">${fmtFull(surplus)}</span> per month.</p>`;
+    para2 = `<p>This is structurally viable but operationally tight. There is no significant cushion against a dividend cut, a margin rate increase, or an unexpected expense. Most practitioners aim for at least 120-130% coverage to absorb realistic adverse scenarios. Consider either increasing leverage cautiously, raising additional capital, or selecting a slightly higher-yield underlying stock.</p>`;
+  } else if (m.coverage >= 80) {
+    para1 = `<p>Your structure is generating <strong>${fmtFull(m.totalNetMonthly)}</strong> in monthly net dividend income against a mortgage payment of <strong>${fmtFull(m.mortgagePmt)}</strong>. The coverage ratio of <em>${m.coverage.toFixed(0)}%</em> means dividends absorb most of the mortgage but leave a monthly shortfall of <span class="num">${fmtFull(Math.abs(surplus))}</span>.</p>`;
+    para2 = `<p>You're close to break-even. The strategy works structurally — the dividend engine is doing real work — but the corporation is not yet self-funding. To close the gap, you need either more shares, more leverage on additional capital, a higher-yield stock, or a larger additional capital contribution. Each of those is a real lever you can adjust in the sidebar.</p>`;
+  } else {
+    para1 = `<p>Your structure is currently generating <strong>${fmtFull(m.totalNetMonthly)}</strong> in monthly net dividend income against a mortgage payment of <strong>${fmtFull(m.mortgagePmt)}</strong>. The coverage ratio of <em>${m.coverage.toFixed(0)}%</em> means dividends only cover a fraction of the mortgage, leaving a meaningful shortfall of <span class="num">${fmtFull(Math.abs(surplus))}</span> per month.</p>`;
+    para2 = `<p>In this configuration, the strategy isn't yet self-funding. That's not a failure — it's information. The most common reason for low coverage is too few shares or too low a dividend yield. Try increasing the share count, the dividend per share, or adding leveraged additional capital, and watch the coverage figure climb.</p>`;
+  }
+
+  // Para 3 — about the structure
+  para3 = `<p>The corporation in this scenario holds two share blocks: <strong>${fmtShares(m.dpShares)} unleveraged shares</strong> serving as down-payment collateral (paying ${fmtFull(m.dpMonthlyDiv)}/mo cleanly), and <strong>${fmtShares(Math.round(m.addShares))} leveraged shares</strong> in the dividend engine (paying ${fmtFull(m.addGrossMonthly)}/mo gross, ${fmtFull(m.addNetMonthly)}/mo after the ${fmtFull(m.marginCostMonthly)}/mo margin cost on ${fmtFull(m.borrowed)} borrowed at ${state.marginRate.toFixed(2)}%).</p>`;
+
+  // Para 4 — about the spread
+  if (m.spread > 5) {
+    para4 = `<p>The economic engine is healthy: your portfolio yields <strong>${m.portfolioYieldAnnual.toFixed(1)}%</strong> annually while margin costs <strong>${state.marginRate.toFixed(1)}%</strong> — a positive spread of <em>${m.spread.toFixed(1)} points</em>. As long as that spread stays positive, leverage works <em>for</em> you. Track this number; if it ever inverts, the strategy needs immediate restructuring.</p>`;
+  } else if (m.spread > 0) {
+    para4 = `<p>The spread between your dividend yield (<strong>${m.portfolioYieldAnnual.toFixed(1)}%</strong>) and margin cost (<strong>${state.marginRate.toFixed(1)}%</strong>) is positive but slim — only <em>${m.spread.toFixed(1)} points</em>. A modest margin rate increase or dividend cut could erode it. Consider either reducing leverage or selecting a higher-yield underlying.</p>`;
+  } else {
+    para4 = `<p><strong>Warning:</strong> your dividend yield (${m.portfolioYieldAnnual.toFixed(1)}%) is below your margin cost (${state.marginRate.toFixed(1)}%) by <em>${Math.abs(m.spread).toFixed(1)} points</em>. In this configuration, leverage is actively working <em>against</em> you — every additional borrowed dollar costs more in interest than it earns in dividends. Reduce leverage to 1× or select a substantially higher-yield underlying immediately.</p>`;
+  }
+
+  return para1 + para2 + para3 + para4;
+}
+
+function buildSnapshotCallout(m) {
+  if (m.coverage >= 120) {
+    return `Your position is structurally sound. The dividend engine substantially over-covers the mortgage payment, leaving room for both adverse scenarios and strategic optionality. The remaining question is whether to optimize leverage further, build in additional safety margin, or deploy the surplus into a second property.`;
+  } else if (m.coverage >= 100) {
+    return `Your position is technically positive but operationally tight. There is no real cushion against a dividend cut or margin rate increase. The strategy works — but professional practitioners would recommend building toward at least 120% coverage before considering this a stable structure.`;
+  } else if (m.coverage >= 80) {
+    return `You're close. The dividend engine is doing meaningful work — covering ${m.coverage.toFixed(0)}% of the mortgage — but isn't yet at self-funding break-even. The gap between viable and not-viable is often just one slider's worth of adjustment. Try increasing additional capital or leverage.`;
+  } else {
+    return `In this configuration, the strategy doesn't yet self-fund. The corporation would need monthly contributions to bridge the gap. That's not necessarily disqualifying — but it eliminates the core "portfolio pays the mortgage" advantage. Adjust the sidebar inputs and watch the coverage figure climb above 100%.`;
+  }
+}
+
+function buildStoryLeverageNarrative(m) {
+  return `
+    <p>Leverage is the mechanism that transforms a modest dividend portfolio into a self-funding mortgage engine. Without leverage, your additional <strong>${fmtFull(state.addCap)}</strong> in capital would buy roughly <span class="num">${fmtShares(state.addCap / state.stockPrice)}</span> shares and produce <span class="num">${fmtFull(state.addCap / state.stockPrice * m.monthlyDivPerShare)}</span>/mo in dividends. With <em>${state.leverage.toFixed(1)}× leverage</em>, that same capital controls <strong>${fmtFull(m.buyingPower)}</strong> worth of stock — buying <span class="num">${fmtShares(Math.round(m.addShares))}</span> shares and producing <span class="num">${fmtFull(m.addGrossMonthly)}</span>/mo in <em>gross</em> dividends.</p>
+
+    <p>Leverage isn't free. The broker lends you <strong>${fmtFull(m.borrowed)}</strong> at <em>${state.marginRate.toFixed(2)}%</em> annual interest, costing <span class="num">${fmtFull(m.marginCostMonthly)}</span> per month. After that cost, your <em>net</em> leveraged dividend income is <strong>${fmtFull(m.addNetMonthly)}</strong> — versus <span class="num">${fmtFull(state.addCap / state.stockPrice * m.monthlyDivPerShare)}</span> unleveraged. The amplification factor: roughly <em>${(m.addNetMonthly / Math.max(state.addCap / state.stockPrice * m.monthlyDivPerShare, 1)).toFixed(2)}×</em> the unleveraged income.</p>
+
+    <p>The math works because dividend yield exceeds margin cost. Your portfolio yields <strong>${m.portfolioYieldAnnual.toFixed(2)}%</strong> in dividends. The margin loan costs <strong>${state.marginRate.toFixed(2)}%</strong>. Every borrowed dollar earns the spread of <em>${m.spread.toFixed(2)} percentage points</em>. Multiply that spread by the borrowed amount, divide by twelve, and you have your monthly profit from leverage alone.</p>
+  `;
+}
+
+function buildBreakdownLeverageNarrative(m) {
+  const stepNumbers = [
+    { l: "Capital contributed", v: fmtFull(state.addCap), n: "Your money in the corporate brokerage account" },
+    { l: "Buying power (after leverage)", v: fmtFull(m.buyingPower), n: `Capital × ${state.leverage.toFixed(1)}× = ${fmtFull(state.addCap)} × ${state.leverage.toFixed(1)}` },
+    { l: "Borrowed on margin", v: fmtFull(m.borrowed), n: "Buying power minus your capital" },
+    { l: "Shares purchased", v: fmtShares(Math.round(m.addShares)), n: `${fmtFull(m.buyingPower)} ÷ ${fmtDol(state.stockPrice)} per share` },
+    { l: "Gross monthly dividends", v: fmtFull(m.addGrossMonthly), n: `${fmtShares(Math.round(m.addShares))} × ${fmtDol(m.monthlyDivPerShare)}/mo` },
+    { l: "Margin interest cost (monthly)", v: fmtFull(m.marginCostMonthly), n: `${fmtFull(m.borrowed)} × ${state.marginRate.toFixed(2)}% ÷ 12` },
+    { l: "Net monthly dividends", v: fmtFull(m.addNetMonthly), n: "Gross minus margin cost" }
+  ];
+
+  let html = `<p>The leverage calculation, broken into its components:</p><ol style="padding-left: 1.5rem; margin-top: 1rem;">`;
+  stepNumbers.forEach((s, i) => {
+    html += `<li style="margin-bottom: 0.6rem;"><strong>${s.l}:</strong> <span class="num">${s.v}</span><br><span style="color: var(--muted); font-size: 0.88rem;">${s.n}</span></li>`;
+  });
+  html += `</ol>`;
+  return html;
+}
+
+function buildProjectionAssumptions(m) {
+  return `
+    <p>This projection makes <em>conservative, static assumptions</em>: the dividend per share stays constant, the stock price stays constant, and the home value stays constant. There is no growth in any input variable. This is by design — it isolates the structural performance of the strategy from market speculation.</p>
+
+    <p>In reality, three things will likely change over the loan term: dividends typically grow over time (most quality dividend stocks raise distributions ${'2-5%'} annually), home prices typically appreciate (historical average ~3%/year), and stock prices typically rise long-term. Each of these would <strong>improve</strong> the projection above. The model deliberately ignores them so the numbers shown represent a baseline floor, not a hopeful forecast.</p>
+
+    <p>The chart shows cumulative dividends rising linearly while mortgage payments accumulate at the same rate. The gap between them is your cumulative net flow — pure surplus accruing to the corporation. By <em>year ${state.loanTerm}</em>, your corporation has collected approximately <strong>${fmtFull(m.totalDividendsLoanTerm)}</strong> in dividends and paid <strong>${fmtFull(m.totalMortgageLoanTerm)}</strong> to the bank. The difference of <strong>${fmtFull(m.cumulativeNetFlow)}</strong> stays in the structure.</p>
+  `;
+}
+
+function buildVerdictNarrative(m) {
+  const status = getStatus(m);
+
+  if (m.coverage >= 120) {
+    return `
+      <p>The numbers say this strategy works <em>strongly</em> for your inputs. With ${m.coverage.toFixed(0)}% coverage, you have meaningful operational margin: dividends not only pay the mortgage but produce <strong>${fmtFull(m.monthlySurplus)}</strong> in monthly surplus. Over the full ${state.loanTerm}-year term, that compounds to roughly <strong>${fmtFull(m.cumulativeNetFlow)}</strong> in cumulative free cash flow — money that exists because of the structure, not because of your paycheck.</p>
+
+      <p>The most powerful realization is what this <em>doesn't</em> require. It doesn't require you to liquidate your portfolio. It doesn't require you to qualify on personal income. It doesn't require you to send mortgage payments out of your salary every month. The corporation, the dividend engine, and the lender's collateral framework do the entire job.</p>
+
+      <p>What you should consider next: tax structuring (the corporate wrapper opens deductions individuals can't access), exit planning (selling the corporation at the end is materially different from selling a house), and whether to deploy this same template to acquire a second property. The Implementation Playbook covers all three in depth.</p>
+    `;
+  } else if (m.coverage >= 100) {
+    return `
+      <p>The strategy is technically viable for your inputs — coverage is positive at ${m.coverage.toFixed(0)}% — but the operational margin is thinner than ideal. A <strong>${fmtFull(m.monthlySurplus)}</strong> monthly surplus is real, but it doesn't leave room for adverse scenarios. A 10% dividend cut from your underlying stock, or a 100bps margin rate increase, could push you into negative territory.</p>
+
+      <p>Most experienced practitioners would call this configuration "structurally workable but not yet recommended." The fix is usually one of three things: increase the share count to widen the dividend base, raise the additional capital contribution to amplify the leveraged engine, or select a slightly higher-yield underlying stock. Each option has trade-offs — more shares requires more capital, higher capital concentrates risk, higher yield often means lower-quality dividends.</p>
+
+      <p>The Implementation Playbook walks through how experienced practitioners design coverage targets (typically 130-150%), select stocks for sustainable yield, and structure margin reserves to absorb the kind of surprises this configuration would currently struggle to handle.</p>
+    `;
+  } else if (m.coverage >= 80) {
+    return `
+      <p>Your numbers say the strategy <em>is doing meaningful work</em> — ${m.coverage.toFixed(0)}% of the mortgage is covered by dividends, which is real economic value — but it's not yet self-funding. The shortfall of <strong>${fmtFull(Math.abs(m.monthlySurplus))}</strong>/mo would need to be covered by either personal contribution, rental income from the property, or an adjustment to the dividend engine.</p>
+
+      <p>The good news: you're close. Small changes in the sidebar produce large changes in coverage. Try increasing additional capital by 50%, raising leverage from ${state.leverage.toFixed(1)}× to ${Math.min(3, state.leverage + 0.5).toFixed(1)}×, or finding a stock with 10-20% higher dividend yield. Any one of those usually crosses the line into self-funding.</p>
+
+      <p>Alternatively, this configuration becomes immediately viable if you also rent the property: even modest rental income on top of dividend coverage often closes the gap and produces strong total cash flow.</p>
+    `;
+  } else {
+    return `
+      <p>In this specific configuration, the strategy does not self-fund — coverage is at ${m.coverage.toFixed(0)}%, with a monthly shortfall of <strong>${fmtFull(Math.abs(m.monthlySurplus))}</strong>. That doesn't mean the approach is wrong; it means these particular inputs don't yet work.</p>
+
+      <p>The most common cause of low coverage is too few shares relative to home price, or a dividend yield that's too low relative to the mortgage payment. Try the following adjustments and watch the coverage figure: (1) double the share count, (2) increase additional capital significantly, (3) push leverage to 2-3×, or (4) test what happens with a stock yielding 10-15% annually instead of the current rate.</p>
+
+      <p>If after experimenting you still can't get coverage above 100%, the honest answer is that the home price you're targeting is too large for your current portfolio capacity. Either look at a less expensive property, or build the portfolio first and run this calculator again in twelve months.</p>
+    `;
+  }
+}
+
+// ============= RENDERERS =============
+
+function renderInputs() {
+  document.getElementById('v-homePrice').textContent = fmt(state.homePrice);
+  document.getElementById('v-loanTerm').textContent = state.loanTerm + ' yrs';
+  document.getElementById('v-rate').textContent = state.rate.toFixed(2) + '%';
+  document.getElementById('v-shares').textContent = state.shares.toLocaleString();
+  document.getElementById('v-stockPrice').textContent = '$' + state.stockPrice.toFixed(2);
+  document.getElementById('v-divPerShare').textContent = '$' + state.divPerShare.toFixed(2);
+  document.getElementById('v-addCap').textContent = fmt(state.addCap);
+  document.getElementById('v-leverage').textContent = state.leverage.toFixed(1) + '×';
+  document.getElementById('v-marginRate').textContent = state.marginRate.toFixed(2) + '%';
+}
+
+function renderSnapshot(m) {
+  const status = getStatus(m);
+
+  // Lede
+  document.getElementById('lede-shares').textContent = state.shares.toLocaleString();
+  document.getElementById('lede-divIncome').textContent = fmtFull(m.dpMonthlyDiv);
+  document.getElementById('lede-mortgage').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('lede-leverage').textContent = state.leverage.toFixed(1) + '×';
+  document.getElementById('lede-totalDiv').textContent = fmtFull(m.totalNetMonthly);
+  document.getElementById('lede-coverage').textContent = m.coverage.toFixed(0) + '%';
+
+  // Stats
+  document.getElementById('stat-mortgage').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('stat-mortgage-sub').textContent = fmt(m.loanAmount) + ' @ ' + state.rate.toFixed(2) + '%';
+  document.getElementById('stat-netDiv').textContent = fmtFull(m.totalNetMonthly);
+  document.getElementById('stat-coverage').textContent = m.coverage.toFixed(0) + '%';
+  const covEl = document.getElementById('stat-coverage');
+  covEl.className = 'value';
+  if (m.coverage >= 100) covEl.classList.add('green');
+  else if (m.coverage >= 80) covEl.classList.add('amber');
+  else covEl.classList.add('red');
+
+  document.getElementById('stat-surplus').textContent = (m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus);
+  const surpEl = document.getElementById('stat-surplus');
+  surpEl.className = 'value';
+  if (m.monthlySurplus >= 0) surpEl.classList.add('green');
+  else surpEl.classList.add('red');
+  document.getElementById('stat-surplus-sub').textContent = m.monthlySurplus >= 0 ? 'Corporate profit' : 'Personal subsidy';
+
+  // Coverage meter
+  const covPct = document.getElementById('cov-pct');
+  covPct.textContent = m.coverage.toFixed(0) + '%';
+  covPct.className = 'pct';
+  const covBar = document.getElementById('cov-bar');
+  covBar.className = 'coverage-bar';
+  const badgeEl = document.getElementById('cov-badge');
+  badgeEl.className = 'badge';
+
+  if (m.coverage >= 100) {
+    covPct.classList.add('green');
+    covBar.classList.add('');
+    badgeEl.classList.add('badge-green');
+  } else if (m.coverage >= 80) {
+    covPct.classList.add('amber');
+    covBar.classList.add('amber');
+    badgeEl.classList.add('badge-amber');
+  } else {
+    covPct.classList.add('red');
+    covBar.classList.add('red');
+    badgeEl.classList.add('badge-red');
+  }
+  badgeEl.textContent = status.label;
+  covBar.style.width = Math.min(200, Math.max(2, m.coverage)) / 2 + '%';
+
+  if (m.coverage >= 100) {
+    document.getElementById('cov-text').innerHTML = `Your dividends cover the mortgage <strong>${(m.coverage/100).toFixed(2)}× over</strong>. Each month, ${fmtFull(m.monthlySurplus)} in surplus accrues to the corporation as profit. Your paycheck never enters the equation.`;
+  } else if (m.coverage >= 80) {
+    document.getElementById('cov-text').innerHTML = `Your dividends cover <strong>${m.coverage.toFixed(0)}% of the mortgage</strong> — close to break-even but not yet self-funding. Monthly shortfall: ${fmtFull(Math.abs(m.monthlySurplus))}. Small adjustments can close this gap.`;
+  } else {
+    document.getElementById('cov-text').innerHTML = `Your dividends cover only <strong>${m.coverage.toFixed(0)}% of the mortgage</strong>, leaving a meaningful shortfall of ${fmtFull(Math.abs(m.monthlySurplus))}/mo. The strategy needs more shares, more capital, or higher yield to become self-funding.`;
+  }
+
+  document.getElementById('snapshot-narrative').innerHTML = buildSnapshotNarrative(m);
+  document.getElementById('snapshot-callout').textContent = buildSnapshotCallout(m);
+}
+
+function renderStory(m) {
+  document.getElementById('flow-downDiv').textContent = fmtFull(m.dpMonthlyDiv);
+  document.getElementById('flow-downDiv-sub').textContent = state.shares.toLocaleString() + ' shares';
+  document.getElementById('flow-leveredDiv').textContent = fmtFull(m.addNetMonthly);
+  document.getElementById('flow-leveredDiv-sub').textContent = state.leverage.toFixed(1) + '× leverage';
+  document.getElementById('flow-mortPmt').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('flow-mortPmt-sub').textContent = fmt(m.loanAmount) + ' loan';
+  const surpEl = document.getElementById('flow-surplus');
+  surpEl.textContent = (m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus);
+  document.getElementById('flow-surplus-sub').textContent = m.monthlySurplus >= 0 ? 'To the corp' : 'Subsidy needed';
+
+  document.getElementById('story-leverage-narrative').innerHTML = buildStoryLeverageNarrative(m);
+
+  // Shares table
+  document.getElementById('shares-table').innerHTML = `
+    <tr>
+      <td><strong>Down payment block</strong></td>
+      <td class="muted-text">Unleveraged collateral</td>
+      <td class="mono">${fmtShares(m.dpShares)}</td>
+      <td class="mono green-text">${fmtFull(m.dpMonthlyDiv)}/mo</td>
+    </tr>
+    <tr>
+      <td><strong>Leveraged engine</strong></td>
+      <td class="muted-text">${state.leverage.toFixed(1)}× margin · ${state.marginRate.toFixed(2)}% cost</td>
+      <td class="mono">${fmtShares(Math.round(m.addShares))}</td>
+      <td class="mono green-text">${fmtFull(m.addGrossMonthly)}/mo gross</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="muted-text" style="font-style: italic;">Margin cost on borrowed amount</td>
+      <td class="muted-text">${fmtFull(m.borrowed)} borrowed</td>
+      <td class="mono red-text">−${fmtFull(m.marginCostMonthly)}/mo</td>
+    </tr>
+    <tr class="bottom">
+      <td><strong>Total net dividends</strong></td>
+      <td>Combined income</td>
+      <td class="mono">${fmtShares(Math.round(m.totalShares))}</td>
+      <td class="mono green-text"><strong>${fmtFull(m.totalNetMonthly)}/mo</strong></td>
+    </tr>
+  `;
+}
+
+function renderBreakdown(m) {
+  // P&L table
+  const rows = [
+    { n: "Down payment dividends", c: "Income · clean", a: m.dpAnnualDiv, mo: m.dpMonthlyDiv, sign: '+' },
+    { n: "Leveraged dividends (gross)", c: "Income · gross", a: m.addGrossAnnual, mo: m.addGrossMonthly, sign: '+' },
+    { n: "Margin interest", c: "Cost · financing", a: m.marginCostAnnual, mo: m.marginCostMonthly, sign: '−' },
+    { n: "Mortgage P&I", c: "Cost · property", a: m.mortgagePmt * 12, mo: m.mortgagePmt, sign: '−' },
+  ];
+
+  let html = '';
+  rows.forEach(r => {
+    const colorClass = r.sign === '+' ? 'green-text' : 'red-text';
+    html += `<tr>
+      <td>${r.n}</td>
+      <td class="muted-text">${r.c}</td>
+      <td class="mono ${colorClass}">${r.sign}${fmtFull(r.a)}</td>
+      <td class="mono ${colorClass}">${r.sign}${fmtFull(r.mo)}</td>
+    </tr>`;
+  });
+  // Bottom line
+  const netClass = m.monthlySurplus >= 0 ? 'green-text' : 'red-text';
+  const sign = m.monthlySurplus >= 0 ? '+' : '';
+  html += `<tr class="bottom">
+    <td><strong>Net cash flow to corp</strong></td>
+    <td>Bottom line</td>
+    <td class="mono ${netClass}">${sign}${fmtFull(m.annualSurplus)}</td>
+    <td class="mono ${netClass}">${sign}${fmtFull(m.monthlySurplus)}</td>
+  </tr>`;
+
+  document.getElementById('pl-table').innerHTML = html;
+
+  document.getElementById('breakdown-leverage').innerHTML = buildBreakdownLeverageNarrative(m);
+
+  // Yield analysis
+  document.getElementById('yield-dpVal').textContent = fmt(m.dpValue);
+  document.getElementById('yield-annual').textContent = m.portfolioYieldAnnual.toFixed(1) + '%';
+  document.getElementById('yield-effective').textContent = m.effectiveReturnAnnual.toFixed(1) + '%';
+  const margEl = document.getElementById('yield-margin');
+  margEl.textContent = m.marginBurden.toFixed(1) + '%';
+
+  document.getElementById('bd-yield').textContent = m.portfolioYieldAnnual.toFixed(1) + '%';
+  document.getElementById('bd-mcost').textContent = state.marginRate.toFixed(1) + '%';
+  document.getElementById('bd-spread').textContent = m.spread.toFixed(1) + '%';
+
+  if (m.spread < 0) {
+    document.getElementById('breakdown-callout').innerHTML = `<strong>Warning: spread is negative.</strong> Your stock yields ${m.portfolioYieldAnnual.toFixed(1)}% while margin costs ${state.marginRate.toFixed(1)}% — leverage is currently working <em>against</em> you. Each additional borrowed dollar costs more in interest than it earns in dividends. Reduce leverage to 1× or select a higher-yield underlying.`;
+  } else {
+    document.getElementById('breakdown-callout').innerHTML = `The strategy is profitable when <strong>dividend yield exceeds margin cost</strong>. Right now, your stock yields <span id="bd-yield">${m.portfolioYieldAnnual.toFixed(1)}%</span> annually while your margin costs <span id="bd-mcost">${state.marginRate.toFixed(1)}%</span> — a positive spread of roughly <span id="bd-spread">${m.spread.toFixed(1)} points</span>. As long as that spread stays positive, leverage amplifies your returns. If margin costs ever rise above the dividend yield, the leverage works against you.`;
+  }
+}
+
+function renderProjection(m) {
+  document.getElementById('proj-totalDiv').textContent = fmt(m.totalDividendsLoanTerm);
+  document.getElementById('proj-totalMort').textContent = fmt(m.totalMortgageLoanTerm);
+  const flowEl = document.getElementById('proj-netFlow');
+  flowEl.textContent = (m.cumulativeNetFlow >= 0 ? '+' : '') + fmt(m.cumulativeNetFlow);
+  flowEl.className = 'value ' + (m.cumulativeNetFlow >= 0 ? 'green' : 'red');
+  document.getElementById('proj-netWorth').textContent = fmt(m.finalNetWorth);
+
+  document.getElementById('projection-assumptions').innerHTML = buildProjectionAssumptions(m);
+
+  drawCumulativeChart(m);
+  drawNetWorthChart(m);
+}
+
+function renderVerdict(m) {
+  const status = getStatus(m);
+  document.getElementById('verdict-status').textContent = status.verdict;
+  document.getElementById('verdict-narrative').innerHTML = buildVerdictNarrative(m);
+}
+
+// ============ CHARTS ============
+let charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function drawCumulativeChart(m) {
+  destroyChart('cumulative');
+  const ctx = document.getElementById('chart-cumulative');
+  if (!ctx) return;
+
+  const labels = [];
+  const dividends = [];
+  const mortgage = [];
+  const surplus = [];
+  for (let y = 0; y <= state.loanTerm; y++) {
+    labels.push('Y' + y);
+    dividends.push(Math.round(m.totalNetAnnual * y));
+    mortgage.push(Math.round(m.mortgagePmt * 12 * y));
+    surplus.push(Math.round((m.totalNetAnnual - m.mortgagePmt * 12) * y));
+  }
+
+  charts.cumulative = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Cumulative dividends', data: dividends, borderColor: '#1f4a32', backgroundColor: 'rgba(31,74,50,0.08)', borderWidth: 2.5, tension: 0.25, pointRadius: 0, pointHoverRadius: 5, fill: true },
+        { label: 'Cumulative mortgage', data: mortgage, borderColor: '#9a3f1c', borderDash: [5,5], borderWidth: 2, tension: 0.25, pointRadius: 0, pointHoverRadius: 5, fill: false },
+        { label: 'Cumulative surplus (corp profit)', data: surplus, borderColor: '#b89968', borderWidth: 1.5, tension: 0.25, pointRadius: 0, pointHoverRadius: 5, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { family: 'Inter Tight', size: 12 }, color: '#1a3325' } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtFull(c.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569' } },
+        y: { grid: { color: 'rgba(13,31,21,0.06)' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569', callback: v => fmt(v) } }
+      }
+    }
+  });
+}
+
+function drawNetWorthChart(m) {
+  destroyChart('networth');
+  const ctx = document.getElementById('chart-networth');
+  if (!ctx) return;
+
+  // Simple amortization for equity
+  const monthlyR = state.rate / 100 / 12;
+  let bal = m.loanAmount;
+  const labels = [];
+  const homeEquity = [];
+  const portfolio = [];
+  const total = [];
+
+  homeEquity.push(0);
+  portfolio.push(Math.round(m.dpValue + state.addCap));
+  total.push(Math.round(m.dpValue + state.addCap));
+  labels.push('Y0');
+
+  for (let y = 1; y <= state.loanTerm; y++) {
+    for (let mo = 0; mo < 12 && bal > 0; mo++) {
+      const interest = bal * monthlyR;
+      const principal = m.mortgagePmt - interest;
+      bal = Math.max(0, bal - principal);
+    }
+    const equity = state.homePrice - bal;
+    const portVal = m.dpValue + state.addCap; // static assumption
+    labels.push('Y' + y);
+    homeEquity.push(Math.round(equity));
+    portfolio.push(Math.round(portVal));
+    total.push(Math.round(equity + portVal));
+  }
+
+  charts.networth = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Home equity', data: homeEquity, borderColor: '#1f4a32', backgroundColor: 'rgba(31,74,50,0.15)', borderWidth: 2, tension: 0.25, pointRadius: 0, pointHoverRadius: 5, fill: true, stack: 'a' },
+        { label: 'Portfolio value', data: portfolio, borderColor: '#b89968', backgroundColor: 'rgba(184,153,104,0.15)', borderWidth: 2, tension: 0.25, pointRadius: 0, pointHoverRadius: 5, fill: true, stack: 'a' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { family: 'Inter Tight', size: 12 }, color: '#1a3325' } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtFull(c.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569' } },
+        y: { stacked: true, grid: { color: 'rgba(13,31,21,0.06)' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569', callback: v => fmt(v) } }
+      }
+    }
+  });
+}
+
+// ============ MAIN UPDATE ============
+function recompute() {
+  const m = calcMetrics();
+  renderInputs();
+  renderSnapshot(m);
+  renderStory(m);
+  renderBreakdown(m);
+  renderProjection(m);
+  renderVerdict(m);
+}
+
+// ============ TABS ============
+function showTab(name, ev) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (ev) ev.target.closest('.tab').classList.add('active');
+  // Charts need to be re-rendered when shown
+  setTimeout(() => recompute(), 50);
+}
+
+function toggleSidebar() {
+  document.getElementById('calcSidebar').classList.toggle('open');
+}
+
+// ============ INPUT WIRING ============
+['homePrice', 'loanTerm', 'rate', 'shares', 'stockPrice', 'divPerShare', 'addCap', 'leverage', 'marginRate'].forEach(id => {
+  document.getElementById(id).addEventListener('input', e => {
+    state[id] = parseFloat(e.target.value);
+    recompute();
+  });
+});
+document.getElementById('divFreq').addEventListener('change', e => {
+  state.divFreq = e.target.value;
+  recompute();
+});
+
+// Init
+recompute();
+</script>
+
+</body>
+</html>

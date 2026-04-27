@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Implementation Playbook — SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Premium ebook layout */
+  .ebook-shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .ebook-toc {
+    border-right: 1px solid var(--rule);
+    padding: 3rem 2rem 3rem 2.5rem;
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  .ebook-toc::-webkit-scrollbar { width: 6px; }
+  .ebook-toc::-webkit-scrollbar-track { background: transparent; }
+  .ebook-toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  .premium-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ink);
+    color: var(--pearl);
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .premium-badge::before {
+    content: '§';
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--green-light);
+    font-size: 0.85rem;
+  }
+
+  .ebook-toc .toc-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .ebook-toc .toc-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+  }
+
+  .ebook-toc-section { margin-bottom: 1.75rem; }
+
+  .ebook-toc-section h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .ebook-toc-section h5 .ch {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--green-2);
+    font-size: 0.8rem;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .ebook-toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    color: var(--ink-2);
+    font-size: 0.83rem;
+    line-height: 1.3;
+    transition: color 0.2s;
+  }
+
+  .ebook-toc a:hover {
+    color: var(--green-2);
+  }
+
+  .ebook-toc a .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    width: 22px;
+  }
+
+  .ebook-toc a:hover .num { color: var(--green-2); }
+
+  .ebook-main {
+    padding: 4rem 4.5rem 6rem;
+    max-width: 880px;
+  }
+
+  /* Premium cover */
+  .ebook-cover {
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 3rem;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .cover-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cover-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .cover-badge.dark {
+    background: var(--ink);
+    color: var(--pearl);
+  }
+
+  .cover-badge.green {
+    background: var(--green-bg);
+    color: var(--green-2);
+    border: 1px solid rgba(31, 74, 50, 0.2);
+  }
+
+  .ebook-cover h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 4.25rem;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .ebook-cover h1 em { font-style: italic; color: var(--green-2); }
+
+  .ebook-cover .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.45rem;
+    color: var(--ink-2);
+    line-height: 1.4;
+    max-width: 640px;
+    margin-bottom: 2rem;
+    letter-spacing: -0.012em;
+  }
+
+  .ebook-cover .author-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ebook-cover .author-line .right {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  /* Chapter container */
+  .chapter {
+    padding-top: 4rem;
+    margin-bottom: 5rem;
+    scroll-margin-top: 90px;
+  }
+
+  .chapter-header {
+    margin-bottom: 2rem;
+  }
+
+  .chapter-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--green-2);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .chapter h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.75rem;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .chapter h2 em { font-style: italic; color: var(--green-2); }
+
+  .chapter-deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+    letter-spacing: -0.012em;
+    max-width: 700px;
+  }
+
+  .chapter h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    font-weight: 500;
+    margin-top: 2.75rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .chapter h3 .h3-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--green-2);
+    margin-right: 0.65rem;
+    font-weight: 500;
+  }
+
+  .chapter h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .chapter p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin-bottom: 1.15rem;
+  }
+
+  .chapter p strong { color: var(--ink); font-weight: 600; }
+  .chapter p em { font-style: italic; color: var(--green-2); }
+
+  .chapter ul, .chapter ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--ink-2);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .chapter ul li, .chapter ol li { margin-bottom: 0.55rem; }
+
+  .chapter ul li strong, .chapter ol li strong { color: var(--ink); }
+
+  .chapter .first-para::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 4.2rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.1em 0.12em 0 0;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0 2rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .compare-table th {
+    background: var(--ink);
+    color: var(--pearl);
+    text-align: left;
+    padding: 0.85rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .compare-table td {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .compare-table td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+    width: 18%;
+  }
+
+  .compare-table .rec {
+    background: var(--green-bg);
+  }
+
+  .compare-table .rec td:first-child {
+    color: var(--green);
+  }
+
+  /* Recommendation box */
+  .rec-box {
+    background: var(--green-bg);
+    border: 1px solid rgba(31, 74, 50, 0.15);
+    border-left: 3px solid var(--green-2);
+    padding: 1.5rem 1.75rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .rec-box .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .rec-box p {
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 0;
+  }
+
+  .rec-box p strong { color: var(--green); }
+
+  /* Warning box */
+  .warn-box {
+    background: rgba(154, 63, 28, 0.05);
+    border: 1px solid rgba(154, 63, 28, 0.15);
+    border-left: 3px solid var(--rust);
+    padding: 1.5rem 1.75rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .warn-box .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .warn-box p {
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 0;
+  }
+
+  /* Math/example box */
+  .example-box {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--gold);
+    padding: 1.5rem 1.75rem;
+    margin: 1.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .example-box .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .example-box .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: var(--ink-2);
+  }
+
+  .example-box .formula .equals { color: var(--green-2); font-weight: 600; margin: 0 0.4rem; }
+  .example-box .formula .result { color: var(--green-2); font-weight: 600; }
+
+  /* Lender card */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .vendor-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .vendor-card:hover {
+    border-color: var(--green-2);
+  }
+
+  .vendor-card.recommended {
+    border-color: var(--green-2);
+    border-width: 2px;
+    background: var(--paper);
+    position: relative;
+  }
+
+  .vendor-card.recommended::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -10px;
+    right: 1rem;
+    background: var(--green-2);
+    color: var(--pearl);
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+
+  .vendor-card h5 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.012em;
+  }
+
+  .vendor-card .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.85rem;
+  }
+
+  .vendor-card .specs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .vendor-card .specs li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.85rem;
+    color: var(--ink-2);
+  }
+
+  .vendor-card .specs li:last-child { border-bottom: none; }
+
+  .vendor-card .specs li .v {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* Big pull quote */
+  .pull-quote {
+    margin: 3rem 0;
+    padding: 0 0 0 2rem;
+    border-left: 3px solid var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.65rem;
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    max-width: 700px;
+  }
+
+  /* Checklist */
+  .checklist {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 1.75rem 2rem;
+    margin: 2rem 0;
+  }
+
+  .checklist h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--ink);
+    margin-top: 0;
+    letter-spacing: -0.012em;
+  }
+
+  .checklist ol {
+    padding-left: 0;
+    list-style: none;
+    counter-reset: chk;
+    margin: 0;
+  }
+
+  .checklist ol li {
+    counter-increment: chk;
+    padding: 0.7rem 0 0.7rem 2.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .checklist ol li:last-child { border-bottom: none; }
+
+  .checklist ol li::before {
+    content: counter(chk);
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--pearl);
+  }
+
+  .checklist ol li strong { color: var(--ink); }
+
+  /* Tax decision tree */
+  .decision-tree {
+    background: var(--ink);
+    color: var(--pearl);
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.85;
+  }
+
+  .decision-tree .head {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    color: var(--green-light);
+    letter-spacing: -0.012em;
+  }
+
+  .decision-tree .branch {
+    padding-left: 1.25rem;
+    border-left: 1px solid rgba(247, 245, 239, 0.2);
+    margin-left: 0.5rem;
+  }
+
+  .decision-tree .q {
+    color: var(--green-light);
+  }
+
+  .decision-tree .a {
+    color: var(--pearl);
+  }
+
+  /* Reading progress bar */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(13, 31, 21, 0.05);
+    z-index: 200;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--green-2);
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* End of book */
+  .ebook-end {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .end-glyph {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--green-2);
+    margin-bottom: 1.5rem;
+  }
+
+  .end-msg {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--ink-2);
+    line-height: 1.5;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Mobile TOC */
+  .toc-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    z-index: 200;
+    box-shadow: 0 6px 20px var(--shadow-strong);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    .ebook-shell { grid-template-columns: 1fr; }
+    .ebook-toc {
+      position: fixed;
+      top: 73px;
+      left: 0;
+      width: 280px;
+      height: calc(100vh - 73px);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 150;
+      border-right: 1px solid var(--ink);
+      box-shadow: 4px 0 20px var(--shadow-strong);
+    }
+    .ebook-toc.open { transform: translateX(0); }
+    .ebook-main { padding: 2.5rem 1.5rem 4rem; }
+    .ebook-cover h1 { font-size: 2.6rem; }
+    .ebook-cover .deck { font-size: 1.15rem; }
+    .chapter h2 { font-size: 2rem; }
+    .chapter-deck { font-size: 1.1rem; }
+    .pull-quote { font-size: 1.3rem; padding-left: 1.25rem; }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .toc-toggle { display: flex; align-items: center; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="signup.html" class="nav-cta">Get the Playbook</a>
+  </nav>
+</header>
+
+<button class="toc-toggle" onclick="toggleToc()">CONTENTS</button>
+
+<div class="ebook-shell">
+
+  <aside class="ebook-toc" id="ebookToc">
+    <div class="premium-badge">Premium · $97</div>
+    <div class="toc-title">The Implementation Playbook</div>
+    <div class="toc-sub">Volume II · Advanced</div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">i.</span>Chapter One</h5>
+      <a href="#ch1"><span class="num">§1.</span><span>Choosing the Right Corporate Structure</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">ii.</span>Chapter Two</h5>
+      <a href="#ch2"><span class="num">§2.</span><span>The Lender Shortlist</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">iii.</span>Chapter Three</h5>
+      <a href="#ch3"><span class="num">§3.</span><span>The Brokerage Rankings</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">iv.</span>Chapter Four</h5>
+      <a href="#ch4"><span class="num">§4.</span><span>Selecting Sustainable Dividend Stocks</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">v.</span>Chapter Five</h5>
+      <a href="#ch5"><span class="num">§5.</span><span>Tax Optimization Inside the Corp</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">vi.</span>Chapter Six</h5>
+      <a href="#ch6"><span class="num">§6.</span><span>The Corporate Exit Advantage</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">vii.</span>Chapter Seven</h5>
+      <a href="#ch7"><span class="num">§7.</span><span>Risk Management Protocols</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5><span class="ch">viii.</span>Chapter Eight</h5>
+      <a href="#ch8"><span class="num">§8.</span><span>The Implementation Checklist</span></a>
+    </div>
+  </aside>
+
+  <main class="ebook-main">
+
+    <!-- COVER -->
+    <div class="ebook-cover">
+      <div class="cover-badge-row">
+        <span class="cover-badge dark">VOLUME II</span>
+        <span class="cover-badge green">PREMIUM · $97</span>
+      </div>
+      <h1>The <em>Implementation</em> Playbook</h1>
+      <p class="deck">From understanding to execution — corporate structures, lender shortlists, brokerage rankings, tax optimization, exit planning, and the risk-management protocols that experienced practitioners actually use.</p>
+      <div class="author-line">
+        <span>sblmortgage.com</span>
+        <div class="right">
+          <span>~ 45 min read</span>
+          <span>Volume II</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 1: CORPORATE STRUCTURE -->
+    <section class="chapter" id="ch1">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER ONE</div>
+        <h2>Choosing the right <em>corporate structure</em>.</h2>
+        <p class="chapter-deck">The free guide explains <em>that</em> you need a corporation. This chapter explains <em>which kind</em>, and why the decision is more consequential than most people realize.</p>
+      </div>
+
+      <p class="first-para">There are three corporate structures commonly used for the Corporate Dividend Mortgage™: an <strong>LLC taxed as a partnership or disregarded entity</strong>, an <strong>LLC or corporation electing S-Corp status</strong>, or a <strong>traditional C-Corp</strong>. Each has materially different tax treatment, asset-protection characteristics, and operational complexity. Choosing wrong is recoverable but expensive — every conversion involves paperwork, legal fees, and potentially triggered tax events.</p>
+
+      <p>The choice depends on three variables: how much income the structure will generate, whether you intend to hold long-term or sell within ten years, and which state you'll register in. We'll work through each option and provide the framework to make the call for your situation.</p>
+
+      <h3><span class="h3-num">§1.1</span>The three structures, side by side</h3>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Structure</th><th>Tax treatment</th><th>Best for</th><th>Watch out for</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LLC (Default)</td>
+            <td>Pass-through. Profits/losses flow to your personal return as ordinary income.</td>
+            <td>Smaller deals (&lt;$500K home), single-owner setups, those who want simplicity.</td>
+            <td>Self-employment tax on net earnings if you're not careful about passive vs active treatment.</td>
+          </tr>
+          <tr class="rec">
+            <td>LLC + S-Corp Election</td>
+            <td>Pass-through, but you can take distributions instead of all-salary.</td>
+            <td><strong>Most practitioners.</strong> The sweet spot of tax efficiency, asset protection, and operational manageability.</td>
+            <td>Reasonable salary requirement, payroll administration overhead, state-level S-Corp recognition rules.</td>
+          </tr>
+          <tr>
+            <td>C-Corp</td>
+            <td>Entity-level taxation at 21%, then dividends taxed again personally.</td>
+            <td>Larger structures (&gt;$1M), those building multi-property portfolios, those planning a corporate sale exit.</td>
+            <td>Double taxation if profits are distributed. Requires more sophisticated bookkeeping and corporate governance.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="rec-box">
+        <div class="label">The recommended default</div>
+        <p>For most readers, the right answer is an <strong>LLC with S-Corp election</strong>, registered in your home state if you're holding property there, or in Wyoming/Delaware if the property is elsewhere or if asset-protection is a primary concern. This structure offers the best balance of tax efficiency, simplicity, and flexibility for the typical <em>$200K–$500K total capital</em> deployment that this strategy targets.</p>
+      </div>
+
+      <h3><span class="h3-num">§1.2</span>The state-of-formation question</h3>
+
+      <p>Where you form the entity matters as much as which type. The general rule: <strong>register in the state where the property sits</strong>. Cross-state structures (e.g., a Wyoming LLC owning California real estate) require foreign qualification in the property's state, which adds annual filing fees, registered agent costs, and complexity.</p>
+
+      <p>The exceptions where forming out-of-state is worth it:</p>
+      <ul>
+        <li><strong>Wyoming or Delaware</strong> when asset protection is a primary concern (charging-order protection is stronger), and you're willing to pay for foreign qualification in the property's state.</li>
+        <li><strong>Nevada</strong> for similar privacy/protection reasons, though Nevada's annual fees have risen significantly in recent years.</li>
+        <li><strong>South Dakota or Texas</strong> if you live there — both states offer strong corporate frameworks with no state income tax.</li>
+      </ul>
+
+      <p>For a single-property setup in a tax-friendly state, the local-formation answer is almost always correct. The complexity of multi-state structures rarely pays off below $1M in total assets.</p>
+
+      <h3><span class="h3-num">§1.3</span>The decision tree</h3>
+
+      <div class="decision-tree">
+        <div class="head">Which structure should I use?</div>
+        <div>
+          <span class="q">Are you the only owner?</span><br>
+          <div class="branch">
+            <span class="q">Yes →</span> <span class="a">Start with an LLC.</span><br>
+            <div class="branch">
+              <span class="q">Total capital deployed?</span><br>
+              <div class="branch">
+                <span class="q">&lt; $200K →</span> <span class="a">LLC, default tax treatment. Simple.</span><br>
+                <span class="q">$200K – $1M →</span> <span class="a">LLC with S-Corp election. Recommended default.</span><br>
+                <span class="q">&gt; $1M →</span> <span class="a">Consider C-Corp, especially if planning multiple properties.</span>
+              </div>
+            </div>
+          </div>
+          <span class="q">No (multi-owner) →</span> <span class="a">LLC with operating agreement. Allocate via membership interests.</span>
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <div class="label">Important caveat</div>
+        <p>This framework is general guidance based on the typical scenarios this strategy targets. Your specific situation — state of residence, existing income, retirement structures, prior business interests — can materially change the right answer. The <strong>final decision must always involve a CPA and an attorney</strong>, both familiar with both real estate corporate structures and securities-backed lending. Budget $1,500–$3,000 for proper professional setup; it pays for itself many times over in avoided mistakes.</p>
+      </div>
+    </section>
+
+    <!-- CHAPTER 2: LENDERS -->
+    <section class="chapter" id="ch2">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER TWO</div>
+        <h2>The <em>lender shortlist</em>.</h2>
+        <p class="chapter-deck">Most banks won't touch this structure. The ones that will fall into a few specific categories — and knowing how to talk to them is half the battle.</p>
+      </div>
+
+      <p class="first-para">Walk into a typical retail bank and ask for a mortgage to be issued to a freshly-formed LLC, secured partially by pledged stock — and you'll be met with confusion at best, refusal at worst. The standard residential mortgage product simply isn't built for this structure. <strong>You're not looking for retail banks</strong>. You're looking for a specific subset of lenders who understand asset-based lending, securities-backed lending (SBL), and corporate-held real estate financing.</p>
+
+      <p>These lenders generally fall into four categories. Your shortlist will pull from all four, depending on geography and deal size.</p>
+
+      <h3><span class="h3-num">§2.1</span>The four lender categories</h3>
+
+      <div class="vendor-grid">
+        <div class="vendor-card recommended">
+          <h5>Private Banks (Wealth Management Arms)</h5>
+          <div class="meta">JPMorgan Private, Morgan Stanley PWM, UBS</div>
+          <ul class="specs">
+            <li><span>Min relationship</span><span class="v">$1M+ AUM typical</span></li>
+            <li><span>Mortgage rate</span><span class="v">SOFR + 1-2%</span></li>
+            <li><span>SBL rate</span><span class="v">SOFR + 0.75-1.5%</span></li>
+            <li><span>Setup time</span><span class="v">4-8 weeks</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Asset-Based Boutiques</h5>
+          <div class="meta">First Republic legacy clients, regional private lenders</div>
+          <ul class="specs">
+            <li><span>Min deal size</span><span class="v">$300K+</span></li>
+            <li><span>Mortgage rate</span><span class="v">+0.5-1% over conventional</span></li>
+            <li><span>Flexibility</span><span class="v">High</span></li>
+            <li><span>Setup time</span><span class="v">3-6 weeks</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Commercial Real Estate Lenders</h5>
+          <div class="meta">Local/regional commercial banks</div>
+          <ul class="specs">
+            <li><span>Property type</span><span class="v">Treats as investment</span></li>
+            <li><span>Mortgage rate</span><span class="v">+1-2% over conventional</span></li>
+            <li><span>LTV ceiling</span><span class="v">65-75% typical</span></li>
+            <li><span>Setup time</span><span class="v">6-10 weeks</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Specialty Brokers (DSCR loans)</h5>
+          <div class="meta">Investor-focused mortgage brokers</div>
+          <ul class="specs">
+            <li><span>Qualification</span><span class="v">Property-based, not personal</span></li>
+            <li><span>Mortgage rate</span><span class="v">+1.5-2.5% over conventional</span></li>
+            <li><span>Min DSCR</span><span class="v">1.20-1.25</span></li>
+            <li><span>Setup time</span><span class="v">3-5 weeks</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3><span class="h3-num">§2.2</span>How to approach a lender (the pitch)</h3>
+
+      <p>Walking in with the right framing is critical. You don't say "I want a creative financing structure" — that signals risk and complexity. You say <em>"I'm purchasing investment property through a holding entity, with a securities-backed equity contribution"</em>. You're describing a normal commercial real estate transaction with one variation: the equity portion is collateralized by liquid securities rather than cash.</p>
+
+      <p>Your initial conversation should establish three things in this order:</p>
+      <ol>
+        <li><strong>The property</strong> — address, purchase price, property type (residential or commercial held in entity), intended use (rental, primary, hybrid).</li>
+        <li><strong>The structure</strong> — your corporation as borrower, with you as personal guarantor (most lenders will require this, and it's reasonable to accept).</li>
+        <li><strong>The equity contribution</strong> — pledged liquid securities held at [your brokerage], with current market value of $X. You can describe this as "asset-backed equity" or "securities-secured down payment" depending on the lender's vocabulary.</li>
+      </ol>
+
+      <div class="rec-box">
+        <div class="label">The pitch line that works</div>
+        <p>"I'm financing an investment property through a corporate holding entity. The down payment is structured as a <strong>pledge of marketable securities</strong> held at [Brokerage], rather than a cash down payment. Total securities value is approximately [$X], and I'd like to discuss how your asset-based or commercial real estate group might structure this." — This single sentence positions you correctly with sophisticated lenders and tells unsophisticated ones to refer you elsewhere.</p>
+      </div>
+
+      <h3><span class="h3-num">§2.3</span>What lenders will require from you</h3>
+
+      <p>Expect a more thorough underwriting than a residential mortgage, but a less invasive one in some ways. Lenders will want:</p>
+      <ul>
+        <li>Personal financial statement (your overall net worth picture)</li>
+        <li>Two years of personal tax returns</li>
+        <li>Brokerage statements showing the pledged securities</li>
+        <li>Corporate formation documents and EIN</li>
+        <li>An appraisal of the property</li>
+        <li>Title commitment</li>
+        <li>Personal guarantee (almost always required)</li>
+      </ul>
+
+      <p>What they typically <strong>won't</strong> require, that retail residential lenders would: pay stubs, employment verification letters, debt-to-income calculations based on W-2 income. The qualification basis is shifted from personal income to total assets and the property's economics.</p>
+    </section>
+
+    <!-- CHAPTER 3: BROKERAGES -->
+    <section class="chapter" id="ch3">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER THREE</div>
+        <h2>The <em>brokerage</em> rankings.</h2>
+        <p class="chapter-deck">Your corporate brokerage account is where the dividend engine lives. The wrong choice costs hundreds of basis points in margin rates — which compounds to tens of thousands over the loan term.</p>
+      </div>
+
+      <p class="first-para">Three things matter when choosing the corporate brokerage that will host the dividend engine: the <strong>margin rate they charge</strong>, whether they support <strong>share pledging to external lenders</strong>, and the <strong>quality of corporate-account servicing</strong>. Most retail brokerages will open a corporate account, but only a handful do all three things competitively.</p>
+
+      <h3><span class="h3-num">§3.1</span>Margin rates — the most consequential variable</h3>
+
+      <p>Your margin rate is the single biggest cost variable in this strategy after the mortgage rate itself. A 100bps difference between two brokerages — say 6.5% vs 7.5% — costs roughly <strong>$1,000 per year per $100K borrowed</strong>. Over a 30-year loan, that's $30,000+ in additional interest, just from picking the wrong broker.</p>
+
+      <div class="vendor-grid">
+        <div class="vendor-card recommended">
+          <h5>Interactive Brokers (Pro)</h5>
+          <div class="meta">Industry-leading margin rates</div>
+          <ul class="specs">
+            <li><span>Margin rate</span><span class="v">SOFR + 1.5%</span></li>
+            <li><span>Corporate accounts</span><span class="v">Yes, fully supported</span></li>
+            <li><span>External pledging</span><span class="v">Yes, well-documented</span></li>
+            <li><span>Min account</span><span class="v">None</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Fidelity (Active Trader Pro)</h5>
+          <div class="meta">Strong corp servicing, higher rates</div>
+          <ul class="specs">
+            <li><span>Margin rate</span><span class="v">7.5-8.5%</span></li>
+            <li><span>Corporate accounts</span><span class="v">Yes</span></li>
+            <li><span>External pledging</span><span class="v">Yes, with paperwork</span></li>
+            <li><span>Min account</span><span class="v">None</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Schwab (Institutional)</h5>
+          <div class="meta">Best for $1M+ accounts</div>
+          <ul class="specs">
+            <li><span>Margin rate</span><span class="v">Negotiable above $500K</span></li>
+            <li><span>Corporate accounts</span><span class="v">Yes</span></li>
+            <li><span>External pledging</span><span class="v">Yes</span></li>
+            <li><span>Min account</span><span class="v">No min, but rate breaks at $250K+</span></li>
+          </ul>
+        </div>
+        <div class="vendor-card">
+          <h5>Tradier / TastyTrade</h5>
+          <div class="meta">Avoid for this purpose</div>
+          <ul class="specs">
+            <li><span>Margin rate</span><span class="v">Variable, often higher</span></li>
+            <li><span>Corporate accounts</span><span class="v">Limited support</span></li>
+            <li><span>External pledging</span><span class="v">Inconsistent</span></li>
+            <li><span>Verdict</span><span class="v">Not recommended</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rec-box">
+        <div class="label">The recommended default</div>
+        <p><strong>Interactive Brokers Pro</strong> is the default recommendation for most readers. The margin rate advantage (typically 100-250bps lower than Fidelity or Schwab for accounts under $500K) directly translates to higher coverage ratios. The platform is built for sophisticated traders, which means more documentation and a steeper learning curve — but for the lifetime cost of the strategy, the savings are substantial.</p>
+      </div>
+
+      <h3><span class="h3-num">§3.2</span>The pledging mechanism</h3>
+
+      <p>For the down payment shares to function as collateral for your mortgage, they need to be <strong>pledged to the lender</strong>. This is a tripartite agreement among you (the corporation), the brokerage (custodian), and the lender. Mechanically:</p>
+
+      <ol>
+        <li>The corporation opens an account at the brokerage and funds it with the down-payment securities.</li>
+        <li>The lender provides a <strong>Control Agreement</strong> (typically a Securities Account Control Agreement, or SACA) that the brokerage must execute.</li>
+        <li>The brokerage flags the pledged shares as restricted — they cannot be sold or transferred without lender consent.</li>
+        <li>Dividends continue to flow to the corporation; only sale proceeds are restricted.</li>
+      </ol>
+
+      <p>Not all brokerages execute SACAs, and those that do vary widely in the time and friction involved. Interactive Brokers and Schwab Institutional handle this routinely; many smaller brokerages don't. <strong>Confirm SACA support before opening the account</strong> — discovering a brokerage won't pledge after you've funded is a costly mistake.</p>
+    </section>
+
+    <!-- CHAPTER 4: STOCK SELECTION -->
+    <section class="chapter" id="ch4">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER FOUR</div>
+        <h2>Selecting <em>sustainable</em> dividend stocks.</h2>
+        <p class="chapter-deck">High yields are easy to find. Sustainable yields — ones that will still be paying in five years — require a different selection framework.</p>
+      </div>
+
+      <p class="first-para">The single most catastrophic failure mode for the Corporate Dividend Mortgage™ is a <strong>dividend cut</strong>. The strategy is engineered around predictable monthly income; if that income gets reduced or eliminated, the coverage ratio collapses, and the corporation has to find money from somewhere to keep servicing the mortgage. Picking dividend stocks for this strategy is therefore a fundamentally different exercise than picking them for general portfolio income.</p>
+
+      <p>The framework most amateurs use — "find the highest yield" — is exactly wrong. Yields above 15% are usually warning signs, not opportunities. The right framework prioritizes <em>sustainability</em> over <em>magnitude</em>, with five specific metrics.</p>
+
+      <h3><span class="h3-num">§4.1</span>The five sustainability metrics</h3>
+
+      <p><strong>1. Payout ratio.</strong> The percentage of earnings (or, for REITs, FFO) paid out as dividends. Above 90% is dangerous — there's no buffer for a bad quarter. Target: <em>60-85%</em>. A REIT paying out 130% of FFO is borrowing to pay you; that's not sustainable.</p>
+
+      <p><strong>2. Dividend coverage history.</strong> How many consecutive years has the company paid the dividend, and how many of those years saw an increase? Look for <em>10+ years of consistent payment</em> and ideally <em>5+ years of growth</em>. Companies on the "Dividend Aristocrats" or "Dividend Champions" lists meet this bar.</p>
+
+      <p><strong>3. Free cash flow trend.</strong> Is the underlying business throwing off enough actual cash to cover the dividend, or is the dividend being funded from debt issuance or asset sales? Look at <em>FCF / Dividend Paid</em> — should be comfortably above 1.0x, ideally 1.3x+.</p>
+
+      <p><strong>4. Sector concentration.</strong> Don't put all your dividend exposure in one sector. A pure REIT portfolio gets crushed when interest rates spike. A pure energy MLP portfolio gets crushed when commodities fall. Spread across <em>3-5 sectors</em>: REITs, BDCs, MLPs, traditional dividend stocks, and possibly preferred shares.</p>
+
+      <p><strong>5. Margin eligibility.</strong> Some brokerages exclude certain stocks from margin (low float, OTC, certain MLPs). Verify each prospective holding is fully marginable at your target leverage <em>before</em> committing capital.</p>
+
+      <h3><span class="h3-num">§4.2</span>The yield-trap warning signs</h3>
+
+      <div class="warn-box">
+        <div class="label">Yield trap red flags</div>
+        <p>If you see any of these in a prospective holding, treat it as a hard "do not buy" signal: <strong>(1)</strong> Yield above 15% with payout ratio above 100%. <strong>(2)</strong> Stock price down 30%+ over the past year (the yield is "high" because the price collapsed, and a dividend cut usually follows). <strong>(3)</strong> Recent debt covenant violations or amendments. <strong>(4)</strong> Reverse stock splits in the last 24 months. <strong>(5)</strong> Special dividends substituting for regular dividends. Each of these patterns has historically preceded dividend eliminations.</p>
+      </div>
+
+      <h3><span class="h3-num">§4.3</span>The diversification template</h3>
+
+      <p>For a typical $200K-$300K total deployment, a defensible structure looks like this:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Allocation</th><th>Sector / Type</th><th>Target yield</th><th>Role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>30-40%</td><td>Quality REITs (residential, industrial)</td><td>4-6%</td><td>Stable income base, inflation hedge</td></tr>
+          <tr><td>20-30%</td><td>BDCs (Business Development Cos)</td><td>8-11%</td><td>Yield enhancement, cyclical exposure</td></tr>
+          <tr><td>15-25%</td><td>MLPs (midstream energy)</td><td>6-9%</td><td>Inflation hedge, tax-advantaged distributions</td></tr>
+          <tr><td>10-20%</td><td>Dividend Aristocrats (consumer staples, utilities)</td><td>3-4%</td><td>Stability anchor, low correlation</td></tr>
+          <tr><td>5-10%</td><td>Preferred shares</td><td>5-7%</td><td>Lower volatility, fixed-income substitute</td></tr>
+        </tbody>
+      </table>
+
+      <p>This blend produces a weighted-average portfolio yield in the <strong>5-8% range</strong>, which is sustainable, diversified, and generates enough income at 2-3× leverage to cover most mortgage scenarios. The 14.4% yield used in the calculator and free guide is a <em>simplified illustration</em> — in real implementation, blending across sectors typically produces lower per-share yields but dramatically more sustainable income.</p>
+
+      <div class="pull-quote">
+        "A yield you can count on for ten years is worth twice as much as a yield twice as high that disappears in three."
+      </div>
+    </section>
+
+    <!-- CHAPTER 5: TAX -->
+    <section class="chapter" id="ch5">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER FIVE</div>
+        <h2><em>Tax</em> optimization inside the corp.</h2>
+        <p class="chapter-deck">The corporate wrapper opens deductions and treatments individuals can't access. Most practitioners leave 20-30% of their potential after-tax return on the table by failing to use them.</p>
+      </div>
+
+      <p class="first-para">A corporation is a different tax animal than an individual. It pays for things in pre-tax dollars where individuals pay in after-tax dollars. It can deduct interest, depreciation, and operating expenses against its income. It can also do things individuals categorically cannot — like funding retirement accounts at much higher levels, or claiming property depreciation against active rental income.</p>
+
+      <p>This chapter covers the four highest-impact tax strategies available to a Corporate Dividend Mortgage™ structure. None of these is exotic; all of them are routine in commercial real estate. The trick is knowing they're available and structuring from day one to use them.</p>
+
+      <h3><span class="h3-num">§5.1</span>Interest deduction stacking</h3>
+
+      <p>The corporation pays two streams of interest: <strong>mortgage interest</strong> on the property loan, and <strong>margin interest</strong> on the brokerage borrowing. Both are deductible against the corporation's income, reducing taxable profit. For a typical structure:</p>
+
+      <div class="example-box">
+        <div class="label">Interest deduction example</div>
+        <div class="formula">
+          Annual mortgage interest (Year 1) <span class="equals">≈</span> $21,400<br>
+          Annual margin interest <span class="equals">=</span> $7,000<br>
+          ─────────────────────────────<br>
+          Total deductible interest <span class="equals">=</span> <span class="result">$28,400</span><br>
+          Annual gross dividends <span class="equals">=</span> $43,200<br>
+          Taxable income (pre-other-deductions) <span class="equals">=</span> <span class="result">$14,800</span>
+        </div>
+      </div>
+
+      <p>That's a structural reduction of taxable income from <strong>$43,200 to $14,800</strong> — a 66% reduction — purely from interest deductions. And we haven't yet applied depreciation, qualified dividend treatment, or any other strategy.</p>
+
+      <h3><span class="h3-num">§5.2</span>Property depreciation</h3>
+
+      <p>If the property is held for investment purposes (which it is, by definition, in a corporate structure), it depreciates on a <strong>27.5-year schedule</strong> for residential or <strong>39-year schedule</strong> for commercial. For a $450K property with land valued at $90K (a typical 80/20 split), the depreciable basis is $360K, generating annual depreciation of:</p>
+
+      <div class="example-box">
+        <div class="label">Annual depreciation</div>
+        <div class="formula">
+          Depreciable basis <span class="equals">=</span> $450,000 − $90,000 land <span class="equals">=</span> $360,000<br>
+          Schedule <span class="equals">=</span> 27.5 years (residential)<br>
+          Annual depreciation deduction <span class="equals">=</span> <span class="result">~$13,090</span>
+        </div>
+      </div>
+
+      <p>That $13K of annual depreciation flows against the corporation's income. Combined with interest deductions, it's now common for a properly structured Corporate Dividend Mortgage™ to show <strong>near-zero or negative taxable income</strong> for the first many years — even while generating real cash flow. This is the same dynamic that has made commercial real estate a tax-favored asset class for decades.</p>
+
+      <p>Cost segregation studies — which break out property components into shorter depreciation schedules (5, 7, 15 years) — can accelerate this further. For properties above $500K, a cost-seg study (cost: $3K-$8K) typically pays for itself in the first year through bonus depreciation.</p>
+
+      <h3><span class="h3-num">§5.3</span>Qualified dividend treatment</h3>
+
+      <p>Most U.S. dividend stocks pay <strong>qualified dividends</strong>, taxed at long-term capital gains rates (0%, 15%, or 20% depending on income) rather than ordinary income rates. The corporation receives these as ordinary income, but if you've structured as an S-Corp or pass-through LLC, the qualified character flows through to your personal return.</p>
+
+      <p>The exception: <strong>REIT distributions</strong> are typically <em>not</em> qualified — they're taxed as ordinary income. However, the 2017 Tax Cuts and Jobs Act introduced a <strong>20% qualified business income (QBI) deduction</strong> on REIT dividends through 2025 (with extension under discussion). Structure carefully to maximize qualified dividends in the leveraged block, and treat REIT distributions as the unleveraged stable-yield component.</p>
+
+      <h3><span class="h3-num">§5.4</span>Solo 401(k) contributions from corporate income</h3>
+
+      <p>The least-known but highest-impact strategy: an LLC-S-Corp structure can sponsor a <strong>Solo 401(k)</strong>, into which the owner can contribute meaningful pre-tax amounts as both employee and employer. For 2026, the combined limit is approximately <em>$70,000+</em> (subject to compensation rules). This means the corporation can functionally convert taxable dividend income into tax-deferred retirement savings — at scales individuals are categorically locked out of.</p>
+
+      <div class="rec-box">
+        <div class="label">The combined effect</div>
+        <p>A practitioner using all four strategies — interest stacking, depreciation, QBI deduction on REIT dividends, and Solo 401(k) — can routinely achieve <strong>effective tax rates of 5-15%</strong> on the dividend income generated by the structure, versus <em>22-37%</em> if the same income were earned in a personal name and held outside any tax-advantaged vehicle. Over a 30-year holding period, this difference compounds into hundreds of thousands of dollars.</p>
+      </div>
+    </section>
+
+    <!-- CHAPTER 6: EXIT -->
+    <section class="chapter" id="ch6">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER SIX</div>
+        <h2>The corporate <em>exit advantage</em>.</h2>
+        <p class="chapter-deck">When you eventually sell, you have an exit route most homeowners don't: you can sell the corporation rather than the house. This changes everything for both you and the buyer.</p>
+      </div>
+
+      <p class="first-para">In a traditional real estate transaction, you sell the property: deed transfers from your name to the buyer's name, you owe capital gains tax on the appreciation, the buyer pays transfer taxes and gets a fresh mortgage at current rates. <strong>Standard. Inflexible. Often expensive on both sides.</strong></p>
+
+      <p>When you own the property inside a corporation, you have a second option: <strong>sell the corporation itself</strong>. The buyer acquires the entity, which already owns the home (and any retained portfolio, if structured to include it). The deed never changes hands. The mortgage isn't refinanced. And the tax treatment for both parties can be dramatically more favorable.</p>
+
+      <h3><span class="h3-num">§6.1</span>Why a corporate sale can be better for the buyer</h3>
+
+      <p>Consider what the buyer would normally face: a new mortgage at <em>current market rates</em>, which could be 1-3 percentage points above your original locked-in rate. On a $450K loan, every additional percent of rate is roughly $300/mo more in payments — $108,000 more over 30 years.</p>
+
+      <p>If the buyer instead acquires your corporation, they inherit the existing mortgage at its locked-in rate. <strong>They get your 5.98% loan instead of today's 7.5% loan.</strong> For the buyer, that's tens to hundreds of thousands of dollars in present-value savings — and it's a benefit you can capture as a higher sale price, since you're delivering something materially more valuable than just the property.</p>
+
+      <div class="pull-quote">
+        "When you own the corporation, you don't sell a house — you sell a financing structure that already happens to include a house."
+      </div>
+
+      <h3><span class="h3-num">§6.2</span>Why it can be better for you</h3>
+
+      <p>For the seller, three advantages stand out. <strong>First, transfer taxes</strong>: in many states, real property transfers trigger transfer taxes (0.5%–2.5% of value); corporate stock transfers often don't. <strong>Second, capital gains treatment</strong>: selling the corporation can be structured as a long-term capital gains event on the equity, rather than a property sale subject to depreciation recapture (which would otherwise tax back the depreciation benefits we discussed in Chapter 5 at ordinary income rates). <strong>Third, retained portfolio handling</strong>: if you've built a substantial dividend portfolio inside the corp over the years, selling it as part of the corporate sale can defer or restructure the capital gains on those positions.</p>
+
+      <h3><span class="h3-num">§6.3</span>Structuring from day one for the corporate sale</h3>
+
+      <p>The corporate-sale option only exists cleanly if you've structured for it from the beginning. A few decisions made on day one matter enormously seven or fifteen years later:</p>
+
+      <ul>
+        <li><strong>Keep the corporation clean</strong> — single purpose, single property, single brokerage account. Don't commingle with other business activities. The simpler the entity, the easier the eventual sale.</li>
+        <li><strong>Document everything as if for due diligence</strong> — properly maintained corporate minutes, clear separation of personal and corporate expenses, professional bookkeeping from year one. A buyer's attorney will scrutinize all of it.</li>
+        <li><strong>Choose a structure that supports stock sale</strong> — C-Corp stock is most cleanly transferable; LLC interests work but require operating-agreement assignability provisions; pure sole-prop structures aren't transferable as entities at all.</li>
+        <li><strong>Consider a holding company layer</strong> — for larger setups, putting the operating LLC under a parent C-Corp can simplify both ongoing tax planning and eventual sale.</li>
+      </ul>
+
+      <div class="warn-box">
+        <div class="label">Important caveat</div>
+        <p>The corporate sale exit is a powerful option, but it requires both a willing and sophisticated buyer, and either an experienced real estate attorney or M&A counsel to structure properly. Not every property and buyer combination supports it. Treat it as <strong>an option you can offer, not a guarantee</strong>. A traditional property sale always remains available as the fallback. The point of structuring for it from day one is to keep both doors open, not to commit to one path.</p>
+      </div>
+    </section>
+
+    <!-- CHAPTER 7: RISK -->
+    <section class="chapter" id="ch7">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER SEVEN</div>
+        <h2>Risk management <em>protocols</em>.</h2>
+        <p class="chapter-deck">The strategy is robust, but it has specific failure modes. The professionals who use this approach for decades follow a small set of protocols religiously.</p>
+      </div>
+
+      <p class="first-para">Every leveraged strategy has a way to break. The Corporate Dividend Mortgage™ has three primary failure modes — <strong>dividend cuts</strong>, <strong>margin calls</strong>, and <strong>spread inversion</strong> (where margin cost exceeds dividend yield). Each is manageable if you've structured for it and watch the right indicators. Each is catastrophic if you haven't.</p>
+
+      <p>This chapter is the operational manual for keeping the structure healthy across decades, including a stress-test framework, the monthly metrics to watch, and the decision triggers for when to act.</p>
+
+      <h3><span class="h3-num">§7.1</span>The stress-test framework</h3>
+
+      <p>Before launching the structure, run it through three stress scenarios. The structure should remain solvent (coverage above 80%) under each:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Scenario</th><th>Variable changed</th><th>Test threshold</th><th>What to verify</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Rate shock</td><td>Margin rate +200bps</td><td>Coverage stays ≥ 100%</td><td>Spread remains positive</td></tr>
+          <tr><td>Dividend cut</td><td>Yield reduced by 25%</td><td>Coverage stays ≥ 80%</td><td>Personal income can bridge gap</td></tr>
+          <tr><td>Stock decline</td><td>Pledged shares −30%</td><td>No margin call triggered</td><td>Maintenance margin still satisfied</td></tr>
+        </tbody>
+      </table>
+
+      <p>Run all three simultaneously for the worst-case test. If your structure survives a 200bps rate shock + 25% dividend cut + 30% stock decline with positive coverage and no margin call, you have a robust setup. If it doesn't, deleverage until it does — typically by reducing the leverage multiplier from 2× to 1.5× or 1.25×.</p>
+
+      <h3><span class="h3-num">§7.2</span>The monthly dashboard</h3>
+
+      <p>Every month, check the same five metrics. Anything trending the wrong way is your early warning system:</p>
+
+      <ol>
+        <li><strong>Coverage ratio</strong> — your single most important number. If it drops below 110%, investigate why and remediate.</li>
+        <li><strong>Margin equity ratio</strong> — pledged stock value vs. borrowed amount. Should remain comfortably above the brokerage's maintenance margin (typically 30%, though this varies).</li>
+        <li><strong>Dividend payment confirmations</strong> — verify each expected distribution actually arrived. A missed payment is the first sign of a coming cut.</li>
+        <li><strong>Margin rate notifications</strong> — most brokerages adjust margin rates monthly. Track the trend; rising rates compress your spread.</li>
+        <li><strong>Cash reserve in corp account</strong> — should be at least <em>3 months of mortgage + margin payments</em> at all times. This is your buffer against late dividends, surprise expenses, or short-term volatility.</li>
+      </ol>
+
+      <h3><span class="h3-num">§7.3</span>Decision triggers</h3>
+
+      <p>Pre-commit to specific actions at specific thresholds, made in advance when you're calm. Decisions made under stress are usually wrong:</p>
+
+      <div class="checklist">
+        <h4>The pre-committed action plan</h4>
+        <ol>
+          <li>If <strong>coverage drops below 110%</strong> → review and identify cause; reduce discretionary corp spending.</li>
+          <li>If <strong>coverage drops below 100%</strong> → contribute personal capital to corp reserves; consider reducing leverage.</li>
+          <li>If <strong>any pledged stock drops 20% from purchase</strong> → review thesis; consider replacing with equivalent yield in different name.</li>
+          <li>If <strong>margin rate rises above dividend yield</strong> → immediately reduce leverage to 1×; the spread is now negative.</li>
+          <li>If <strong>brokerage issues margin call notification</strong> → respond same-day with cash deposit; never let it go to forced liquidation.</li>
+          <li>If <strong>any dividend is cut by &gt; 20%</strong> → rotate that holding within 30 days; do not wait for further cuts.</li>
+          <li>If <strong>coverage drops below 80% for two consecutive months</strong> → trigger formal restructuring; deleverage substantially.</li>
+        </ol>
+      </div>
+
+      <h3><span class="h3-num">§7.4</span>The cash reserve discipline</h3>
+
+      <p>The single discipline that separates practitioners who succeed for decades from those who blow up in the first downturn: <strong>maintain a corporate cash reserve equal to 3-6 months of total payments at all times</strong>. This is not optional. This is not "nice to have." This is the buffer that absorbs late dividends, unexpected expenses, brief margin compression, and the dozen small surprises that any 30-year structure will encounter.</p>
+
+      <p>Fund the reserve from monthly surplus until it's at target, then route additional surplus into either principal paydown, reserve expansion, or new positions. Never deplete the reserve below target without an immediate plan to refill.</p>
+    </section>
+
+    <!-- CHAPTER 8: CHECKLIST -->
+    <section class="chapter" id="ch8">
+      <div class="chapter-header">
+        <div class="chapter-num">CHAPTER EIGHT</div>
+        <h2>The implementation <em>checklist</em>.</h2>
+        <p class="chapter-deck">Everything you've read, sequenced into the order you actually execute it. Print this chapter. Work it.</p>
+      </div>
+
+      <p class="first-para">The hardest part of implementing a strategy like this is sequencing — knowing what comes first, what depends on what, and which decisions you can postpone versus which must be locked in early. The checklist below is the order experienced practitioners follow. Allow <strong>8 to 16 weeks</strong> from start to closing on the property, depending on lender response time and your own pace.</p>
+
+      <div class="checklist">
+        <h4>Phase 1: Foundations (Weeks 1-3)</h4>
+        <ol>
+          <li>Run your scenario through the calculator. Confirm coverage ratio above 120% under your base assumptions, and above 80% under stress (Chapter 7).</li>
+          <li>Engage a CPA familiar with corporate real estate structures. Get the corporate-form recommendation in writing.</li>
+          <li>Engage an attorney to draft formation documents and operating agreement. Budget $1,500-$3,000 for this stage.</li>
+          <li>File state formation paperwork. Obtain EIN from IRS (free, takes 1 business day).</li>
+          <li>Open corporate bank account in the entity's name.</li>
+        </ol>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase 2: Capital Setup (Weeks 3-6)</h4>
+        <ol>
+          <li>Open corporate brokerage account at chosen broker (Chapter 3). Confirm SACA support.</li>
+          <li>Fund the brokerage account with the down payment capital.</li>
+          <li>Build the dividend portfolio per the diversification template (Chapter 4).</li>
+          <li>Confirm initial dividend payments arriving as expected. Validate yield calculations against actual receipts.</li>
+          <li>Build the cash reserve to 3-6 months of expected payments before closing on property.</li>
+        </ol>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase 3: Property and Financing (Weeks 4-12)</h4>
+        <ol>
+          <li>Identify target property. Negotiate purchase contract in the corporation's name (or assignable, then assign).</li>
+          <li>Approach lenders on the shortlist (Chapter 2). Use the pitch framework. Aim for 3-5 simultaneous conversations.</li>
+          <li>Submit formal applications to top 2 lenders. Provide all requested documentation promptly.</li>
+          <li>Coordinate with brokerage on Securities Account Control Agreement (SACA) execution.</li>
+          <li>Order property appraisal, title commitment, inspections.</li>
+          <li>Lock interest rate when terms are favorable; finalize loan documents.</li>
+        </ol>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase 4: Closing and Activation (Weeks 10-16)</h4>
+        <ol>
+          <li>Closing: deed transfers to the corporation; mortgage is recorded; SACA is filed.</li>
+          <li>Set up automatic mortgage payment from corporate account.</li>
+          <li>Set up automatic margin interest accrual tracking.</li>
+          <li>Set up monthly dashboard (Chapter 7). Calendar reminder for the first monthly review.</li>
+          <li>Confirm first month of operations: dividends arrive, margin interest debited, mortgage paid, cash reserve maintained.</li>
+        </ol>
+      </div>
+
+      <div class="checklist">
+        <h4>Ongoing: Months 2 through 360</h4>
+        <ol>
+          <li>Monthly dashboard review. Five metrics. Five minutes. (Chapter 7)</li>
+          <li>Quarterly: rebalance portfolio if any position has drifted significantly from target.</li>
+          <li>Annual: full strategic review. Tax filings. Stress-test rerun. Decision: deploy surplus into principal paydown, second property, or portfolio expansion.</li>
+          <li>Year 5+: begin considering exit framework (Chapter 6) so the corporate sale option remains viable.</li>
+        </ol>
+      </div>
+
+      <div class="rec-box">
+        <div class="label">Final note from the playbook</div>
+        <p>This structure is not a get-rich scheme; it's an <strong>asset-aware approach to a normal financial transaction</strong>. The hard work is in the setup. Once running, the system requires modest ongoing attention — typically 30 minutes a month and a few hours each year. The reward is a 30-year financial structure that pays for itself, builds equity in two assets simultaneously, and never depends on your ability to keep showing up at a job. <em>That's the prize. The playbook is just the route to get there.</em></p>
+      </div>
+
+      <div class="ebook-end">
+        <div class="end-glyph">— FIN —</div>
+        <p class="end-msg">Thank you for reading. The playbook is yours, with lifetime updates as the strategy and market conditions evolve. Questions? Reach out anytime — you're not alone in this.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="col">
+      <a href="index.html" class="brand" style="margin-bottom: 1rem;">
+        <div class="brand-mark">SBL</div>
+        <div class="brand-text">
+          <div class="name">sblmortgage<span class="tld">.com</span></div>
+          <div class="sub">Corporate Dividend Mortgage™</div>
+        </div>
+      </a>
+      <p class="tagline">A modern approach to home financing. Built for portfolio holders. Powered by dividends.</p>
+    </div>
+    <div class="col">
+      <h4>Strategy</h4>
+      <a href="index.html">How it works</a>
+      <a href="ebook-free.html">The free guide</a>
+      <a href="signup.html">The playbook</a>
+    </div>
+    <div class="col">
+      <h4>Tools</h4>
+      <a href="calculator.html">Calculator</a>
+      <a href="signup.html">Get notified</a>
+    </div>
+    <div class="col">
+      <h4>Legal</h4>
+      <a href="#">Disclosures</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice. Securities lending involves risk including potential loss of pledged assets.
+  </div>
+</footer>
+
+<script>
+function toggleToc() {
+  document.getElementById('ebookToc').classList.toggle('open');
+}
+
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+document.querySelectorAll('.ebook-toc a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 1024) {
+      document.getElementById('ebookToc').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

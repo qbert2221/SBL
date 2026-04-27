@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get the Implementation Playbook — SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Signup-specific layout */
+  .signup-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 4rem 2.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .signup-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 3.75rem;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+    color: var(--ink);
+  }
+
+  .signup-hero h1 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .signup-hero .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+    max-width: 520px;
+    letter-spacing: -0.01em;
+  }
+
+  .price-block {
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 1.5rem 1.75rem;
+    border-radius: 6px;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .price-block .price {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+  }
+
+  .price-block .price-meta {
+    flex: 1;
+  }
+
+  .price-block .price-meta .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .price-block .price-meta .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .price-block .price-meta .sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+
+  .what-included {
+    margin: 2.5rem 0;
+  }
+
+  .what-included h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .included-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .included-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .included-list li:last-child { border-bottom: none; }
+
+  .included-list .check {
+    flex-shrink: 0;
+    color: var(--green-2);
+    font-weight: 600;
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    width: 20px;
+  }
+
+  .included-list strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Signup form card */
+  .signup-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 2.5rem;
+    position: sticky;
+    top: 100px;
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+
+  .signup-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .signup-card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.85rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .signup-card h2 em { font-style: italic; color: var(--green-2); }
+
+  .signup-card .subhead {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-group input:focus {
+    border-color: var(--green-2);
+    box-shadow: 0 0 0 3px rgba(31, 74, 50, 0.08);
+  }
+
+  .form-group input::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .form-summary {
+    background: var(--pearl-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+  }
+
+  .form-summary .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.92rem;
+    color: var(--ink-2);
+  }
+
+  .form-summary .row.total {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.7rem;
+    margin-top: 0.4rem;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1.05rem;
+  }
+
+  .form-summary .row .val {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    padding: 1.1rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.005em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+  }
+
+  .submit-btn:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
+  .submit-btn:disabled {
+    background: var(--rule);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .form-fineprint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .form-fineprint a { color: var(--green-2); }
+
+  .secure-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .secure-row .icon {
+    width: 12px;
+    height: 12px;
+    background: var(--green-2);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .secure-row .icon::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--pearl);
+    font-size: 0.6rem;
+    font-weight: 700;
+  }
+
+  /* Success state */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .success-state.visible { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-state .icon-wrap {
+    width: 72px;
+    height: 72px;
+    background: var(--green-bg);
+    border: 2px solid var(--green-2);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .success-state h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .success-state .email-line {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .success-state .email-line strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--pearl-2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.88rem;
+  }
+
+  .payment-options {
+    background: var(--pearl-2);
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    text-align: left;
+  }
+
+  .payment-options .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+  }
+
+  .payment-options .opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.9rem;
+    color: var(--ink-2);
+  }
+
+  .payment-options .opt:last-child { border-bottom: none; }
+
+  .payment-options .opt .name {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .payment-options .opt .name .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    background: var(--green-bg);
+    color: var(--green-2);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  /* What you get next */
+  .what-next {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0 0;
+  }
+
+  .what-next h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.65rem;
+    color: var(--ink);
+  }
+
+  .what-next ol {
+    padding-left: 1.25rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .what-next ol li { margin-bottom: 0.4rem; }
+
+  /* Testimonial / proof block */
+  .proof-block {
+    margin: 3rem 0 0;
+    padding: 2rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--green-2);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .proof-block .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+  }
+
+  .proof-block .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 1.45;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .proof-block .attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* FAQ */
+  .faq-section {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 4rem 2.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .faq-section h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 2.5rem;
+  }
+
+  .faq-section h2 em { font-style: italic; color: var(--green-2); }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .faq-item {
+    border-top: 1px solid var(--ink);
+    padding-top: 1.25rem;
+  }
+
+  .faq-item h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.65rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .faq-item p {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 1024px) {
+    .signup-shell { grid-template-columns: 1fr; gap: 2.5rem; padding: 2.5rem 1.5rem; }
+    .signup-hero h1 { font-size: 2.5rem; }
+    .signup-hero .deck { font-size: 1.1rem; }
+    .signup-card { position: static; padding: 1.75rem; }
+    .faq-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .faq-section { padding: 3rem 1.5rem; }
+    .faq-section h2 { font-size: 1.85rem; }
+  }
+
+  @media (max-width: 640px) {
+    .price-block { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .price-block .price { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="signup.html" class="nav-cta active">Get the Playbook</a>
+  </nav>
+</header>
+
+<div class="signup-shell">
+
+  <!-- LEFT: HERO + WHAT'S INCLUDED -->
+  <section class="signup-hero">
+    <div class="eyebrow"><span class="num">№ 01</span>The Implementation Playbook</div>
+    <h1>Stop <em>understanding</em>. Start <em>executing</em>.</h1>
+    <p class="deck">The free guide explains the strategy. The playbook gives you everything you need to actually build it — corporate structures, lender shortlists, brokerage rankings, tax templates, and exit-planning frameworks.</p>
+
+    <div class="price-block">
+      <div class="price">$97</div>
+      <div class="price-meta">
+        <div class="lbl">One-time payment</div>
+        <div class="name">The Implementation Playbook</div>
+        <div class="sub">Lifetime access · Free updates · Money-back guarantee</div>
+      </div>
+    </div>
+
+    <div class="what-included">
+      <h3>What you get</h3>
+      <ul class="included-list">
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Corporate Structure Decision Framework</strong> — LLC vs S-Corp vs C-Corp, with state-by-state tax implications and the recommended choice for typical scenarios.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>The Lender Shortlist</strong> — specific institutions that accept asset-based corporate mortgages, with contact templates and qualification criteria for each.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>The Brokerage Comparison</strong> — corporate margin accounts ranked by margin rate, support for share pledging, and execution quality.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Dividend Stock Selection Framework</strong> — beyond yield: payout ratios, distribution coverage, sector concentration limits, and the screening criteria that separate sustainable income from yield traps.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Tax Optimization Inside the Corp</strong> — depreciation strategies, deductible interest treatment, qualified dividend handling, and the structures that minimize total tax burden.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>The Corporate Exit Advantage</strong> — how selling the corporation rather than the house creates dramatically different tax outcomes, and how to structure for an eventual sale from day one.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Risk Management Protocols</strong> — margin call response procedures, stress-testing framework, when to deleverage, and how to size your cash reserves.</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Templates and Checklists</strong> — corporate formation checklist, lender pitch template, brokerage application notes, monthly operating dashboard.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="proof-block">
+      <div class="label">Why this matters</div>
+      <p class="quote">"The strategy isn't proprietary — sophisticated investors have used variations of it for decades. What's been missing is a single guide that walks an ordinary portfolio holder through actually setting it up. That's the gap the playbook fills."</p>
+      <p class="attr">— sblmortgage.com editorial team</p>
+    </div>
+  </section>
+
+  <!-- RIGHT: SIGNUP CARD -->
+  <aside>
+    <div class="signup-card" id="signupCard">
+
+      <!-- INPUT STATE -->
+      <div id="formState">
+        <div class="label">Step 1 of 2</div>
+        <h2>Reserve <em>your copy</em>.</h2>
+        <p class="subhead">Enter your details to lock in your purchase. You'll be sent to the secure payment page next.</p>
+
+        <form id="signupForm" onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="form-summary">
+            <div class="row"><span>Implementation Playbook</span><span class="val">$97.00</span></div>
+            <div class="row"><span>Lifetime updates</span><span class="val">included</span></div>
+            <div class="row total"><span>Total today</span><span class="val">$97.00</span></div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            Continue to payment <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
+          </button>
+
+          <p class="form-fineprint">
+            By continuing, you agree to the <a href="#">terms</a> and <a href="#">privacy policy</a>. Your purchase is backed by a 30-day money-back guarantee.
+          </p>
+
+          <div class="secure-row">
+            <span class="icon"></span>
+            Secure payment processing
+          </div>
+        </form>
+      </div>
+
+      <!-- SUCCESS STATE (placeholder for the redirect-to-payment flow) -->
+      <div class="success-state" id="successState">
+        <div class="icon-wrap">✓</div>
+        <h3>You're on the list.</h3>
+        <p class="email-line">We've reserved your copy and sent a confirmation to <strong id="confirmEmail">you@example.com</strong>.</p>
+
+        <div class="payment-options">
+          <div class="lbl">Choose how to pay — $97</div>
+          <div class="opt">
+            <span class="name">Credit / Debit Card <span class="badge">Recommended</span></span>
+            <span style="color: var(--muted); font-size: 0.8rem;">→</span>
+          </div>
+          <div class="opt">
+            <span class="name">Apple Pay</span>
+            <span style="color: var(--muted); font-size: 0.8rem;">→</span>
+          </div>
+          <div class="opt">
+            <span class="name">PayPal</span>
+            <span style="color: var(--muted); font-size: 0.8rem;">→</span>
+          </div>
+          <div class="opt">
+            <span class="name">Bank Transfer (ACH)</span>
+            <span style="color: var(--muted); font-size: 0.8rem;">→</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem;">
+          Once your payment processor is connected, this is where customers will be routed to your live checkout (Stripe, Lemon Squeezy, Gumroad, etc.). For now, this is a working email-capture placeholder.
+        </p>
+
+        <button class="submit-btn" onclick="resetForm()" style="background: transparent; color: var(--ink); border: 1px solid var(--rule);">
+          ← Use a different email
+        </button>
+
+        <div class="what-next">
+          <h4>What happens next</h4>
+          <ol>
+            <li>You'll get an email with the playbook download links</li>
+            <li>You're added to the implementation cohort</li>
+            <li>You receive lifetime free updates as the playbook evolves</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="eyebrow"><span class="num">№ 02</span>Common Questions</div>
+  <h2>Things you're probably <em>wondering</em>.</h2>
+
+  <div class="faq-grid">
+    <div class="faq-item">
+      <h4>Is this financial advice?</h4>
+      <p>No. This is educational content explaining a strategy used by sophisticated investors. Before implementing anything, you should consult a licensed financial advisor, tax professional, and attorney familiar with your specific situation and jurisdiction.</p>
+    </div>
+    <div class="faq-item">
+      <h4>How is this different from a HELOC or margin loan?</h4>
+      <p>HELOCs use home equity as collateral; margin loans typically fund stock trading. The Corporate Dividend Mortgage™ inverts the pattern — the stock funds the home, inside a corporate wrapper that creates structural and tax advantages neither traditional product offers.</p>
+    </div>
+    <div class="faq-item">
+      <h4>How much capital do I need to start?</h4>
+      <p>The classic case study uses $200,000 total ($100K down payment shares + $100K additional capital). The strategy scales down — it works at $50K, just for smaller properties. The calculator on the site lets you test your specific situation.</p>
+    </div>
+    <div class="faq-item">
+      <h4>What if margin rates rise?</h4>
+      <p>This is the single most important risk. The strategy depends on dividend yield exceeding margin cost. If margin rates climb above your dividend yield, the leverage works against you. The playbook covers stress-testing for rate shocks in detail.</p>
+    </div>
+    <div class="faq-item">
+      <h4>What happens if I want to sell the house?</h4>
+      <p>Because the corporation owns everything, you have an additional exit route most homeowners don't: you can sell the <em>corporation</em> rather than just the house. The buyer acquires both the home and any retained portfolio. This typically creates better tax treatment and can fetch a premium. The playbook walks through both exit modes.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Is there a guarantee?</h4>
+      <p>Yes. If the playbook isn't worth $97 to you within 30 days of purchase, email us and we'll refund. No friction, no questions, no awkwardness.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="col">
+      <a href="index.html" class="brand" style="margin-bottom: 1rem;">
+        <div class="brand-mark">SBL</div>
+        <div class="brand-text">
+          <div class="name">sblmortgage<span class="tld">.com</span></div>
+          <div class="sub">Corporate Dividend Mortgage™</div>
+        </div>
+      </a>
+      <p class="tagline">A modern approach to home financing. Built for portfolio holders. Powered by dividends.</p>
+    </div>
+    <div class="col">
+      <h4>Strategy</h4>
+      <a href="index.html">How it works</a>
+      <a href="ebook-free.html">The free guide</a>
+      <a href="signup.html">The playbook</a>
+    </div>
+    <div class="col">
+      <h4>Tools</h4>
+      <a href="calculator.html">Calculator</a>
+      <a href="signup.html">Get notified</a>
+    </div>
+    <div class="col">
+      <h4>Legal</h4>
+      <a href="#">Disclosures</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice. Securities lending involves risk including potential loss of pledged assets.
+  </div>
+</footer>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const name = document.getElementById('name').value;
+  const btn = document.getElementById('submitBtn');
+
+  btn.textContent = 'Reserving...';
+  btn.disabled = true;
+
+  // Simulate the submission — in production, replace with real API call
+  // to your CRM/email tool, then redirect to Stripe / Lemon Squeezy / etc.
+  setTimeout(() => {
+    document.getElementById('confirmEmail').textContent = email;
+    document.getElementById('formState').style.display = 'none';
+    document.getElementById('successState').classList.add('visible');
+
+    // Smooth scroll to top of card on mobile
+    document.getElementById('signupCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // === REPLACE WITH ACTUAL PAYMENT REDIRECT ===
+    // Example: window.location.href = `https://buy.stripe.com/yourLink?email=${encodeURIComponent(email)}`;
+    // Or:      window.location.href = `https://yourbrand.lemonsqueezy.com/checkout/buy/PRODUCT_ID?checkout[email]=${encodeURIComponent(email)}`;
+    // ============================================
+
+    btn.textContent = 'Continue to payment →';
+    btn.disabled = false;
+  }, 600);
+}
+
+function resetForm() {
+  document.getElementById('signupForm').reset();
+  document.getElementById('successState').classList.remove('visible');
+  document.getElementById('formState').style.display = 'block';
+}
+</script>
+
+</body>
+</html>

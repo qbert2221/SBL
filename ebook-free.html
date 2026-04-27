@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Free Guide — How Alex Bought a House Without a Paycheck | SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Ebook-specific styles */
+  .ebook-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .ebook-toc {
+    border-right: 1px solid var(--rule);
+    padding: 3rem 2rem 3rem 2.5rem;
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  .ebook-toc::-webkit-scrollbar { width: 6px; }
+  .ebook-toc::-webkit-scrollbar-track { background: transparent; }
+  .ebook-toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  .ebook-toc .toc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .ebook-toc .toc-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .ebook-toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    padding: 0.45rem 0;
+    color: var(--ink-2);
+    font-size: 0.85rem;
+    line-height: 1.35;
+    transition: color 0.2s;
+  }
+
+  .ebook-toc a:hover {
+    color: var(--green-2);
+  }
+
+  .ebook-toc a .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    width: 22px;
+  }
+
+  .ebook-toc a:hover .num {
+    color: var(--green-2);
+  }
+
+  .ebook-toc-section {
+    margin-bottom: 2rem;
+  }
+
+  .ebook-toc-section h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .ebook-main {
+    padding: 4rem 4rem 6rem;
+    max-width: 800px;
+  }
+
+  .ebook-cover {
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .ebook-cover .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 1.5rem;
+  }
+
+  .ebook-cover h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 4rem;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .ebook-cover h1 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .ebook-cover .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--ink-2);
+    line-height: 1.4;
+    max-width: 580px;
+    margin-bottom: 2rem;
+    letter-spacing: -0.012em;
+  }
+
+  .ebook-cover .author-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Chapter styles */
+  .chapter {
+    padding-top: 3rem;
+    margin-bottom: 4rem;
+    scroll-margin-top: 90px;
+  }
+
+  .chapter-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--green-2);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .chapter h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 1.75rem;
+  }
+
+  .chapter h2 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .chapter h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.012em;
+  }
+
+  .chapter p {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin-bottom: 1.15rem;
+  }
+
+  .chapter p strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .chapter p em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .chapter .first-para::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 4.2rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.1em 0.12em 0 0;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* Math box */
+  .math-box {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--green-2);
+    padding: 1.5rem 1.75rem;
+    margin: 1.5rem 0 2rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .math-box .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .math-box .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .math-box .formula .equals {
+    color: var(--green-2);
+    font-weight: 600;
+    margin: 0 0.4rem;
+  }
+
+  .math-box .formula .result {
+    color: var(--green-2);
+    font-weight: 600;
+  }
+
+  /* Pull quote */
+  .pull-quote {
+    margin: 3rem 0;
+    padding: 0 0 0 2rem;
+    border-left: 3px solid var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.65rem;
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    max-width: 620px;
+  }
+
+  /* Step block (for the 11 steps) */
+  .step-block {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .step-block .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 2.5rem;
+    color: var(--green-2);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 48px;
+    font-weight: 500;
+  }
+
+  .step-block .body h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.012em;
+  }
+
+  .step-block .body p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 0;
+  }
+
+  /* Visual flow inline */
+  .visual-flow {
+    background: var(--ink);
+    color: var(--pearl);
+    padding: 2rem;
+    border-radius: 6px;
+    margin: 2rem 0 2.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  .visual-flow .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .visual-flow .row:last-child { margin-bottom: 0; }
+
+  .visual-flow .box {
+    background: rgba(247, 245, 239, 0.08);
+    border: 1px solid rgba(247, 245, 239, 0.2);
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    min-width: 130px;
+  }
+
+  .visual-flow .box.green { background: rgba(107, 155, 126, 0.15); border-color: rgba(107, 155, 126, 0.3); }
+  .visual-flow .box.red { background: rgba(154, 63, 28, 0.15); border-color: rgba(154, 63, 28, 0.3); }
+  .visual-flow .box.gold { background: rgba(184, 153, 104, 0.15); border-color: rgba(184, 153, 104, 0.3); }
+
+  .visual-flow .box .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.65);
+    margin-bottom: 0.3rem;
+  }
+
+  .visual-flow .box .val {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--pearl);
+  }
+
+  .visual-flow .op {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: rgba(247, 245, 239, 0.5);
+  }
+
+  /* Reading progress bar */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(13, 31, 21, 0.05);
+    z-index: 200;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--green-2);
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* Sticky CTA */
+  .ebook-cta {
+    margin-top: 4rem;
+    padding: 3rem;
+    background: var(--ink);
+    color: var(--pearl);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ebook-cta::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(107, 155, 126, 0.4), transparent 70%);
+    pointer-events: none;
+  }
+
+  .ebook-cta .content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ebook-cta .eyebrow {
+    color: var(--green-light);
+  }
+
+  .ebook-cta h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.3rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .ebook-cta h2 em { font-style: italic; color: var(--green-light); }
+
+  .ebook-cta p {
+    color: rgba(247, 245, 239, 0.85);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .ebook-cta .btn-primary {
+    background: var(--pearl);
+    color: var(--ink);
+    border-color: var(--pearl);
+  }
+
+  .ebook-cta .btn-primary:hover {
+    background: var(--green-light);
+    border-color: var(--green-light);
+  }
+
+  /* Mobile TOC */
+  .toc-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    z-index: 200;
+    box-shadow: 0 6px 20px var(--shadow-strong);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    .ebook-shell { grid-template-columns: 1fr; }
+    .ebook-toc {
+      position: fixed;
+      top: 73px;
+      left: 0;
+      width: 280px;
+      height: calc(100vh - 73px);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 150;
+      border-right: 1px solid var(--ink);
+      box-shadow: 4px 0 20px var(--shadow-strong);
+    }
+    .ebook-toc.open { transform: translateX(0); }
+    .ebook-main { padding: 2.5rem 1.5rem 4rem; }
+    .ebook-cover h1 { font-size: 2.5rem; }
+    .ebook-cover .deck { font-size: 1.15rem; }
+    .chapter h2 { font-size: 1.85rem; }
+    .pull-quote { font-size: 1.3rem; padding-left: 1.25rem; }
+    .toc-toggle { display: flex; align-items: center; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html" class="active">Free Guide</a>
+    <a href="signup.html" class="nav-cta">Get the Playbook</a>
+  </nav>
+</header>
+
+<button class="toc-toggle" onclick="toggleToc()">CHAPTERS</button>
+
+<div class="ebook-shell">
+
+  <aside class="ebook-toc" id="ebookToc">
+    <div class="toc-label">The Free Guide</div>
+    <div class="toc-title">How Alex Bought a House Without a Paycheck</div>
+
+    <div class="ebook-toc-section">
+      <h5>Front Matter</h5>
+      <a href="#prologue"><span class="num">—</span><span>Prologue: The Old Way</span></a>
+      <a href="#meet-alex"><span class="num">—</span><span>Meet Alex</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5>Part I — The Setup</h5>
+      <a href="#step-1"><span class="num">i.</span><span>The Corporation</span></a>
+      <a href="#step-2"><span class="num">ii.</span><span>The Down Payment Shares</span></a>
+      <a href="#step-3"><span class="num">iii.</span><span>Additional Capital</span></a>
+      <a href="#step-4"><span class="num">iv.</span><span>The Leverage Decision</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5>Part II — The Math</h5>
+      <a href="#step-5"><span class="num">v.</span><span>Calculating Dividends</span></a>
+      <a href="#step-6"><span class="num">vi.</span><span>The Cost of Borrowing</span></a>
+      <a href="#step-7"><span class="num">vii.</span><span>Net Dividend Income</span></a>
+      <a href="#step-8"><span class="num">viii.</span><span>The Mortgage Payment</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5>Part III — The Outcome</h5>
+      <a href="#step-9"><span class="num">ix.</span><span>The Monthly Flow</span></a>
+      <a href="#step-10"><span class="num">x.</span><span>The Coverage Ratio</span></a>
+      <a href="#step-11"><span class="num">xi.</span><span>The Mindset Shift</span></a>
+    </div>
+
+    <div class="ebook-toc-section">
+      <h5>End Matter</h5>
+      <a href="#recap"><span class="num">—</span><span>The Recap</span></a>
+      <a href="#whats-next"><span class="num">—</span><span>What's Next</span></a>
+    </div>
+  </aside>
+
+  <main class="ebook-main">
+
+    <!-- COVER -->
+    <div class="ebook-cover">
+      <div class="meta">The Free Guide · Vol. I</div>
+      <h1>How Alex Bought a House <em>Without a Paycheck</em></h1>
+      <p class="deck">A complete walkthrough of the Corporate Dividend Mortgage™ — explained from the ground up, in eleven steps, with real numbers.</p>
+      <div class="author-line">
+        <span>sblmortgage.com</span>
+        <span>~ 22 min read · Free</span>
+      </div>
+    </div>
+
+    <!-- PROLOGUE -->
+    <section class="chapter" id="prologue">
+      <div class="chapter-num">PROLOGUE</div>
+      <h2>The <em>old way</em> is exhausting.</h2>
+      <p class="first-para">Most people think about buying a house the way their parents did. <strong>Work hard. Save up. Hand the bank a six-figure down payment. Then spend the next thirty years sending two thousand dollars a month from your paycheck back to that same bank.</strong> This is the path most people take because it's the only one anyone ever explained to them.</p>
+
+      <p>It works. People have built lives this way for generations. But it has one massive cost that almost nobody names: <em>your home becomes the thing you're working for, not the thing that's working for you</em>. Every paycheck arrives, and a meaningful chunk of it walks straight back out the door to service the mortgage. Year after year. Decade after decade.</p>
+
+      <p>This guide explains a different approach — one that's been used quietly by sophisticated investors and family offices for years, but that's only recently become accessible to ordinary portfolio holders. It's called the <strong>Corporate Dividend Mortgage™</strong>. The premise is simple: <em>your portfolio should be paying your mortgage, not your salary</em>.</p>
+
+      <p>To explain how it works, we'll follow a single character — <strong>Alex</strong> — through every step of the process. Real numbers. No abstractions. By the end, you'll know exactly what's happening, why it works, and whether it might apply to your own situation.</p>
+
+      <div class="pull-quote">
+        "You're not financing your home with sweat. You're financing it with capital."
+      </div>
+    </section>
+
+    <!-- MEET ALEX -->
+    <section class="chapter" id="meet-alex">
+      <div class="chapter-num">INTRODUCTION</div>
+      <h2>Meet <em>Alex</em>.</h2>
+      <p class="first-para">Alex wants to buy a house. Specifically, a <strong>$450,000</strong> home in a market they like. They have a portfolio of dividend-paying stocks accumulated over years of saving and investing. They have a job, but they don't want to <em>need</em> their job to make this purchase work. They want the house to take care of itself.</p>
+
+      <p>Here's what the conventional path would look like for Alex:</p>
+
+      <div class="math-box">
+        <div class="label">The traditional setup</div>
+        <div class="formula">
+          Home price <span class="equals">=</span> $450,000<br>
+          Down payment (20%) <span class="equals">=</span> <span class="result">$90,000 in cash</span><br>
+          Loan amount <span class="equals">=</span> $360,000<br>
+          Interest rate <span class="equals">=</span> 5.98% over 30 years<br>
+          Monthly payment <span class="equals">=</span> <span class="result">~$2,094 every month</span>
+        </div>
+      </div>
+
+      <p>So Alex would liquidate $90,000 from somewhere (savings, investments, family help), give it to the bank, and then work for the next thirty years to service that $2,094 monthly payment. The total interest they'd pay over the life of the loan: <strong>about $394,000</strong>. More than the original loan amount. <em>Just for the privilege of borrowing it</em>.</p>
+
+      <p>Now let's look at what Alex actually does instead.</p>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="chapter" id="step-1">
+      <div class="chapter-num">STEP I — PART I: THE SETUP</div>
+      <h2>Alex creates a <em>corporation</em>.</h2>
+      <p class="first-para">Instead of buying the home in their own name, Alex forms a special-purpose corporation. This is similar to how businesses purchase commercial real estate — the property goes into a corporate entity, not into a personal name. The corporation is a separate legal "person" that <strong>holds the title, applies for the mortgage, and operates the brokerage account</strong> that will eventually fund everything.</p>
+
+      <p>Why does this matter? Because once the corporation owns everything, Alex can use <em>investment capital</em> instead of W-2 income to qualify for and service the loan. Banks are perfectly happy to lend to corporations that demonstrate they can service the debt — it just looks different from a personal mortgage. There are also significant downstream advantages: tax treatment, asset protection, and a much more flexible exit at the end (which we'll cover in Step 11).</p>
+
+      <div class="step-block">
+        <div class="num">i.</div>
+        <div class="body">
+          <h4>The corporation does three jobs</h4>
+          <p>It satisfies the down payment requirement (with stock, not cash). It satisfies the lender's creditworthiness check (with assets, not salary). It services the monthly mortgage (with dividends, not paychecks).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="chapter" id="step-2">
+      <div class="chapter-num">STEP II</div>
+      <h2>The stock that becomes the <em>down payment</em>.</h2>
+      <p class="first-para">Inside the corporation, Alex sets up a brokerage account. They identify a high-quality dividend-paying stock — let's say something like a stable REIT — that fits these characteristics: <strong>$10 per share, paying $0.12 per share monthly in dividends</strong>. That's a 14.4% annual dividend yield, which is on the high end but realistic for certain REITs and BDCs.</p>
+
+      <p>Alex purchases <strong>10,000 shares</strong>. Total value: <em>$100,000</em>. This block of shares becomes the down payment collateral for the mortgage. In a traditional setup, Alex would give the bank $90,000 in cash. Here, Alex gives the bank $100,000 in stock — pledged as collateral against the loan.</p>
+
+      <div class="math-box">
+        <div class="label">The down payment block</div>
+        <div class="formula">
+          Stock price <span class="equals">=</span> $10.00 per share<br>
+          Shares purchased <span class="equals">=</span> 10,000<br>
+          Total value pledged <span class="equals">=</span> <span class="result">$100,000</span><br>
+          Monthly dividend per share <span class="equals">=</span> $0.12<br>
+          Monthly dividends generated <span class="equals">=</span> <span class="result">$1,200</span>
+        </div>
+      </div>
+
+      <p>The key insight: <em>those 10,000 shares are not just sitting there as dead collateral</em>. They continue paying dividends every month. From the very first month, the corporation is collecting $1,200 in passive income from the down payment alone — money the bank has zero claim on, since dividends are returns to the shareholder, not the lender.</p>
+
+      <p>These shares cannot be leveraged — they function as the locked equity that makes the bank comfortable. But they pay dividends, and that matters.</p>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="chapter" id="step-3">
+      <div class="chapter-num">STEP III</div>
+      <h2>Adding <em>additional capital</em>.</h2>
+      <p class="first-para">Now Alex doesn't stop at the down payment shares. They contribute <strong>$100,000 in additional capital</strong> to the corporation — separate from the down payment block. This second pool of money is destined for a different job: it's going to power the <em>dividend engine</em> that pays the mortgage every month.</p>
+
+      <p>This additional capital sits in the corporate brokerage account, where it can be deployed strategically. Unlike the down payment shares, this additional capital <strong>can be leveraged</strong> by the broker — meaning the corporation can borrow against it to buy more shares than the cash alone would purchase. We'll see exactly how that works in Step 4.</p>
+
+      <p>If you don't have an additional $100,000 lying around, that's fine — the strategy still works on a smaller scale. But the larger the additional capital, the more powerful the dividend engine becomes. And every additional dollar above the down payment block can be amplified through leverage.</p>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="chapter" id="step-4">
+      <div class="chapter-num">STEP IV</div>
+      <h2>The <em>leverage</em> decision.</h2>
+      <p class="first-para">Inside the corporate brokerage account, Alex chooses to deploy the additional $100,000 with <strong>2× leverage</strong>. What this means in practice: the broker lends Alex an additional $100,000 against the original $100,000, giving the corporation <em>$200,000 in total buying power</em>.</p>
+
+      <div class="math-box">
+        <div class="label">The leverage math</div>
+        <div class="formula">
+          Capital contributed <span class="equals">=</span> $100,000<br>
+          Leverage multiplier <span class="equals">=</span> 2.0×<br>
+          Buying power <span class="equals">=</span> $100,000 × 2.0 <span class="equals">=</span> <span class="result">$200,000</span><br>
+          Borrowed from broker <span class="equals">=</span> $100,000<br>
+          Shares purchased <span class="equals">=</span> $200,000 ÷ $10 <span class="equals">=</span> <span class="result">20,000 shares</span>
+        </div>
+      </div>
+
+      <p>So now the corporation holds <strong>two separate share blocks</strong>: 10,000 unleveraged shares from the down payment, plus 20,000 leveraged shares from the additional capital. Total holdings: <em>30,000 shares</em>, all generating dividends every month.</p>
+
+      <div class="pull-quote">
+        "Leverage isn't free. But when dividend yield exceeds margin cost, the math works in your favor."
+      </div>
+
+      <p>Most practitioners use leverage in the range of <strong>1.5× to 2.5×</strong> — enough to meaningfully amplify dividend income without taking excessive risk. Going to 3× is possible but considered aggressive; going below 1.5× often doesn't generate enough income to make the strategy work. The "sweet spot" depends entirely on your specific dividend yield, margin rate, and risk tolerance — which is exactly what the calculator helps you optimize.</p>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="chapter" id="step-5">
+      <div class="chapter-num">STEP V — PART II: THE MATH</div>
+      <h2>Calculating the <em>dividend income</em>.</h2>
+      <p class="first-para">With 30,000 total shares — each paying $0.12 monthly — the corporation generates substantial passive income each month. Let's break it down by share block, because the two blocks have very different economic characteristics.</p>
+
+      <div class="math-box">
+        <div class="label">Monthly dividend income, by block</div>
+        <div class="formula">
+          Down payment shares: 10,000 × $0.12 <span class="equals">=</span> <span class="result">$1,200</span><br>
+          Leveraged shares: 20,000 × $0.12 <span class="equals">=</span> <span class="result">$2,400</span><br>
+          ─────────────────────────────<br>
+          Total gross monthly dividends <span class="equals">=</span> <span class="result">$3,600</span>
+        </div>
+      </div>
+
+      <p>Three thousand six hundred dollars per month, just from owning the right stock in the right structure. But we're not done — this is the <strong>gross</strong> figure, before we account for the cost of the leverage itself.</p>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="chapter" id="step-6">
+      <div class="chapter-num">STEP VI</div>
+      <h2>The cost of <em>borrowed money</em>.</h2>
+      <p class="first-para">Leverage is never free. The broker who lent the corporation $100,000 to buy the additional shares charges <strong>margin interest</strong> on that loan. The current rate is typically around <em>7% annually</em>, though this fluctuates with market conditions.</p>
+
+      <div class="math-box">
+        <div class="label">Margin interest cost</div>
+        <div class="formula">
+          Borrowed amount <span class="equals">=</span> $100,000<br>
+          Annual margin rate <span class="equals">=</span> 7.00%<br>
+          Annual interest cost <span class="equals">=</span> $100,000 × 0.07 <span class="equals">=</span> $7,000<br>
+          Monthly interest cost <span class="equals">=</span> $7,000 ÷ 12 <span class="equals">=</span> <span class="result">$583</span>
+        </div>
+      </div>
+
+      <p>So $583 of the gross dividend income each month is consumed by interest on the borrowed funds. <em>This is not a problem — it's a cost</em>, and it's already factored into the strategy. The whole approach works because the dividend yield (14.4%) is meaningfully higher than the margin rate (7%) — that <strong>positive spread</strong> is the source of the leverage advantage.</p>
+
+      <p>If the margin rate ever climbed above the dividend yield, the leverage would start working <em>against</em> Alex — every borrowed dollar would cost more in interest than it earned in dividends. This is the single most important risk factor to monitor in this strategy.</p>
+    </section>
+
+    <!-- STEP 7 -->
+    <section class="chapter" id="step-7">
+      <div class="chapter-num">STEP VII</div>
+      <h2>Net <em>dividend income</em>.</h2>
+      <p class="first-para">Subtracting the margin cost from the gross dividend income gives us the <strong>net monthly dividend</strong> — the actual usable cash that the corporation has to work with each month.</p>
+
+      <div class="math-box">
+        <div class="label">Net monthly dividend</div>
+        <div class="formula">
+          Gross dividends <span class="equals">=</span> $3,600<br>
+          Less margin interest <span class="equals">=</span> ($583)<br>
+          ─────────────────────────────<br>
+          Net monthly dividend <span class="equals">=</span> <span class="result">$3,017</span>
+        </div>
+      </div>
+
+      <p><em>Three thousand seventeen dollars</em>. Every month. Sitting in the corporation's bank account, ready to be deployed. This is the <strong>income engine</strong> — the heart of the entire strategy. Whatever gets paid out of this number determines whether the structure self-funds.</p>
+    </section>
+
+    <!-- STEP 8 -->
+    <section class="chapter" id="step-8">
+      <div class="chapter-num">STEP VIII</div>
+      <h2>The <em>mortgage payment</em>.</h2>
+      <p class="first-para">Now we bring the house back into the story. Recall the loan terms: $360,000 borrowed at 5.98% over 30 years. Running that through a standard amortization formula gives a fixed monthly payment of <strong>$2,094</strong>. This is what the bank wants every month, on the same day, for the next 360 months.</p>
+
+      <div class="math-box">
+        <div class="label">Monthly mortgage obligation</div>
+        <div class="formula">
+          Loan amount <span class="equals">=</span> $360,000<br>
+          Interest rate <span class="equals">=</span> 5.98% APR<br>
+          Loan term <span class="equals">=</span> 30 years (360 payments)<br>
+          Monthly P&I payment <span class="equals">=</span> <span class="result">$2,094</span>
+        </div>
+      </div>
+
+      <p>In the traditional setup, this $2,094 comes out of Alex's paycheck every month. <strong>It does not, in this structure</strong>. The corporation pays the mortgage, using the dividend income we just calculated.</p>
+    </section>
+
+    <!-- STEP 9 -->
+    <section class="chapter" id="step-9">
+      <div class="chapter-num">STEP IX — PART III: THE OUTCOME</div>
+      <h2>The <em>monthly flow</em>.</h2>
+      <p class="first-para">Every month, three things happen inside the corporation, in sequence. The dividend engine generates income. The broker takes its margin interest. The remaining cash pays the mortgage. Whatever's left over becomes corporate profit.</p>
+
+      <div class="visual-flow">
+        <div class="row">
+          <div class="box green">
+            <div class="label">Dividend Income</div>
+            <div class="val">+$3,600</div>
+          </div>
+          <div class="op">−</div>
+          <div class="box red">
+            <div class="label">Margin Interest</div>
+            <div class="val">$583</div>
+          </div>
+          <div class="op">−</div>
+          <div class="box red">
+            <div class="label">Mortgage P&I</div>
+            <div class="val">$2,094</div>
+          </div>
+          <div class="op">=</div>
+          <div class="box gold">
+            <div class="label">Corp Surplus</div>
+            <div class="val">$923</div>
+          </div>
+        </div>
+      </div>
+
+      <p>So the actual monthly flow inside the corporation looks like this: <strong>$3,600 in</strong>, <strong>$2,677 out</strong> (margin + mortgage), <strong>$923 left over</strong>. That $923 stays in the corporate account. It can be reinvested into more dividend stock, used to pay down mortgage principal faster, held as a cash reserve, or eventually distributed to Alex as the shareholder.</p>
+
+      <p>The most important thing about this monthly flow: <em>Alex's paycheck is not in the picture anywhere</em>. The bank gets paid. The broker gets paid. The corporation gets a profit. Alex's salary is doing whatever Alex's salary does — funding their life, building other investments, or sitting in a savings account. The mortgage is simply not its problem.</p>
+    </section>
+
+    <!-- STEP 10 -->
+    <section class="chapter" id="step-10">
+      <div class="chapter-num">STEP X</div>
+      <h2>The <em>coverage ratio</em>.</h2>
+      <p class="first-para">There's a single number that tells you whether this whole strategy is working: the <strong>coverage ratio</strong>. It's the percentage of the mortgage payment that the dividend income covers. Above 100% means the dividends fully fund the mortgage. Below 100% means there's a shortfall to cover from somewhere else.</p>
+
+      <div class="math-box">
+        <div class="label">Coverage ratio calculation</div>
+        <div class="formula">
+          Net dividend income <span class="equals">=</span> $3,017<br>
+          Mortgage payment <span class="equals">=</span> $2,094<br>
+          Coverage <span class="equals">=</span> $3,017 ÷ $2,094 <span class="equals">=</span> <span class="result">144%</span>
+        </div>
+      </div>
+
+      <p>One hundred and forty-four percent. That means the dividends generate <em>44% more income than the mortgage requires</em>. Every month, after the mortgage is fully paid and the broker is fully paid, the corporation still has 44% of the mortgage payment as pure surplus — about <strong>$923 monthly</strong>, or roughly $11,000 annually, accumulating inside the structure.</p>
+
+      <p>Most experienced practitioners aim for <strong>120-150% coverage</strong>. Below 120% leaves too little cushion against adverse scenarios (a dividend cut, a margin rate increase, an unexpected expense). Above 150% suggests you might be over-collateralized and could redirect some capital elsewhere. Alex's 144% sits squarely in the optimal range.</p>
+    </section>
+
+    <!-- STEP 11 -->
+    <section class="chapter" id="step-11">
+      <div class="chapter-num">STEP XI</div>
+      <h2>The <em>mindset shift</em>.</h2>
+      <p class="first-para">The math is the easy part. The harder thing — and the part most people miss — is the <strong>conceptual reframing</strong> that this strategy requires. Most people think of a house as a thirty-year obligation that consumes income. In this model, the house is just an asset that the corporation owns, and the corporation has a separate income stream that handles its expenses.</p>
+
+      <div class="pull-quote">
+        "Most people say: 'I buy a house, then I grind 30 years to pay it off.' This says: 'I own investments that throw off enough cash to pay for a house — and then some.'"
+      </div>
+
+      <p>Once you see it this way, a lot of other things become possible. You're no longer constrained by your income when buying property — you're constrained by your portfolio's productive capacity. Alex's $200,000 of total contributed capital is now controlling a $450,000 home and a $300,000 stock portfolio (after leverage), generating thousands per month in passive income, building equity in two assets simultaneously, all without consuming a dollar of W-2 earnings.</p>
+
+      <p>This is what we mean by "your portfolio works the job so you don't have to." It's not a slogan — it's a literal description of what's happening every month inside the corporation.</p>
+    </section>
+
+    <!-- RECAP -->
+    <section class="chapter" id="recap">
+      <div class="chapter-num">END MATTER</div>
+      <h2>The whole story, in <em>one breath</em>.</h2>
+      <p class="first-para">Here is the complete strategy in eleven sentences, one per step. If you understand these eleven sentences, you understand <strong>every essential element</strong> of the Corporate Dividend Mortgage™. Everything else is implementation detail.</p>
+
+      <div style="margin: 2rem 0;">
+        <div class="step-block"><div class="num">1.</div><div class="body"><p>Alex forms a corporation that will own the house and run the brokerage account.</p></div></div>
+        <div class="step-block"><div class="num">2.</div><div class="body"><p>The corporation buys 10,000 shares of dividend-paying stock at $10 each — $100,000 total — and pledges this as the down payment collateral.</p></div></div>
+        <div class="step-block"><div class="num">3.</div><div class="body"><p>Alex contributes another $100,000 of capital to the corporation as additional working capital.</p></div></div>
+        <div class="step-block"><div class="num">4.</div><div class="body"><p>That $100,000 is leveraged 2× by the broker, giving $200,000 of buying power to purchase 20,000 more shares.</p></div></div>
+        <div class="step-block"><div class="num">5.</div><div class="body"><p>The corporation now holds 30,000 shares total, generating $3,600 per month in gross dividends.</p></div></div>
+        <div class="step-block"><div class="num">6.</div><div class="body"><p>The broker charges 7% annual interest on the $100,000 it lent — about $583 per month.</p></div></div>
+        <div class="step-block"><div class="num">7.</div><div class="body"><p>After paying margin interest, the corporation has $3,017 per month in net dividend income.</p></div></div>
+        <div class="step-block"><div class="num">8.</div><div class="body"><p>The mortgage on the $450,000 home is $2,094 per month over 30 years at 5.98%.</p></div></div>
+        <div class="step-block"><div class="num">9.</div><div class="body"><p>The corporation pays the mortgage from its dividend income — $923 left over each month as profit.</p></div></div>
+        <div class="step-block"><div class="num">10.</div><div class="body"><p>The dividends cover the mortgage at 144% — strong, sustainable coverage with built-in cushion.</p></div></div>
+        <div class="step-block"><div class="num">11.</div><div class="body"><p>Alex's paycheck stays untouched. The portfolio works the job. The house pays for itself.</p></div></div>
+      </div>
+    </section>
+
+    <!-- WHAT'S NEXT -->
+    <section class="chapter" id="whats-next">
+      <div class="chapter-num">CONCLUSION</div>
+      <h2>What this guide <em>doesn't</em> cover.</h2>
+      <p class="first-para">This free guide gives you the essential mechanics — the structure, the math, and the logic of the Corporate Dividend Mortgage™. It's enough to <strong>understand the strategy</strong>. It's not yet enough to <em>execute</em> it.</p>
+
+      <p>Several critical implementation questions are intentionally beyond the scope of this guide. They include:</p>
+
+      <ul style="padding-left: 1.5rem; margin-bottom: 1.25rem;">
+        <li style="margin-bottom: 0.5rem;"><strong>Which corporate structure to use</strong> — LLC taxed as C-corp vs S-corp vs traditional C-corp, and the tax implications of each in your specific state</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Which lenders accept this structure</strong> — most retail banks won't; a specific subset of private and asset-based lenders will</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Which brokerages support corporate margin accounts</strong> — and crucially, which offer competitive margin rates</li>
+        <li style="margin-bottom: 0.5rem;"><strong>How to select dividend stocks for sustainability</strong> — yield is the easy metric; payout ratio, dividend coverage, and historical consistency matter more</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Tax optimization within the corporate wrapper</strong> — depreciation strategies, deductible expenses, qualified dividend treatment</li>
+        <li style="margin-bottom: 0.5rem;"><strong>The corporate exit advantage</strong> — selling the corporation rather than just the house creates dramatically different tax outcomes for the buyer (and you)</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Risk management</strong> — margin call protocols, stress-testing procedures, when to deleverage, how to structure reserves</li>
+      </ul>
+
+      <p>All of these are covered in depth in the <strong>Implementation Playbook</strong> — our $97 guide that walks you through actually setting this up, step by step, with templates and the lender/brokerage shortlist included. If you've absorbed this free guide and you're ready to move from understanding to executing, the playbook is the next step.</p>
+
+      <div class="ebook-cta">
+        <div class="content">
+          <div class="eyebrow">Continue your education</div>
+          <h2>Get the <em>full implementation playbook</em></h2>
+          <p>Everything this free guide doesn't cover — corporate structure selection, the lender shortlist, the brokerage shortlist, tax optimization within the corp, the corporate exit advantage, risk management protocols, and the complete templates we've used to set this up successfully many times. <strong>$97 one-time</strong>.</p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="signup.html" class="btn btn-primary btn-large">Get the playbook → $97</a>
+            <a href="calculator.html" class="btn btn-secondary">Run the calculator first</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="col">
+      <a href="index.html" class="brand" style="margin-bottom: 1rem;">
+        <div class="brand-mark">SBL</div>
+        <div class="brand-text">
+          <div class="name">sblmortgage<span class="tld">.com</span></div>
+          <div class="sub">Corporate Dividend Mortgage™</div>
+        </div>
+      </a>
+      <p class="tagline">A modern approach to home financing. Built for portfolio holders. Powered by dividends.</p>
+    </div>
+    <div class="col">
+      <h4>Strategy</h4>
+      <a href="index.html">How it works</a>
+      <a href="ebook-free.html">The free guide</a>
+      <a href="signup.html">The playbook</a>
+    </div>
+    <div class="col">
+      <h4>Tools</h4>
+      <a href="calculator.html">Calculator</a>
+      <a href="signup.html">Get notified</a>
+    </div>
+    <div class="col">
+      <h4>Legal</h4>
+      <a href="#">Disclosures</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice. Securities lending involves risk including potential loss of pledged assets.
+  </div>
+</footer>
+
+<script>
+function toggleToc() {
+  document.getElementById('ebookToc').classList.toggle('open');
+}
+
+// Reading progress bar
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+// Close TOC when clicking link on mobile
+document.querySelectorAll('.ebook-toc a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 1024) {
+      document.getElementById('ebookToc').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
