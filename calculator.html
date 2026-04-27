@@ -267,6 +267,145 @@
     .calc-main { padding: 2rem 1.5rem 4rem; }
     .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
   }
+
+  /* PAYWALL OVERLAY */
+  .paywall-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 21, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .paywall-card {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    max-width: 580px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .paywall-card .icon {
+    width: 72px;
+    height: 72px;
+    background: var(--green-bg);
+    border: 2px solid var(--green-2);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .paywall-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.25rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .paywall-card h2 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .paywall-card p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+  }
+
+  .paywall-features {
+    background: var(--pearl-2);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+  }
+
+  .paywall-features .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .paywall-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .paywall-features li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .paywall-features li:last-child {
+    border-bottom: none;
+  }
+
+  .paywall-features li::before {
+    content: '✓';
+    color: var(--green-2);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .paywall-cta {
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    padding: 1.1rem 2rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+  }
+
+  .paywall-cta:hover {
+    background: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+
+  .paywall-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  .paywall-price strong {
+    color: var(--ink);
+    font-size: 1.1rem;
+  }
 </style>
 </head>
 <body>
@@ -286,6 +425,34 @@
     <a href="signup.html" class="nav-cta">Get the Playbook</a>
   </nav>
 </header>
+
+<!-- PAYWALL OVERLAY -->
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-card">
+    <div class="icon">🔒</div>
+    <h2>Unlock the <em>full calculator</em>.</h2>
+    <p>Get unlimited access to all 5 detailed views — Snapshot, Story, Breakdown, 30-Year Projection, and Verdict — plus the complete implementation playbook.</p>
+    
+    <div class="paywall-features">
+      <span class="lbl">Included in the package</span>
+      <ul>
+        <li>Full advanced calculator with unlimited scenarios</li>
+        <li>30-year projection with charts and breakdowns</li>
+        <li>Complete implementation playbook (PDF)</li>
+        <li>Lender shortlist & brokerage comparison</li>
+        <li>Corporate structure templates</li>
+        <li>Lifetime access + free updates</li>
+      </ul>
+    </div>
+
+    <a href="signup.html" class="paywall-cta">
+      Get full access for $97
+      <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
+    </a>
+    
+    <p class="paywall-price">One-time payment · <strong>$97</strong> · 30-day money-back guarantee</p>
+  </div>
+</div>
 
 <button class="sidebar-toggle" onclick="toggleSidebar()">INPUTS</button>
 
