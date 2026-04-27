@@ -990,6 +990,466 @@
     .sbl-lite__stat:first-child { border-right: none; border-bottom: 1px solid rgba(247, 245, 239, 0.12); padding-right: 0; padding-bottom: 0.85rem; margin-bottom: 0.85rem; }
     .sbl-lite__stat:last-child { padding-left: 0; }
   }
+
+  /* =========================================================
+     SBL ADVISOR CONTACT SECTION STYLES
+     ========================================================= */
+  .sbl-advisor {
+    background: var(--pearl-2);
+    color: var(--ink);
+    padding: 4rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .sbl-advisor::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .sbl-advisor::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(184, 153, 104, 0.05), transparent 70%);
+    pointer-events: none;
+  }
+
+  .sbl-advisor__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .sbl-advisor__intro {
+    padding-top: 0.5rem;
+  }
+
+  .sbl-advisor__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .sbl-advisor__eyebrow .num {
+    color: var(--muted);
+    margin-right: 0.5rem;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  .sbl-advisor__title {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.75rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .sbl-advisor__title em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .sbl-advisor__deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin: 0 0 2rem;
+    letter-spacing: -0.01em;
+    max-width: 460px;
+  }
+
+  .sbl-advisor__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  .sbl-advisor__list li {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .sbl-advisor__list li .marker {
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--green-2);
+    font-weight: 600;
+    width: 22px;
+    font-size: 0.95rem;
+  }
+
+  .sbl-advisor__list li strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .sbl-advisor__trust {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sbl-advisor__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sbl-advisor__trust-item .dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green-2);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sbl-advisor__form-wrap {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 8px 28px var(--shadow);
+  }
+
+  .sbl-advisor__form-head {
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .sbl-advisor__form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .sbl-advisor__form-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .sbl-advisor__form-title em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .sbl-advisor__form-sub {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 0.45rem;
+    line-height: 1.5;
+  }
+
+  .sbl-advisor__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .sbl-advisor__field {
+    margin-bottom: 1rem;
+  }
+
+  .sbl-advisor__field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .sbl-advisor__field label .req {
+    color: var(--green-2);
+    margin-left: 2px;
+  }
+
+  .sbl-advisor input[type="text"],
+  .sbl-advisor input[type="email"],
+  .sbl-advisor input[type="tel"],
+  .sbl-advisor select,
+  .sbl-advisor textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.94rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .sbl-advisor input:focus,
+  .sbl-advisor select:focus,
+  .sbl-advisor textarea:focus {
+    border-color: var(--green-2);
+    box-shadow: 0 0 0 3px rgba(31, 74, 50, 0.08);
+  }
+
+  .sbl-advisor input::placeholder,
+  .sbl-advisor textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.65;
+  }
+
+  .sbl-advisor select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231f4a32' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.25rem;
+  }
+
+  .sbl-advisor textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .sbl-advisor__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.5rem 0;
+    margin: 1rem 0;
+    cursor: pointer;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .sbl-advisor__check input[type="checkbox"] {
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--pearl);
+    cursor: pointer;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .sbl-advisor__check input[type="checkbox"]:checked {
+    background: var(--green-2);
+    border-color: var(--green-2);
+  }
+
+  .sbl-advisor__check input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--pearl);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .sbl-advisor__submit {
+    width: 100%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    padding: 1rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.005em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+  }
+
+  .sbl-advisor__submit:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px var(--shadow);
+  }
+
+  .sbl-advisor__submit:disabled {
+    background: var(--rule);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .sbl-advisor__submit-arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  .sbl-advisor__fineprint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .sbl-advisor__fineprint a { color: var(--green-2); text-decoration: none; }
+  .sbl-advisor__fineprint a:hover { text-decoration: underline; }
+
+  .sbl-advisor__success {
+    display: none;
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+  }
+
+  .sbl-advisor__success.visible {
+    display: block;
+    animation: sblFadeIn 0.4s ease;
+  }
+
+  @keyframes sblFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sbl-advisor__success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--green-bg);
+    border: 2px solid var(--green-2);
+    border-radius: 50%;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
+
+  .sbl-advisor__success h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.45rem;
+    font-weight: 500;
+    margin: 0 0 0.6rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .sbl-advisor__success h3 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .sbl-advisor__success p {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 1.25rem;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sbl-advisor__success p strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--pearl-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.82rem;
+  }
+
+  .sbl-advisor__success-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule-soft);
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .sbl-advisor { padding: 3rem 1.25rem; }
+    .sbl-advisor__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .sbl-advisor__title { font-size: 2rem; }
+    .sbl-advisor__deck { font-size: 1.05rem; }
+    .sbl-advisor__form-wrap { padding: 1.75rem; }
+  }
+
+  @media (max-width: 480px) {
+    .sbl-advisor__title { font-size: 1.7rem; }
+    .sbl-advisor__row { grid-template-columns: 1fr; gap: 0; }
+    .sbl-advisor__row .sbl-advisor__field { margin-bottom: 1rem; }
+    .sbl-advisor__trust { gap: 1rem; font-size: 0.62rem; }
+    .sbl-advisor__success-meta { flex-direction: column; gap: 0.5rem; }
+  }
 </style>
 </head>
 <body>
@@ -1340,6 +1800,148 @@
   </div>
 </section>
 
+<!-- ADVISOR CONTACT SECTION -->
+<section class="sbl-advisor">
+  <div class="sbl-advisor__inner">
+
+    <!-- LEFT: Context / Pitch -->
+    <div class="sbl-advisor__intro">
+      <div class="sbl-advisor__eyebrow"><span class="num">№ 02</span>Talk to a real person</div>
+      <h2 class="sbl-advisor__title">Speak with an <em>advisor</em>.</h2>
+      <p class="sbl-advisor__deck">The calculator and playbook get you most of the way. Sometimes you want a real conversation about <em>your</em> specific situation — and that's a phone call away.</p>
+
+      <ul class="sbl-advisor__list">
+        <li>
+          <span class="marker">i.</span>
+          <span><strong>Free 30-minute consultation.</strong> No obligation, no upsell pressure. Tell us about your portfolio, hear honest feedback on whether this strategy fits.</span>
+        </li>
+        <li>
+          <span class="marker">ii.</span>
+          <span><strong>Specific to your numbers.</strong> We'll review your actual portfolio, target property, and goals — not a generic template.</span>
+        </li>
+        <li>
+          <span class="marker">iii.</span>
+          <span><strong>Connections to vetted partners.</strong> If it makes sense for you, we can introduce you to the lenders, brokerages, and CPAs we work with.</span>
+        </li>
+      </ul>
+
+      <div class="sbl-advisor__trust">
+        <div class="sbl-advisor__trust-item">
+          <span class="dot"></span>
+          <span>Confidential</span>
+        </div>
+        <div class="sbl-advisor__trust-item">
+          <span class="dot"></span>
+          <span>No obligation</span>
+        </div>
+        <div class="sbl-advisor__trust-item">
+          <span class="dot"></span>
+          <span>Response in 24 hrs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="sbl-advisor__form-wrap">
+
+      <!-- INPUT STATE -->
+      <div id="sblAdvisorForm">
+        <div class="sbl-advisor__form-head">
+          <div class="sbl-advisor__form-label">Step 1 of 1</div>
+          <h3 class="sbl-advisor__form-title">Request a <em>conversation</em></h3>
+          <p class="sbl-advisor__form-sub">Fill in the basics. We'll reach out to schedule a time that works.</p>
+        </div>
+
+        <form id="advisorFormEl" onsubmit="sblAdvisorSubmit(event)">
+
+          <div class="sbl-advisor__row">
+            <div class="sbl-advisor__field">
+              <label for="adv-firstname">First Name<span class="req">*</span></label>
+              <input type="text" id="adv-firstname" name="firstname" placeholder="Your first name" required>
+            </div>
+            <div class="sbl-advisor__field">
+              <label for="adv-lastname">Last Name<span class="req">*</span></label>
+              <input type="text" id="adv-lastname" name="lastname" placeholder="Your last name" required>
+            </div>
+          </div>
+
+          <div class="sbl-advisor__field">
+            <label for="adv-email">Email Address<span class="req">*</span></label>
+            <input type="email" id="adv-email" name="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="sbl-advisor__field">
+            <label for="adv-phone">Phone (optional)</label>
+            <input type="tel" id="adv-phone" name="phone" placeholder="(555) 123-4567">
+          </div>
+
+          <div class="sbl-advisor__row">
+            <div class="sbl-advisor__field">
+              <label for="adv-portfolio">Portfolio Range</label>
+              <select id="adv-portfolio" name="portfolio">
+                <option value="">Select range</option>
+                <option>Under $100K</option>
+                <option>$100K – $250K</option>
+                <option>$250K – $500K</option>
+                <option>$500K – $1M</option>
+                <option>$1M – $2.5M</option>
+                <option>Over $2.5M</option>
+              </select>
+            </div>
+            <div class="sbl-advisor__field">
+              <label for="adv-timeline">Timeline</label>
+              <select id="adv-timeline" name="timeline">
+                <option value="">Select timeline</option>
+                <option>Just exploring</option>
+                <option>Within 3 months</option>
+                <option>3–6 months</option>
+                <option>6–12 months</option>
+                <option>Over a year</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sbl-advisor__field">
+            <label for="adv-message">What would you like to discuss? (optional)</label>
+            <textarea id="adv-message" name="message" placeholder="A property you're considering, a question about the strategy, your specific situation..."></textarea>
+          </div>
+
+          <label class="sbl-advisor__check">
+            <input type="checkbox" id="adv-consent" required>
+            <span>I understand this is an educational consultation, not financial advice. I agree to be contacted about my inquiry.</span>
+          </label>
+
+          <button type="submit" class="sbl-advisor__submit" id="advSubmitBtn">
+            Request consultation
+            <span class="sbl-advisor__submit-arrow">→</span>
+          </button>
+
+          <p class="sbl-advisor__fineprint">
+            Your information is held in confidence. Read our <a href="#">privacy policy</a>.
+          </p>
+        </form>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="sbl-advisor__success" id="sblAdvisorSuccess">
+        <div class="sbl-advisor__success-icon">✓</div>
+        <h3>Request <em>received</em>.</h3>
+        <p>Thanks for reaching out. We've sent a confirmation to <strong id="advConfirmEmail">you@example.com</strong> and an advisor will follow up within 24 hours to schedule your consultation.</p>
+        <button class="sbl-advisor__submit" onclick="sblAdvisorReset()" style="background: transparent; color: var(--ink); border: 1px solid var(--rule); max-width: 240px; margin: 0 auto;">
+          ← Submit another request
+        </button>
+        <div class="sbl-advisor__success-meta">
+          <span>Confidential</span>
+          <span>· No obligation ·</span>
+          <span>Response &lt; 24h</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
@@ -1534,6 +2136,35 @@ document.querySelector('.playbook-3d')?.addEventListener('click', () => {
 
   render();
 })();
+
+// === ADVISOR FORM FUNCTIONS ===
+function sblAdvisorSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('adv-email').value;
+  const btn = document.getElementById('advSubmitBtn');
+
+  btn.innerHTML = 'Submitting...';
+  btn.disabled = true;
+
+  // Simulate submission. In production, replace with your real endpoint:
+  //   await fetch('/api/advisor-inquiry', { method: 'POST', body: JSON.stringify({...}) })
+  // Or wire to a CRM (HubSpot, Salesforce, ConvertKit, etc.)
+  setTimeout(() => {
+    document.getElementById('advConfirmEmail').textContent = email;
+    document.getElementById('sblAdvisorForm').style.display = 'none';
+    document.getElementById('sblAdvisorSuccess').classList.add('visible');
+    document.getElementById('sblAdvisorSuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    btn.innerHTML = 'Request consultation <span class="sbl-advisor__submit-arrow">→</span>';
+    btn.disabled = false;
+  }, 700);
+}
+
+function sblAdvisorReset() {
+  document.getElementById('advisorFormEl').reset();
+  document.getElementById('sblAdvisorSuccess').classList.remove('visible');
+  document.getElementById('sblAdvisorForm').style.display = 'block';
+}
 
 // Parallax effect on playbook - only when cursor is near
 document.addEventListener('mousemove', (e) => {
