@@ -583,6 +583,413 @@
   .btn-secondary:hover {
     transform: translateY(-2px);
   }
+
+  /* =========================================================
+     SBL CALCULATOR LITE STYLES
+     ========================================================= */
+  .sbl-lite {
+    background: var(--pearl);
+    color: var(--ink);
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sbl-lite::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.06), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .sbl-lite::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    left: -120px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(184, 153, 104, 0.06), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .sbl-lite-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sbl-lite__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .sbl-lite__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+  }
+
+  .sbl-lite__eyebrow .num {
+    color: var(--muted);
+    margin-right: 0.5rem;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  .sbl-lite__title {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.75rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .sbl-lite__title em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .sbl-lite__tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.4;
+    max-width: 240px;
+    text-align: right;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .sbl-lite__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .sbl-lite__inputs {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.75rem;
+  }
+
+  .sbl-lite__group {
+    margin-bottom: 1.4rem;
+  }
+
+  .sbl-lite__group:last-child {
+    margin-bottom: 0;
+  }
+
+  .sbl-lite__label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .sbl-lite__label {
+    font-size: 0.86rem;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+  }
+
+  .sbl-lite__label-help {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  .sbl-lite__value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+
+  .sbl-lite input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: var(--rule);
+    outline: none;
+    border-radius: 0;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .sbl-lite input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--green);
+    transition: transform 0.1s;
+  }
+
+  .sbl-lite input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+  }
+
+  .sbl-lite input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--green);
+  }
+
+  .sbl-lite__result {
+    background: var(--ink);
+    color: var(--pearl);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sbl-lite__result::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(58, 122, 85, 0.35), transparent 70%);
+    pointer-events: none;
+  }
+
+  .sbl-lite__result-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sbl-lite__result-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .sbl-lite__result-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+    color: var(--pearl);
+    letter-spacing: -0.01em;
+    opacity: 0.9;
+  }
+
+  .sbl-lite__pct {
+    font-family: 'Fraunces', serif;
+    font-size: 5rem;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    color: var(--green-light);
+    margin-bottom: 1.25rem;
+  }
+
+  .sbl-lite__pct.amber { color: #d4b76a; }
+  .sbl-lite__pct.red { color: #d18871; }
+
+  .sbl-lite__bar-wrap {
+    height: 10px;
+    background: rgba(247, 245, 239, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .sbl-lite__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-light), #8fc1a3);
+    transition: width 0.5s ease;
+    border-radius: 5px;
+  }
+
+  .sbl-lite__bar.amber { background: linear-gradient(90deg, #c9aa6e, #d4b76a); }
+  .sbl-lite__bar.red { background: linear-gradient(90deg, #c97c69, #d18871); }
+
+  .sbl-lite__marks {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(247, 245, 239, 0.5);
+    margin-bottom: 1.5rem;
+  }
+
+  .sbl-lite__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid rgba(247, 245, 239, 0.12);
+    padding-top: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sbl-lite__stat {
+    padding: 0.4rem 0;
+  }
+
+  .sbl-lite__stat:first-child {
+    border-right: 1px solid rgba(247, 245, 239, 0.12);
+    padding-right: 1rem;
+  }
+
+  .sbl-lite__stat:last-child {
+    padding-left: 1rem;
+  }
+
+  .sbl-lite__stat-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.55);
+    margin-bottom: 0.35rem;
+  }
+
+  .sbl-lite__stat-val {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--pearl);
+  }
+
+  .sbl-lite__stat-val.green {
+    color: var(--green-light);
+  }
+
+  .sbl-lite__stat-val.red {
+    color: #d18871;
+  }
+
+  .sbl-lite__verdict {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    color: var(--pearl);
+    opacity: 0.92;
+    margin: 0 0 1.75rem;
+    letter-spacing: -0.005em;
+  }
+
+  .sbl-lite__verdict strong {
+    color: var(--green-light);
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .sbl-lite__verdict.amber strong { color: #d4b76a; }
+  .sbl-lite__verdict.red strong { color: #d18871; }
+
+  .sbl-lite__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: none;
+    padding: 0.95rem 1.5rem;
+    border-radius: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    justify-content: center;
+    letter-spacing: 0.005em;
+  }
+
+  .sbl-lite__cta:hover {
+    background: var(--green-light);
+    color: var(--ink);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(13, 31, 21, 0.4);
+  }
+
+  .sbl-lite__cta-arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    transition: transform 0.2s;
+  }
+
+  .sbl-lite__cta:hover .sbl-lite__cta-arrow {
+    transform: translateX(3px);
+  }
+
+  .sbl-lite__footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.5);
+  }
+
+  @media (max-width: 900px) {
+    .sbl-lite { padding: 3rem 1.25rem; }
+    .sbl-lite__header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .sbl-lite__title { font-size: 2rem; }
+    .sbl-lite__tagline { text-align: left; max-width: 100%; }
+    .sbl-lite__grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .sbl-lite__pct { font-size: 4rem; }
+    .sbl-lite__inputs { padding: 1.5rem; }
+    .sbl-lite__result { padding: 1.75rem; }
+  }
+
+  @media (max-width: 480px) {
+    .sbl-lite__title { font-size: 1.65rem; }
+    .sbl-lite__pct { font-size: 3.25rem; }
+    .sbl-lite__stats { grid-template-columns: 1fr; }
+    .sbl-lite__stat:first-child { border-right: none; border-bottom: 1px solid rgba(247, 245, 239, 0.12); padding-right: 0; padding-bottom: 0.85rem; margin-bottom: 0.85rem; }
+    .sbl-lite__stat:last-child { padding-left: 0; }
+  }
 </style>
 </head>
 <body>
@@ -658,6 +1065,120 @@
   </div>
   <div style="max-width: 1180px; margin: 1rem auto 0; padding: 0 2.5rem;">
     <p style="font-size: 0.8rem; color: var(--muted); font-style: italic; text-align: center;">Based on sample inputs in the calculator. Your actual coverage will vary based on portfolio size, dividend yield, and leverage.</p>
+  </div>
+</section>
+
+<!-- LITE CALCULATOR -->
+<section class="sbl-lite">
+  <div class="sbl-lite-inner">
+
+    <div class="sbl-lite__header">
+      <div>
+        <div class="sbl-lite__eyebrow"><span class="num">№ 01</span>Free Calculator · Quick Look</div>
+        <h2 class="sbl-lite__title">Could <em>your portfolio</em> pay your mortgage?</h2>
+      </div>
+      <p class="sbl-lite__tagline">Adjust three numbers.<br>See your coverage instantly.</p>
+    </div>
+
+    <div class="sbl-lite__grid">
+
+      <!-- INPUTS -->
+      <div class="sbl-lite__inputs">
+
+        <div class="sbl-lite__group">
+          <div class="sbl-lite__label-row">
+            <label class="sbl-lite__label" for="lite-home">
+              Home price
+              <span class="sbl-lite__label-help">The property you're considering</span>
+            </label>
+            <span class="sbl-lite__value" id="lite-v-home">$450K</span>
+          </div>
+          <input type="range" id="lite-home" min="200000" max="1500000" step="10000" value="450000">
+        </div>
+
+        <div class="sbl-lite__group">
+          <div class="sbl-lite__label-row">
+            <label class="sbl-lite__label" for="lite-portfolio">
+              Total portfolio capital
+              <span class="sbl-lite__label-help">Down-payment shares + additional capital</span>
+            </label>
+            <span class="sbl-lite__value" id="lite-v-portfolio">$200K</span>
+          </div>
+          <input type="range" id="lite-portfolio" min="50000" max="800000" step="5000" value="200000">
+        </div>
+
+        <div class="sbl-lite__group">
+          <div class="sbl-lite__label-row">
+            <label class="sbl-lite__label" for="lite-yield">
+              Dividend yield
+              <span class="sbl-lite__label-help">Annual yield on your stock</span>
+            </label>
+            <span class="sbl-lite__value" id="lite-v-yield">8.0%</span>
+          </div>
+          <input type="range" id="lite-yield" min="3" max="14" step="0.25" value="8">
+        </div>
+
+        <div class="sbl-lite__group">
+          <div class="sbl-lite__label-row">
+            <label class="sbl-lite__label" for="lite-leverage">
+              Leverage on additional capital
+              <span class="sbl-lite__label-help">Margin multiplier · 1× = none, 2× = double</span>
+            </label>
+            <span class="sbl-lite__value" id="lite-v-leverage">2.0×</span>
+          </div>
+          <input type="range" id="lite-leverage" min="1" max="3" step="0.1" value="2">
+        </div>
+
+      </div>
+
+      <!-- RESULT -->
+      <div class="sbl-lite__result">
+        <div class="sbl-lite__result-inner">
+
+          <div class="sbl-lite__result-label">Mortgage Coverage</div>
+          <div class="sbl-lite__result-name">How much of your payment dividends absorb</div>
+
+          <div class="sbl-lite__pct" id="lite-pct">132%</div>
+
+          <div class="sbl-lite__bar-wrap">
+            <div class="sbl-lite__bar" id="lite-bar" style="width: 66%;"></div>
+          </div>
+          <div class="sbl-lite__marks">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100%</span>
+            <span>150%</span>
+            <span>200%+</span>
+          </div>
+
+          <div class="sbl-lite__stats">
+            <div class="sbl-lite__stat">
+              <div class="sbl-lite__stat-lbl">Net dividends / mo</div>
+              <div class="sbl-lite__stat-val green" id="lite-div">$2,775</div>
+            </div>
+            <div class="sbl-lite__stat">
+              <div class="sbl-lite__stat-lbl">Mortgage / mo</div>
+              <div class="sbl-lite__stat-val" id="lite-mort">$2,094</div>
+            </div>
+          </div>
+
+          <p class="sbl-lite__verdict" id="lite-verdict">
+            Your dividends cover the mortgage <strong>strongly</strong>. The structure self-funds with surplus. Run the full calculator to see the 30-year projection and the tax-optimized version.
+          </p>
+
+          <a href="calculator.html" class="sbl-lite__cta">
+            Explore the full report
+            <span class="sbl-lite__cta-arrow">→</span>
+          </a>
+
+          <div class="sbl-lite__footer">
+            Includes 30-year projection · risk analysis · verdict
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -920,6 +1441,99 @@ document.querySelectorAll('.section-block, .compare-card, .step, .resource').for
 document.querySelector('.playbook-3d')?.addEventListener('click', () => {
   window.location.href = 'signup.html';
 });
+
+// === SBL LITE CALCULATOR LOGIC ===
+(function() {
+  const state = {
+    home: 450000,
+    portfolio: 200000,
+    yield: 8,
+    leverage: 2,
+    rate: 5.98,
+    term: 30,
+    marginRate: 7.0,
+    dpRatio: 0.5
+  };
+
+  const fmt = n => {
+    const v = Math.round(n);
+    if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(2) + 'M';
+    if (Math.abs(v) >= 10000) return '$' + (v/1000).toFixed(0) + 'K';
+    if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(1) + 'K';
+    return '$' + v.toLocaleString();
+  };
+  const fmtFull = n => '$' + Math.round(n).toLocaleString();
+
+  function calcMortgagePmt(principal, annualRatePct, years) {
+    const r = annualRatePct / 100 / 12;
+    const n = years * 12;
+    if (r === 0) return principal / n;
+    return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+
+  function compute() {
+    const mort = calcMortgagePmt(state.home, state.rate, state.term);
+    const dpCapital = state.portfolio * state.dpRatio;
+    const addCapital = state.portfolio * (1 - state.dpRatio);
+    const dpDivAnnual = dpCapital * (state.yield / 100);
+    const dpDivMonthly = dpDivAnnual / 12;
+    const buyingPower = addCapital * state.leverage;
+    const borrowed = buyingPower - addCapital;
+    const addDivAnnual = buyingPower * (state.yield / 100);
+    const addDivMonthly = addDivAnnual / 12;
+    const marginCostMonthly = borrowed * (state.marginRate / 100) / 12;
+    const addNetMonthly = addDivMonthly - marginCostMonthly;
+    const netMonthly = dpDivMonthly + addNetMonthly;
+    const coverage = mort > 0 ? (netMonthly / mort) * 100 : 0;
+    return { mort, netMonthly, coverage };
+  }
+
+  function getStatus(cov) {
+    if (cov >= 120) return { class: '', label: 'strongly', text: `Your dividends cover the mortgage <strong>strongly</strong>. The structure self-funds with surplus to spare. Run the full calculator to see the 30-year projection and the tax-optimized version.` };
+    if (cov >= 100) return { class: '', label: 'fully', text: `Your dividends cover the mortgage <strong>fully</strong>, with a thin operational cushion. Run the full calculator to stress-test your scenario and explore optimization paths.` };
+    if (cov >= 80) return { class: 'amber', label: 'most of', text: `Your dividends cover <strong>most of</strong> the mortgage but aren't yet self-funding. The full calculator shows exactly which levers close the gap fastest.` };
+    if (cov >= 50) return { class: 'amber', label: 'a portion of', text: `Your dividends cover <strong>a portion of</strong> the mortgage. The full calculator reveals which inputs need the most attention to make this strategy viable.` };
+    return { class: 'red', label: 'too little of', text: `In this configuration, dividends cover <strong>too little of</strong> the mortgage to be self-funding. The full calculator helps diagnose what would need to change.` };
+  }
+
+  function render() {
+    const m = compute();
+    const status = getStatus(m.coverage);
+
+    document.getElementById('lite-v-home').textContent = fmt(state.home);
+    document.getElementById('lite-v-portfolio').textContent = fmt(state.portfolio);
+    document.getElementById('lite-v-yield').textContent = state.yield.toFixed(1) + '%';
+    document.getElementById('lite-v-leverage').textContent = state.leverage.toFixed(1) + '×';
+
+    const pctEl = document.getElementById('lite-pct');
+    pctEl.textContent = Math.round(m.coverage) + '%';
+    pctEl.className = 'sbl-lite__pct' + (status.class ? ' ' + status.class : '');
+
+    const barEl = document.getElementById('lite-bar');
+    barEl.className = 'sbl-lite__bar' + (status.class ? ' ' + status.class : '');
+    barEl.style.width = Math.min(200, Math.max(2, m.coverage)) / 2 + '%';
+
+    document.getElementById('lite-div').textContent = fmtFull(m.netMonthly);
+    document.getElementById('lite-mort').textContent = fmtFull(m.mort);
+
+    const verdEl = document.getElementById('lite-verdict');
+    verdEl.className = 'sbl-lite__verdict' + (status.class ? ' ' + status.class : '');
+    verdEl.innerHTML = status.text;
+  }
+
+  const map = { 'lite-home': 'home', 'lite-portfolio': 'portfolio', 'lite-yield': 'yield', 'lite-leverage': 'leverage' };
+  Object.keys(map).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', e => {
+        state[map[id]] = parseFloat(e.target.value);
+        render();
+      });
+    }
+  });
+
+  render();
+})();
 
 // Parallax effect on playbook - follows cursor movement
 document.addEventListener('mousemove', (e) => {
