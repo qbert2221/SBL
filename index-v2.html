@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBL Mortgage — The Corporate Dividend Mortgage™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles-v2.css">
+<style>
+
+  /* =========================================================
+     LANDING PAGE V2 — bold editorial hero
+     ========================================================= */
+
+  /* ------ HERO: full-bleed, asymmetric, with signature illustration ------ */
+  .hero-v2 {
+    position: relative;
+    padding: 5rem 2.5rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  /* Background floating accent (parallax) */
+  .hero-v2::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -100px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.08), transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+  }
+
+  .hero-v2-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-v2-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+    opacity: 0;
+    animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  }
+
+  .hero-v2-eyebrow .vol {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--green-2);
+  }
+
+  .hero-v2-eyebrow .divider {
+    width: 24px;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.4;
+  }
+
+  .hero-v2-eyebrow .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .hero-v2-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 6.5rem;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 0;
+    opacity: 0;
+    animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  }
+
+  .hero-v2-headline .word-1 {
+    display: block;
+    font-weight: 300;
+  }
+
+  .hero-v2-headline .word-2 {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--green-2);
+    margin-left: 4rem;
+    position: relative;
+  }
+
+  .hero-v2-headline .word-3 {
+    display: block;
+    font-weight: 500;
+    position: relative;
+    margin-top: 0.2rem;
+  }
+
+  .hero-v2-headline .word-3::after {
+    content: '';
+    position: absolute;
+    bottom: 0.05em;
+    left: 0;
+    width: 0;
+    height: 6px;
+    background: var(--green-2);
+    animation: underlineGrow 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+  }
+
+  .hero-v2-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    font-style: italic;
+    color: var(--ink-2);
+    margin: 2.5rem 0 2.5rem;
+    max-width: 540px;
+    letter-spacing: -0.012em;
+    opacity: 0;
+    animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  }
+
+  .hero-v2-sub .ink-strong {
+    color: var(--ink);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .hero-v2-actions {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+  }
+
+  .btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 1.15rem 2rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.005em;
+    border: 1px solid transparent;
+  }
+
+  .btn-hero.primary {
+    background: var(--ink);
+    color: var(--pearl);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 0 rgba(31, 74, 50, 0);
+  }
+
+  .btn-hero.primary:hover {
+    background: var(--green);
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(13, 31, 21, 0.2);
+  }
+
+  .btn-hero.ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: transparent;
+  }
+
+  .btn-hero.ghost:hover {
+    color: var(--green-2);
+  }
+
+  .btn-hero .arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    transition: transform 0.2s;
+  }
+
+  .btn-hero:hover .arrow { transform: translateX(4px); }
+
+  /* HERO ILLUSTRATION — signature SVG */
+  .hero-illustration {
+    position: relative;
+    opacity: 0;
+    animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+    will-change: transform;
+  }
+
+  .hero-illustration svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* SVG draw-on animations */
+  .draw-line {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: drawIn 2s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
+  }
+
+  .draw-line.delay-1 { animation-delay: 1.0s; }
+  .draw-line.delay-2 { animation-delay: 1.3s; }
+  .draw-line.delay-3 { animation-delay: 1.6s; }
+  .draw-line.delay-4 { animation-delay: 1.9s; }
+
+  .fade-in-svg {
+    opacity: 0;
+    animation: svgFade 0.8s ease 1.5s forwards;
+  }
+
+  .fade-in-svg.delay-1 { animation-delay: 1.7s; }
+  .fade-in-svg.delay-2 { animation-delay: 1.9s; }
+  .fade-in-svg.delay-3 { animation-delay: 2.1s; }
+  .fade-in-svg.delay-4 { animation-delay: 2.3s; }
+  .fade-in-svg.delay-5 { animation-delay: 2.5s; }
+
+  @keyframes drawIn {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes svgFade {
+    to { opacity: 1; }
+  }
+
+  /* Pulsing dot on illustration */
+  .pulse-dot {
+    animation: pulseDot 2.5s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  /* Animated dividend flow */
+  .flow-particle {
+    animation: flowParticle 3s linear infinite;
+  }
+
+  @keyframes flowParticle {
+    0% { offset-distance: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+
+  /* ------ THE EQUATION SECTION (the moment of magic) ------ */
+  .equation-section {
+    background: var(--ink);
+    color: var(--pearl);
+    padding: 6rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+
+  .equation-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(58, 122, 85, 0.15), transparent 65%);
+    pointer-events: none;
+  }
+
+  .equation-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .equation-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .equation-eyebrow .vol {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--green-light);
+  }
+
+  .equation-eyebrow .divider {
+    width: 32px;
+    height: 1px;
+    background: rgba(247, 245, 239, 0.3);
+  }
+
+  .equation-eyebrow .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--pearl);
+    opacity: 0.75;
+    font-weight: 600;
+  }
+
+  .equation-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 3.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-align: center;
+    margin: 0 auto 4rem;
+    max-width: 820px;
+  }
+
+  .equation-headline em {
+    font-style: italic;
+    color: var(--green-light);
+    font-weight: 500;
+  }
+
+  /* The equation itself */
+  .equation-display {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+  }
+
+  .eq-item {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-radius: 10px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .eq-item.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .eq-item.income {
+    background: rgba(107, 155, 126, 0.1);
+    border: 1px solid rgba(107, 155, 126, 0.25);
+  }
+
+  .eq-item.expense {
+    background: rgba(154, 63, 28, 0.08);
+    border: 1px solid rgba(154, 63, 28, 0.25);
+  }
+
+  .eq-item.result {
+    background: linear-gradient(135deg, rgba(184, 153, 104, 0.18), rgba(184, 153, 104, 0.05));
+    border: 1.5px solid rgba(184, 153, 104, 0.4);
+  }
+
+  .eq-item .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.55);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .eq-item .val {
+    font-family: 'Fraunces', serif;
+    font-size: 2.7rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+
+  .eq-item.income .val { color: var(--green-light); }
+  .eq-item.expense .val { color: #d18871; }
+  .eq-item.result .val { color: var(--gold); font-weight: 500; }
+
+  .eq-item .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(247, 245, 239, 0.55);
+    letter-spacing: 0.06em;
+  }
+
+  .eq-op {
+    font-family: 'Fraunces', serif;
+    font-size: 2.5rem;
+    color: rgba(247, 245, 239, 0.4);
+    align-self: center;
+    font-weight: 300;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .eq-op.in-view { opacity: 1; }
+
+  /* Verdict line below equation */
+  .equation-verdict {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.45rem;
+    line-height: 1.5;
+    color: rgba(247, 245, 239, 0.85);
+    max-width: 720px;
+    margin: 0 auto;
+    letter-spacing: -0.012em;
+  }
+
+  .equation-verdict .gold {
+    color: var(--gold);
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  /* ------ TRUST STRIP V2: editorial number treatment ------ */
+  .trust-strip-v2 {
+    padding: 5rem 2.5rem 4rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .trust-strip-v2-eyebrow {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .trust-strip-v2-eyebrow .vol {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--green-2);
+    margin-right: 0.85rem;
+  }
+
+  .trust-strip-v2-eyebrow .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .trust-grid-v2 {
+    display: grid;
+    grid-template-columns: 1.3fr 0.85fr 1fr 1.1fr;
+    gap: 0;
+    align-items: end;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 3rem 0;
+  }
+
+  .trust-cell {
+    padding: 0 2rem;
+    border-right: 1px solid var(--rule-soft);
+    text-align: left;
+  }
+
+  .trust-cell:last-child { border-right: none; }
+
+  .trust-cell .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .trust-cell:nth-child(1) .num { font-size: 5rem; font-style: italic; color: var(--green-2); font-weight: 400; }
+  .trust-cell:nth-child(2) .num { font-size: 3.75rem; }
+  .trust-cell:nth-child(3) .num { font-size: 4rem; font-style: italic; color: var(--green-2); font-weight: 400; }
+  .trust-cell:nth-child(4) .num { font-size: 4.25rem; }
+
+  .trust-cell .num .sup {
+    font-size: 0.4em;
+    vertical-align: super;
+    color: var(--muted);
+    font-style: normal;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .trust-cell .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ------ COMPARE V2: more dramatic before/after ------ */
+  .compare-section {
+    padding: 5rem 2.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .compare-section-head {
+    margin-bottom: 4rem;
+    max-width: 820px;
+  }
+
+  .compare-section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4.5rem;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin: 1rem 0 1.5rem;
+  }
+
+  .compare-section-head h2 em {
+    font-style: italic;
+    color: var(--green-2);
+    font-weight: 400;
+  }
+
+  .compare-section-head .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 640px;
+    letter-spacing: -0.012em;
+  }
+
+  .compare-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .compare-col {
+    padding: 2.5rem;
+    background: var(--paper);
+  }
+
+  .compare-col.new {
+    background: var(--ink);
+    color: var(--pearl);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .compare-col.new::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(58, 122, 85, 0.3), transparent 65%);
+    pointer-events: none;
+  }
+
+  .compare-col-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .compare-col.new .compare-col-tag { color: var(--green-light); }
+
+  .compare-col h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .compare-col.new h3 em { font-style: italic; color: var(--green-light); }
+
+  /* The big number reveal */
+  .compare-big-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 5rem;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  .compare-col .compare-big-num { color: var(--rust); }
+  .compare-col.new .compare-big-num { color: var(--green-light); font-weight: 400; }
+  .compare-col.new .compare-big-num em { font-style: italic; }
+
+  .compare-big-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .compare-col.new .compare-big-lbl { color: rgba(247, 245, 239, 0.55); }
+
+  .compare-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+
+  .compare-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .compare-col.new .compare-points li {
+    border-bottom-color: rgba(247, 245, 239, 0.12);
+  }
+
+  .compare-points li:last-child { border-bottom: none; }
+
+  .compare-points .marker {
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    width: 18px;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  .compare-col .compare-points .marker { color: var(--rust); }
+  .compare-col.new .compare-points .marker { color: var(--green-light); }
+
+  /* ------ MINI CALCULATOR EMBEDDED ------ */
+  .mini-calc-section {
+    background: var(--pearl-2);
+    padding: 5rem 2.5rem;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mini-calc-section::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -100px;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.08), transparent 65%);
+    pointer-events: none;
+  }
+
+  .mini-calc-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .mini-calc-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .mini-calc-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin: 0.5rem 0 0;
+  }
+
+  .mini-calc-head h2 em {
+    font-style: italic;
+    color: var(--green-2);
+    font-weight: 400;
+  }
+
+  .mini-calc-head .tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.4;
+    max-width: 240px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .mini-calc-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .mini-calc-inputs {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.75rem;
+  }
+
+  .mini-grp { margin-bottom: 1.4rem; }
+  .mini-grp:last-child { margin-bottom: 0; }
+
+  .mini-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .mini-row .lbl {
+    font-size: 0.86rem;
+    color: var(--ink-2);
+    line-height: 1.3;
+  }
+
+  .mini-row .lbl .help {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  .mini-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .mini-grp input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: var(--rule);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .mini-grp input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--green);
+    transition: transform 0.1s;
+  }
+
+  .mini-grp input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+
+  .mini-grp input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--green);
+  }
+
+  .mini-result {
+    background: var(--ink);
+    color: var(--pearl);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mini-result::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(58, 122, 85, 0.35), transparent 65%);
+    pointer-events: none;
+  }
+
+  .mini-result-inner { position: relative; z-index: 1; }
+
+  .mini-result-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .mini-result-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--pearl);
+    opacity: 0.9;
+    margin-bottom: 1.25rem;
+  }
+
+  .mini-pct {
+    font-family: 'Fraunces', serif;
+    font-size: 5rem;
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--green-light);
+    margin-bottom: 1.25rem;
+  }
+
+  .mini-pct.amber { color: #d4b76a; }
+  .mini-pct.red { color: #d18871; }
+
+  .mini-bar-wrap {
+    height: 10px;
+    background: rgba(247, 245, 239, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .mini-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-light), #8fc1a3);
+    transition: width 0.5s ease;
+    border-radius: 5px;
+  }
+
+  .mini-bar.amber { background: linear-gradient(90deg, #c9aa6e, #d4b76a); }
+  .mini-bar.red { background: linear-gradient(90deg, #c97c69, #d18871); }
+
+  .mini-marks {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(247, 245, 239, 0.5);
+    margin-bottom: 1.5rem;
+  }
+
+  .mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid rgba(247, 245, 239, 0.12);
+    padding-top: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mini-stat { padding: 0.4rem 0; }
+  .mini-stat:first-child { border-right: 1px solid rgba(247, 245, 239, 0.12); padding-right: 1rem; }
+  .mini-stat:last-child { padding-left: 1rem; }
+
+  .mini-stat .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.55);
+    margin-bottom: 0.35rem;
+  }
+
+  .mini-stat .val {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--pearl);
+  }
+
+  .mini-stat .val.green { color: var(--green-light); }
+
+  .mini-verdict {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.45;
+    color: var(--pearl);
+    opacity: 0.92;
+    margin-bottom: 1.5rem;
+  }
+
+  .mini-verdict strong {
+    color: var(--green-light);
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .mini-verdict.amber strong { color: #d4b76a; }
+  .mini-verdict.red strong { color: #d18871; }
+
+  .mini-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: none;
+    padding: 0.95rem 1.5rem;
+    border-radius: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mini-cta:hover {
+    background: var(--green-light);
+    color: var(--ink);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(13, 31, 21, 0.35);
+  }
+
+  /* ------ HOW IT WORKS V2: more dramatic build ------ */
+  .how-section {
+    padding: 6rem 2.5rem 5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .how-head {
+    margin-bottom: 4rem;
+    max-width: 820px;
+  }
+
+  .how-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4.5rem;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .how-head h2 em {
+    font-style: italic;
+    color: var(--green-2);
+    font-weight: 400;
+  }
+
+  .how-head .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 640px;
+    letter-spacing: -0.012em;
+  }
+
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .how-step {
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .how-step.in-view { opacity: 1; transform: translateY(0); }
+
+  .how-step::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    right: -1rem;
+    width: 2rem;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .how-step:last-child::before { display: none; }
+
+  .how-step .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 4rem;
+    color: var(--green-2);
+    line-height: 0.9;
+    margin-bottom: 1rem;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+
+  .how-step h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+  }
+
+  .how-step p {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  /* ------ THIRTY-YEAR SECTION (visceral payoff) ------ */
+  .thirty-section {
+    padding: 6rem 2.5rem;
+    background: var(--paper);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .thirty-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .thirty-head {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .thirty-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4rem;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .thirty-head h2 em { font-style: italic; color: var(--green-2); font-weight: 400; }
+
+  .thirty-head .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 640px;
+    margin: 0 auto;
+    letter-spacing: -0.012em;
+  }
+
+  .thirty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .thirty-col {
+    padding: 3rem;
+    background: var(--paper);
+    text-align: center;
+    position: relative;
+  }
+
+  .thirty-col.new {
+    background: var(--ink);
+    color: var(--pearl);
+    overflow: hidden;
+  }
+
+  .thirty-col.new::before {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(184, 153, 104, 0.15), transparent 65%);
+    pointer-events: none;
+  }
+
+  .thirty-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .thirty-col.new .thirty-tag { color: var(--green-light); }
+
+  .thirty-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 6rem;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+
+  .thirty-col .thirty-num { color: var(--rust); }
+  .thirty-col.new .thirty-num { color: var(--gold); font-weight: 400; }
+  .thirty-col.new .thirty-num em { font-style: italic; }
+
+  .thirty-num-lbl {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    letter-spacing: -0.012em;
+    position: relative;
+  }
+
+  .thirty-col .thirty-num-lbl { color: var(--ink-2); }
+  .thirty-col.new .thirty-num-lbl { color: rgba(247, 245, 239, 0.85); }
+
+  .thirty-detail {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .thirty-col.new .thirty-detail { color: rgba(247, 245, 239, 0.75); }
+
+  .thirty-detail strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .thirty-col.new .thirty-detail strong { color: var(--pearl); }
+
+  /* ------ RESOURCES V2 ------ */
+  .resources-section {
+    padding: 6rem 2.5rem 5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .resources-head {
+    margin-bottom: 4rem;
+    max-width: 820px;
+  }
+
+  .resources-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4.5rem;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .resources-head h2 em { font-style: italic; color: var(--green-2); font-weight: 400; }
+
+  .resources-head .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 640px;
+    letter-spacing: -0.012em;
+  }
+
+  .resources-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .res-card {
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 2rem;
+    border-radius: 8px;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .res-card::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.04), transparent 65%);
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+
+  .res-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px var(--shadow);
+    color: var(--ink);
+  }
+
+  .res-card:hover::after { opacity: 1; }
+
+  .res-card .badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+
+  .badge-free { background: var(--green-bg); color: var(--green); border: 1px solid rgba(31, 74, 50, 0.2); }
+  .badge-tool { background: rgba(184, 153, 104, 0.12); color: var(--gold); border: 1px solid rgba(184, 153, 104, 0.3); }
+  .badge-paid { background: var(--ink); color: var(--pearl); }
+
+  .res-card .icon {
+    width: 56px;
+    height: 56px;
+    background: var(--green-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.7rem;
+    border: 1px solid rgba(31, 74, 50, 0.15);
+  }
+
+  .res-card h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.65rem;
+    letter-spacing: -0.012em;
+    line-height: 1.1;
+  }
+
+  .res-card p {
+    font-size: 0.93rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin-bottom: 1.5rem;
+    flex: 1;
+  }
+
+  .res-card .arrow-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--green-2);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    transition: gap 0.2s;
+  }
+
+  .res-card:hover .arrow-row { gap: 0.85rem; }
+
+  .res-card .arrow-row .arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  /* ------ FINAL CTA V2 ------ */
+  .final-cta-section {
+    padding: 5rem 2.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .final-cta {
+    padding: 4rem;
+    background: var(--ink);
+    color: var(--pearl);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(58, 122, 85, 0.4), transparent 65%);
+    pointer-events: none;
+  }
+
+  .final-cta::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(184, 153, 104, 0.15), transparent 65%);
+    pointer-events: none;
+  }
+
+  .final-cta-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+  }
+
+  .final-cta-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .final-cta h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 3.5rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .final-cta h2 em {
+    font-style: italic;
+    color: var(--green-light);
+    font-weight: 400;
+  }
+
+  .final-cta p {
+    font-size: 1.1rem;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: rgba(247, 245, 239, 0.85);
+  }
+
+  .final-cta-actions {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .final-cta .btn-primary-light {
+    background: var(--pearl);
+    color: var(--ink);
+    border-color: var(--pearl);
+  }
+
+  .final-cta .btn-primary-light:hover {
+    background: var(--green-light);
+    border-color: var(--green-light);
+    color: var(--ink);
+  }
+
+  .final-cta .btn-secondary-light {
+    background: transparent;
+    color: var(--pearl);
+    border-color: rgba(247, 245, 239, 0.3);
+  }
+
+  .final-cta .btn-secondary-light:hover {
+    background: rgba(247, 245, 239, 0.1);
+    border-color: var(--pearl);
+  }
+
+  /* ------ Universal animations ------ */
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes underlineGrow {
+    to { width: 100%; }
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ------ RESPONSIVE ------ */
+  @media (max-width: 1024px) {
+    .hero-v2 { padding: 3rem 1.5rem 2rem; }
+    .hero-v2-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-v2-headline { font-size: 4.5rem; }
+    .hero-v2-headline .word-2 { margin-left: 1.5rem; }
+
+    .equation-section { padding: 4rem 1.5rem; }
+    .equation-headline { font-size: 2.4rem; }
+    .equation-display { grid-template-columns: 1fr; gap: 1rem; }
+    .eq-op { display: none; }
+
+    .trust-strip-v2 { padding: 3rem 1.5rem 3rem; }
+    .trust-grid-v2 { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 2rem 0; }
+    .trust-cell { padding: 1rem; border-right: none; border-bottom: 1px solid var(--rule-soft); }
+    .trust-cell:nth-child(1) .num { font-size: 3.5rem; }
+    .trust-cell:nth-child(2) .num { font-size: 2.75rem; }
+    .trust-cell:nth-child(3) .num { font-size: 3rem; }
+    .trust-cell:nth-child(4) .num { font-size: 3.25rem; }
+
+    .compare-section { padding: 3rem 1.5rem; }
+    .compare-section-head h2 { font-size: 2.5rem; }
+    .compare-v2 { grid-template-columns: 1fr; }
+    .compare-big-num { font-size: 3.5rem; }
+
+    .mini-calc-section { padding: 3rem 1.5rem; }
+    .mini-calc-head { flex-direction: column; align-items: flex-start; }
+    .mini-calc-head h2 { font-size: 2.25rem; }
+    .mini-calc-head .tagline { text-align: left; }
+    .mini-calc-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .mini-pct { font-size: 4rem; }
+
+    .how-section { padding: 4rem 1.5rem 3rem; }
+    .how-head h2 { font-size: 2.5rem; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .how-step::before { display: none; }
+    .how-step .num { font-size: 3rem; }
+
+    .thirty-section { padding: 4rem 1.5rem; }
+    .thirty-head h2 { font-size: 2.5rem; }
+    .thirty-grid { grid-template-columns: 1fr; }
+    .thirty-num { font-size: 4rem; }
+
+    .resources-section { padding: 4rem 1.5rem 3rem; }
+    .resources-head h2 { font-size: 2.5rem; }
+    .resources-v2 { grid-template-columns: 1fr; }
+
+    .final-cta-section { padding: 3rem 1.5rem; }
+    .final-cta { padding: 2rem; }
+    .final-cta h2 { font-size: 2rem; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-v2-headline { font-size: 3rem; }
+    .hero-v2-headline .word-2 { margin-left: 0.5rem; }
+    .hero-v2-sub { font-size: 1.05rem; }
+    .equation-headline { font-size: 1.85rem; }
+    .compare-section-head h2,
+    .how-head h2,
+    .thirty-head h2,
+    .resources-head h2 { font-size: 2rem; }
+    .how-steps { grid-template-columns: 1fr; }
+    .thirty-num { font-size: 3rem; }
+    .final-cta h2 { font-size: 1.75rem; }
+    .trust-grid-v2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html" class="active">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="signup.html" class="nav-cta">Get the Playbook</a>
+  </nav>
+</header>
+
+<!-- ================== HERO V2 ================== -->
+<section class="hero-v2">
+  <div class="hero-v2-grid">
+
+    <div>
+      <div class="hero-v2-eyebrow">
+        <span class="vol">Vol. I</span>
+        <span class="divider"></span>
+        <span class="label">The Strategy · 2026 Edition</span>
+      </div>
+
+      <h1 class="hero-v2-headline">
+        <span class="word-1">Your portfolio</span>
+        <span class="word-2">should be paying</span>
+        <span class="word-3">your mortgage.</span>
+      </h1>
+
+      <p class="hero-v2-sub">
+        A modern, asset-powered approach to home financing. Use a corporation, a stock-backed mortgage, and a leveraged dividend portfolio to acquire real estate <span class="ink-strong">without ever touching your paycheck</span>.
+      </p>
+
+      <div class="hero-v2-actions">
+        <a href="calculator.html" class="btn-hero primary">
+          Run the calculator
+          <span class="arrow">→</span>
+        </a>
+        <a href="ebook-free.html" class="btn-hero ghost">
+          Read the free guide
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- HERO ILLUSTRATION: signature SVG -->
+    <div class="hero-illustration">
+      <svg viewBox="0 0 480 540" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <!-- Subtle radial highlight -->
+          <radialGradient id="bgGlow" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#3a7a55" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#3a7a55" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#d4b76a"/>
+            <stop offset="100%" stop-color="#b89968"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Background glow -->
+        <rect x="0" y="0" width="480" height="540" fill="url(#bgGlow)"/>
+
+        <!-- Outer architectural frame -->
+        <rect x="40" y="40" width="400" height="460" fill="none" stroke="#1f4a32" stroke-width="1" opacity="0.15" rx="6"/>
+        <rect x="48" y="48" width="384" height="444" fill="none" stroke="#1f4a32" stroke-width="0.5" opacity="0.1" rx="4"/>
+
+        <!-- Top section: THE CORPORATION -->
+        <g class="fade-in-svg">
+          <rect x="100" y="80" width="280" height="80" fill="#fbfaf6" stroke="#1f4a32" stroke-width="1.5" rx="6"/>
+          <text x="240" y="108" font-family="Fraunces" font-size="11" fill="#6b7569" text-anchor="middle" letter-spacing="2.5" font-style="italic">i.</text>
+          <text x="240" y="135" font-family="Fraunces" font-size="17" fill="#0d1f15" text-anchor="middle" font-weight="500">The Corporation</text>
+          <text x="240" y="151" font-family="JetBrains Mono" font-size="8.5" fill="#6b7569" text-anchor="middle" letter-spacing="2">HOLDS &nbsp;EVERYTHING</text>
+        </g>
+
+        <!-- Connecting lines down -->
+        <line x1="180" y1="160" x2="180" y2="220" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-1"/>
+        <line x1="300" y1="160" x2="300" y2="220" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-1"/>
+
+        <!-- Mid section: TWO BLOCKS - Down Payment Shares + Leveraged Engine -->
+        <g class="fade-in-svg delay-1">
+          <rect x="80" y="220" width="160" height="100" fill="#fbfaf6" stroke="#2a6043" stroke-width="1" rx="6"/>
+          <text x="160" y="244" font-family="Fraunces" font-size="10" fill="#6b7569" text-anchor="middle" letter-spacing="2.5" font-style="italic">ii.</text>
+          <text x="160" y="265" font-family="Fraunces" font-size="13" fill="#0d1f15" text-anchor="middle" font-weight="500">Down Payment</text>
+          <text x="160" y="281" font-family="Fraunces" font-size="13" fill="#0d1f15" text-anchor="middle" font-weight="500">Shares</text>
+          <text x="160" y="302" font-family="Fraunces" font-size="18" fill="#2a6043" text-anchor="middle" font-weight="500" font-style="italic">$1,200</text>
+          <text x="160" y="316" font-family="JetBrains Mono" font-size="7.5" fill="#6b7569" text-anchor="middle" letter-spacing="1.5">/MO &nbsp;CLEAN</text>
+        </g>
+
+        <g class="fade-in-svg delay-1">
+          <rect x="240" y="220" width="160" height="100" fill="#fbfaf6" stroke="#2a6043" stroke-width="1" rx="6"/>
+          <text x="320" y="244" font-family="Fraunces" font-size="10" fill="#6b7569" text-anchor="middle" letter-spacing="2.5" font-style="italic">iii.</text>
+          <text x="320" y="265" font-family="Fraunces" font-size="13" fill="#0d1f15" text-anchor="middle" font-weight="500">Leveraged</text>
+          <text x="320" y="281" font-family="Fraunces" font-size="13" fill="#0d1f15" text-anchor="middle" font-weight="500">Engine (2×)</text>
+          <text x="320" y="302" font-family="Fraunces" font-size="18" fill="#2a6043" text-anchor="middle" font-weight="500" font-style="italic">$1,817</text>
+          <text x="320" y="316" font-family="JetBrains Mono" font-size="7.5" fill="#6b7569" text-anchor="middle" letter-spacing="1.5">/MO &nbsp;NET</text>
+        </g>
+
+        <!-- Converging lines down to merge point -->
+        <line x1="160" y1="320" x2="160" y2="370" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-2"/>
+        <line x1="320" y1="320" x2="320" y2="370" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-2"/>
+        <path d="M 160 370 Q 160 380 200 380 L 280 380 Q 320 380 320 370" fill="none" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-2"/>
+        <line x1="240" y1="380" x2="240" y2="410" stroke="#2a6043" stroke-width="1.5" class="draw-line delay-3"/>
+
+        <!-- Pulse dot showing dividend flowing -->
+        <circle cx="240" cy="380" r="4" fill="#b89968" class="pulse-dot fade-in-svg delay-3"/>
+
+        <!-- Bottom section: COVERAGE / RESULT -->
+        <g class="fade-in-svg delay-3">
+          <rect x="80" y="410" width="320" height="80" fill="#0d1f15" stroke="url(#goldGrad)" stroke-width="1.5" rx="6"/>
+          <text x="240" y="434" font-family="JetBrains Mono" font-size="8" fill="#6b9b7e" text-anchor="middle" letter-spacing="2.5">COVERAGE &nbsp;RATIO</text>
+          <text x="240" y="468" font-family="Fraunces" font-size="32" fill="#d4b76a" text-anchor="middle" font-weight="500" letter-spacing="-1">144%</text>
+          <text x="240" y="484" font-family="JetBrains Mono" font-size="7.5" fill="#6b9b7e" text-anchor="middle" letter-spacing="2" opacity="0.85">$923 / MO &nbsp;SURPLUS</text>
+        </g>
+
+        <!-- Decorative corner marks -->
+        <g opacity="0.3" stroke="#1f4a32" stroke-width="0.75" fill="none">
+          <path d="M 50 50 L 50 70 M 50 50 L 70 50"/>
+          <path d="M 430 50 L 430 70 M 430 50 L 410 50"/>
+          <path d="M 50 490 L 50 470 M 50 490 L 70 490"/>
+          <path d="M 430 490 L 430 470 M 430 490 L 410 490"/>
+        </g>
+
+        <!-- Tiny serif label at top -->
+        <text x="240" y="29" font-family="Fraunces" font-size="9" fill="#6b7569" text-anchor="middle" letter-spacing="3" font-style="italic">— Fig. I · The System —</text>
+      </svg>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================== EQUATION SECTION (the moment of magic) ================== -->
+<section class="equation-section">
+  <div class="equation-inner">
+    <div class="equation-eyebrow">
+      <span class="vol">№ 02</span>
+      <span class="divider"></span>
+      <span class="label">The Monthly Equation</span>
+      <span class="divider"></span>
+      <span class="vol">In Real Numbers</span>
+    </div>
+
+    <h2 class="equation-headline">
+      Every month, the corporation runs the <em>same simple equation</em>.
+    </h2>
+
+    <div class="equation-display" id="equationDisplay">
+      <div class="eq-item income" data-delay="0">
+        <div class="lbl">Dividends in</div>
+        <div class="val" data-target="3600" data-prefix="$" data-suffix="">$0</div>
+        <div class="sub">30,000 shares</div>
+      </div>
+      <div class="eq-op" data-delay="1">−</div>
+      <div class="eq-item expense" data-delay="2">
+        <div class="lbl">Margin interest</div>
+        <div class="val" data-target="583" data-prefix="$" data-suffix="">$0</div>
+        <div class="sub">7% on $100K</div>
+      </div>
+      <div class="eq-op" data-delay="3">−</div>
+      <div class="eq-item expense" data-delay="4">
+        <div class="lbl">Mortgage P&I</div>
+        <div class="val" data-target="2094" data-prefix="$" data-suffix="">$0</div>
+        <div class="sub">$450K @ 5.98%</div>
+      </div>
+      <div class="eq-op" data-delay="5">=</div>
+      <div class="eq-item result" data-delay="6">
+        <div class="lbl">Surplus to corp</div>
+        <div class="val" data-target="923" data-prefix="$" data-suffix="">$0</div>
+        <div class="sub">Pure profit</div>
+      </div>
+    </div>
+
+    <p class="equation-verdict">
+      Three thousand six hundred dollars in. Two thousand six hundred and seventy-seven out. <span class="gold">Nine hundred and twenty-three dollars left over</span> — every month, for thirty years, without ever touching your paycheck.
+    </p>
+  </div>
+</section>
+
+<!-- ================== TRUST STRIP V2: editorial number treatment ================== -->
+<section class="trust-strip-v2">
+  <div class="trust-strip-v2-eyebrow reveal">
+    <span class="vol">Fig. II</span>
+    <span class="label">The Numbers, At A Glance</span>
+  </div>
+
+  <div class="trust-grid-v2 reveal">
+    <div class="trust-cell">
+      <div class="num">144<span class="sup">%</span></div>
+      <div class="lbl">Typical mortgage<br>coverage ratio</div>
+    </div>
+    <div class="trust-cell">
+      <div class="num">$0</div>
+      <div class="lbl">From your paycheck<br>each month</div>
+    </div>
+    <div class="trust-cell">
+      <div class="num">30<span class="sup">yr</span></div>
+      <div class="lbl">Standard term<br>fully self-funded</div>
+    </div>
+    <div class="trust-cell">
+      <div class="num">100<span class="sup">%</span></div>
+      <div class="lbl">Asset-based<br>qualification</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================== COMPARE V2: dramatic before/after ================== -->
+<section class="compare-section">
+  <div class="compare-section-head reveal">
+    <div class="hero-v2-eyebrow">
+      <span class="vol">№ 03</span>
+      <span class="divider"></span>
+      <span class="label">Two Paths To A House</span>
+    </div>
+    <h2>There is the <em>old way</em>.<br>And there is <em>this</em>.</h2>
+    <p class="deck">The traditional mortgage path is a thirty-year obligation. The Corporate Dividend Mortgage™ is a thirty-year asset.</p>
+  </div>
+
+  <div class="compare-v2 reveal reveal-delay-1">
+    <div class="compare-col">
+      <div class="compare-col-tag">The Traditional Path</div>
+      <h3>Your paycheck builds a bank's profits.</h3>
+      <div class="compare-big-num">~$2,094</div>
+      <div class="compare-big-lbl">Out of your paycheck — every month, for 30 years</div>
+      <ul class="compare-points">
+        <li><span class="marker">✕</span><span>Liquidate $90K+ in cash for the down payment</span></li>
+        <li><span class="marker">✕</span><span>Qualify on personal income, not assets</span></li>
+        <li><span class="marker">✕</span><span>Pay roughly $394K in interest over the loan term</span></li>
+        <li><span class="marker">✕</span><span>Property held in personal name — limited tax planning</span></li>
+        <li><span class="marker">✕</span><span>Selling means transfer taxes and capital gains exposure</span></li>
+      </ul>
+    </div>
+    <div class="compare-col new">
+      <div class="compare-col-tag">The Corporate Dividend Mortgage™</div>
+      <h3>Your <em>portfolio</em> builds your equity.</h3>
+      <div class="compare-big-num">+<em>$923</em></div>
+      <div class="compare-big-lbl">In monthly surplus — to the corporation, not the bank</div>
+      <ul class="compare-points">
+        <li><span class="marker">✓</span><span>Pledge dividend-paying stock as down payment collateral</span></li>
+        <li><span class="marker">✓</span><span>Portfolio stays invested and continues compounding</span></li>
+        <li><span class="marker">✓</span><span>Monthly dividends pay the mortgage automatically</span></li>
+        <li><span class="marker">✓</span><span>Property held in a corporation — superior tax structure</span></li>
+        <li><span class="marker">✓</span><span>Exit by selling the corporation, not just the house</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================== EMBEDDED MINI CALCULATOR ================== -->
+<section class="mini-calc-section">
+  <div class="mini-calc-inner">
+
+    <div class="mini-calc-head reveal">
+      <div>
+        <div class="hero-v2-eyebrow">
+          <span class="vol">№ 04</span>
+          <span class="divider"></span>
+          <span class="label">Try It With Your Own Numbers</span>
+        </div>
+        <h2>Could <em>your portfolio</em> pay your mortgage?</h2>
+      </div>
+      <p class="tagline">Adjust three numbers.<br>See your coverage instantly.</p>
+    </div>
+
+    <div class="mini-calc-grid reveal reveal-delay-1">
+      <div class="mini-calc-inputs">
+
+        <div class="mini-grp">
+          <div class="mini-row">
+            <label class="lbl" for="m-home">Home price<span class="help">The property you're considering</span></label>
+            <span class="val" id="mv-home">$450K</span>
+          </div>
+          <input type="range" id="m-home" min="200000" max="1500000" step="10000" value="450000">
+        </div>
+
+        <div class="mini-grp">
+          <div class="mini-row">
+            <label class="lbl" for="m-portfolio">Total portfolio capital<span class="help">Down payment shares + additional capital</span></label>
+            <span class="val" id="mv-portfolio">$200K</span>
+          </div>
+          <input type="range" id="m-portfolio" min="50000" max="800000" step="5000" value="200000">
+        </div>
+
+        <div class="mini-grp">
+          <div class="mini-row">
+            <label class="lbl" for="m-yield">Dividend yield<span class="help">Annual yield on your stock</span></label>
+            <span class="val" id="mv-yield">8.0%</span>
+          </div>
+          <input type="range" id="m-yield" min="3" max="14" step="0.25" value="8">
+        </div>
+
+        <div class="mini-grp">
+          <div class="mini-row">
+            <label class="lbl" for="m-leverage">Leverage on additional capital<span class="help">Margin multiplier · 1× = none, 2× = double</span></label>
+            <span class="val" id="mv-leverage">2.0×</span>
+          </div>
+          <input type="range" id="m-leverage" min="1" max="3" step="0.1" value="2">
+        </div>
+
+      </div>
+
+      <div class="mini-result">
+        <div class="mini-result-inner">
+          <div class="mini-result-lbl">Mortgage Coverage</div>
+          <div class="mini-result-name">How much of your payment dividends absorb</div>
+          <div class="mini-pct" id="m-pct">132%</div>
+          <div class="mini-bar-wrap">
+            <div class="mini-bar" id="m-bar" style="width: 66%;"></div>
+          </div>
+          <div class="mini-marks">
+            <span>0%</span><span>50%</span><span>100%</span><span>150%</span><span>200%+</span>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="lbl">Net dividends / mo</div>
+              <div class="val green" id="m-div">$2,775</div>
+            </div>
+            <div class="mini-stat">
+              <div class="lbl">Mortgage / mo</div>
+              <div class="val" id="m-mort">$2,094</div>
+            </div>
+          </div>
+          <p class="mini-verdict" id="m-verdict">
+            Your dividends cover the mortgage <strong>strongly</strong>. The structure self-funds with surplus to spare.
+          </p>
+          <a href="calculator.html" class="mini-cta">
+            Explore the full calculator
+            <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================== HOW IT WORKS V2 ================== -->
+<section class="how-section">
+  <div class="how-head reveal">
+    <div class="hero-v2-eyebrow">
+      <span class="vol">№ 05</span>
+      <span class="divider"></span>
+      <span class="label">How It Works</span>
+    </div>
+    <h2>Four <em>moving parts</em>.<br>One self-funding machine.</h2>
+    <p class="deck">The whole strategy reduces to four interlocking pieces. Each one is a financial instrument that already exists. The innovation is in how they're <em>combined</em>.</p>
+  </div>
+
+  <div class="how-steps">
+    <div class="how-step reveal">
+      <div class="num">i.</div>
+      <h4>The Corporation</h4>
+      <p>You form a special-purpose corporation that holds the home, the mortgage, and the brokerage account — separating personal life from investment activity.</p>
+    </div>
+    <div class="how-step reveal reveal-delay-1">
+      <div class="num">ii.</div>
+      <h4>The Down Payment Shares</h4>
+      <p>Instead of cash, the corp pledges dividend-paying stock as the equity collateral the lender requires. Shares stay invested.</p>
+    </div>
+    <div class="how-step reveal reveal-delay-2">
+      <div class="num">iii.</div>
+      <h4>The Dividend Engine</h4>
+      <p>Additional capital is contributed to the corp, optionally leveraged 1×–3×, and deployed into more dividend-yielding stock to amplify income.</p>
+    </div>
+    <div class="how-step reveal reveal-delay-3">
+      <div class="num">iv.</div>
+      <h4>The Cash Flow</h4>
+      <p>Each month, dividends pay margin interest and the mortgage automatically. Anything left is corporate profit. Your paycheck is untouched.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================== THIRTY YEAR (visceral payoff) ================== -->
+<section class="thirty-section">
+  <div class="thirty-inner">
+
+    <div class="thirty-head reveal">
+      <div class="hero-v2-eyebrow" style="justify-content: center; display: inline-flex;">
+        <span class="vol">№ 06</span>
+        <span class="divider"></span>
+        <span class="label">The Thirty-Year View</span>
+      </div>
+      <h2>What does a <em>30-year mortgage</em> really cost?</h2>
+      <p class="deck">When you compare the same property over the same time horizon, the difference between paths is not subtle.</p>
+    </div>
+
+    <div class="thirty-grid reveal reveal-delay-1">
+      <div class="thirty-col">
+        <div class="thirty-tag">Traditional Mortgage</div>
+        <div class="thirty-num">−$754K</div>
+        <div class="thirty-num-lbl">Paid out of your salary over 30 years</div>
+        <p class="thirty-detail">Principal of <strong>$360K</strong> plus interest of <strong>~$394K</strong> — approximately $25,000 per year of W-2 income, every year, that disappears into the bank.</p>
+      </div>
+      <div class="thirty-col new">
+        <div class="thirty-tag">Corporate Dividend Mortgage™</div>
+        <div class="thirty-num">+<em>$332K</em></div>
+        <div class="thirty-num-lbl">Surplus accumulated by the corporation</div>
+        <p class="thirty-detail">The corporation collects approximately <strong>$1.09M in dividends</strong>, pays <strong>$754K to the bank</strong>, and retains the surplus — entirely separate from your personal income.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================== RESOURCES V2 ================== -->
+<section class="resources-section">
+  <div class="resources-head reveal">
+    <div class="hero-v2-eyebrow">
+      <span class="vol">№ 07</span>
+      <span class="divider"></span>
+      <span class="label">Where To Start</span>
+    </div>
+    <h2>Three ways to <em>understand</em><br>what you're really looking at.</h2>
+    <p class="deck">Run the numbers against your own situation, read the strategy explained from the ground up, or take the implementation playbook home and start executing.</p>
+  </div>
+
+  <div class="resources-v2">
+    <a href="calculator.html" class="res-card reveal">
+      <div class="badge badge-tool">FREE TOOL</div>
+      <div class="icon">⌘</div>
+      <h4>The Interactive Calculator</h4>
+      <p>Plug in your shares, dividend rate, home price, and leverage. See your coverage ratio, net cash flow, and 30-year projection in real time.</p>
+      <div class="arrow-row">Open the calculator <span class="arrow">→</span></div>
+    </a>
+    <a href="ebook-free.html" class="res-card reveal reveal-delay-1">
+      <div class="badge badge-free">FREE GUIDE</div>
+      <div class="icon">¶</div>
+      <h4>The Strategy, Explained</h4>
+      <p>The complete walkthrough: how Alex bought a $450K house without touching their paycheck. Eleven steps, the math, and why it actually works.</p>
+      <div class="arrow-row">Read the guide <span class="arrow">→</span></div>
+    </a>
+    <a href="signup.html" class="res-card reveal reveal-delay-2">
+      <div class="badge badge-paid">PLAYBOOK · $97</div>
+      <div class="icon">§</div>
+      <h4>The Implementation Playbook</h4>
+      <p>The advanced material. Corporate structuring, lender selection, tax optimization, exit strategies, and the corp-sale advantage that changes everything at exit.</p>
+      <div class="arrow-row">Get the playbook <span class="arrow">→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ================== FINAL CTA V2 ================== -->
+<section class="final-cta-section">
+  <div class="final-cta reveal">
+    <div class="final-cta-content">
+      <div class="final-cta-eyebrow">Start with the math</div>
+      <h2>Plug in your <em>actual numbers</em>.<br>See what your portfolio could already be doing.</h2>
+      <p>The calculator uses your current portfolio size, dividend yield, and the home you're considering. In thirty seconds, you'll know whether this strategy makes sense for your situation — and exactly how aggressive you'd need to be.</p>
+      <div class="final-cta-actions">
+        <a href="calculator.html" class="btn-hero primary btn-primary-light">
+          Run the calculator
+          <span class="arrow">→</span>
+        </a>
+        <a href="ebook-free.html" class="btn-hero ghost btn-secondary-light">
+          Read the free guide first
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================== FOOTER ================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="col">
+      <a href="index.html" class="brand" style="margin-bottom: 1rem;">
+        <div class="brand-mark">SBL</div>
+        <div class="brand-text">
+          <div class="name">sblmortgage<span class="tld">.com</span></div>
+          <div class="sub">Corporate Dividend Mortgage™</div>
+        </div>
+      </a>
+      <p class="tagline">A modern approach to home financing. Built for portfolio holders. Powered by dividends.</p>
+    </div>
+    <div class="col">
+      <h4>Strategy</h4>
+      <a href="index.html">How it works</a>
+      <a href="ebook-free.html">The free guide</a>
+      <a href="signup.html">The playbook</a>
+    </div>
+    <div class="col">
+      <h4>Tools</h4>
+      <a href="calculator.html">Calculator</a>
+      <a href="signup.html">Get notified</a>
+    </div>
+    <div class="col">
+      <h4>Legal</h4>
+      <a href="#">Disclosures</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice. Securities lending involves risk including potential loss of pledged assets. Consult licensed professionals before implementing.
+  </div>
+</footer>
+
+<script>
+// ============ Parallax for hero background and illustration ============
+const heroSection = document.querySelector('.hero-v2');
+const heroIllustration = document.querySelector('.hero-illustration');
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.pageYOffset;
+  if (scrolled < 800 && heroSection) {
+    heroSection.style.setProperty('--parallax', scrolled * 0.3 + 'px');
+    if (heroIllustration) {
+      heroIllustration.style.transform = `translateY(${scrolled * -0.06}px)`;
+    }
+    // Move the bg accent
+    const bgAccent = heroSection;
+    bgAccent.style.setProperty('background-position', `${scrolled * 0.1}px ${scrolled * 0.1}px`);
+  }
+});
+
+// ============ Scroll reveal observer ============
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ============ EQUATION animation ============
+const equationDisplay = document.getElementById('equationDisplay');
+const equationItems = equationDisplay.querySelectorAll('.eq-item, .eq-op');
+
+let equationAnimated = false;
+
+function animateCounter(el, target) {
+  const duration = 1400;
+  const start = performance.now();
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // ease out
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(target * eased);
+    el.textContent = prefix + current.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const equationObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !equationAnimated) {
+      equationAnimated = true;
+      equationItems.forEach((item, idx) => {
+        const delay = parseInt(item.dataset.delay) * 220;
+        setTimeout(() => {
+          item.classList.add('in-view');
+          // If it has a counter, animate it
+          const valEl = item.querySelector('.val[data-target]');
+          if (valEl) {
+            const target = parseInt(valEl.dataset.target);
+            animateCounter(valEl, target);
+          }
+        }, delay);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+equationObserver.observe(equationDisplay);
+
+// ============ MINI CALCULATOR LOGIC ============
+(function() {
+  const state = {
+    home: 450000, portfolio: 200000, yield: 8, leverage: 2,
+    rate: 5.98, term: 30, marginRate: 7.0, dpRatio: 0.5
+  };
+
+  const fmt = n => {
+    const v = Math.round(n);
+    if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(2) + 'M';
+    if (Math.abs(v) >= 10000) return '$' + (v/1000).toFixed(0) + 'K';
+    if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(1) + 'K';
+    return '$' + v.toLocaleString();
+  };
+  const fmtFull = n => '$' + Math.round(n).toLocaleString();
+
+  function mortgagePmt(principal, ratePct, years) {
+    const r = ratePct / 100 / 12;
+    const n = years * 12;
+    if (r === 0) return principal / n;
+    return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+
+  function compute() {
+    const mort = mortgagePmt(state.home, state.rate, state.term);
+    const dpCap = state.portfolio * state.dpRatio;
+    const addCap = state.portfolio * (1 - state.dpRatio);
+    const dpDivMo = (dpCap * (state.yield / 100)) / 12;
+    const buyingPower = addCap * state.leverage;
+    const borrowed = buyingPower - addCap;
+    const addDivMo = (buyingPower * (state.yield / 100)) / 12;
+    const marginCostMo = borrowed * (state.marginRate / 100) / 12;
+    const addNetMo = addDivMo - marginCostMo;
+    const netMo = dpDivMo + addNetMo;
+    const cov = mort > 0 ? (netMo / mort) * 100 : 0;
+    return { mort, netMo, cov };
+  }
+
+  function status(cov) {
+    if (cov >= 120) return { c: '', t: `Your dividends cover the mortgage <strong>strongly</strong>. The structure self-funds with surplus to spare.` };
+    if (cov >= 100) return { c: '', t: `Your dividends cover the mortgage <strong>fully</strong>, with a thin operational cushion.` };
+    if (cov >= 80) return { c: 'amber', t: `Your dividends cover <strong>most of</strong> the mortgage but aren't yet self-funding.` };
+    if (cov >= 50) return { c: 'amber', t: `Your dividends cover <strong>a portion of</strong> the mortgage. The full calculator shows what to adjust.` };
+    return { c: 'red', t: `In this configuration, dividends cover <strong>too little of</strong> the mortgage to be self-funding.` };
+  }
+
+  function render() {
+    const m = compute();
+    const s = status(m.cov);
+    document.getElementById('mv-home').textContent = fmt(state.home);
+    document.getElementById('mv-portfolio').textContent = fmt(state.portfolio);
+    document.getElementById('mv-yield').textContent = state.yield.toFixed(1) + '%';
+    document.getElementById('mv-leverage').textContent = state.leverage.toFixed(1) + '×';
+    const pct = document.getElementById('m-pct');
+    pct.textContent = Math.round(m.cov) + '%';
+    pct.className = 'mini-pct' + (s.c ? ' ' + s.c : '');
+    const bar = document.getElementById('m-bar');
+    bar.className = 'mini-bar' + (s.c ? ' ' + s.c : '');
+    bar.style.width = Math.min(200, Math.max(2, m.cov)) / 2 + '%';
+    document.getElementById('m-div').textContent = fmtFull(m.netMo);
+    document.getElementById('m-mort').textContent = fmtFull(m.mort);
+    const v = document.getElementById('m-verdict');
+    v.className = 'mini-verdict' + (s.c ? ' ' + s.c : '');
+    v.innerHTML = s.t;
+  }
+
+  const map = { 'm-home': 'home', 'm-portfolio': 'portfolio', 'm-yield': 'yield', 'm-leverage': 'leverage' };
+  Object.keys(map).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', e => {
+      state[map[id]] = parseFloat(e.target.value);
+      render();
+    });
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
