@@ -2353,6 +2353,121 @@
   @media (max-width: 1024px) {
     .mobile-menu-btn { display: flex; }
   }
+
+  /* ================== TUTORIAL POPUPS ================== */
+  .tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 21, 0.85);
+    z-index: 9998;
+    display: none;
+    backdrop-filter: blur(2px);
+  }
+
+  .tutorial-overlay.active { display: block; }
+
+  .tutorial-popup {
+    position: fixed;
+    background: var(--paper);
+    border: 2px solid var(--green);
+    border-radius: 8px;
+    padding: 2rem 2.5rem;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(13, 31, 21, 0.4);
+    z-index: 9999;
+    display: none;
+  }
+
+  .tutorial-popup.active { display: block; }
+
+  .tutorial-popup .tut-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .tutorial-popup h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+
+  .tutorial-popup h3 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .tutorial-popup p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin-bottom: 1.75rem;
+  }
+
+  .tutorial-popup .tut-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .tutorial-popup .tut-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--green);
+    color: var(--pearl);
+    border: none;
+    border-radius: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tutorial-popup .tut-btn:hover {
+    background: var(--green-2);
+    transform: translateY(-1px);
+  }
+
+  .tutorial-popup .tut-skip {
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .tutorial-popup .tut-skip:hover {
+    color: var(--ink);
+  }
+
+  .tutorial-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  .tutorial-arrow.left {
+    border-width: 10px 15px 10px 0;
+    border-color: transparent var(--green) transparent transparent;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .tutorial-arrow.top {
+    border-width: 0 10px 15px 10px;
+    border-color: transparent transparent var(--green) transparent;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 </style>
 </head>
 <body>
@@ -2973,6 +3088,61 @@
 <div class="toast" id="toast">
   <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
   <span id="toastMsg">Saved</span>
+</div>
+
+<!-- ============ TUTORIAL SYSTEM ============ -->
+<div class="tutorial-overlay" id="tutorialOverlay"></div>
+
+<div class="tutorial-popup" id="tutorial1" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+  <div class="tut-num">Step 1 of 5</div>
+  <h3>Welcome to <em>SBL Mortgage</em></h3>
+  <p>Let's take a quick tour of the calculator. This will help you understand how to model your self-banking loan scenarios and make informed decisions.</p>
+  <div class="tut-actions">
+    <button class="tut-btn" onclick="nextTutorial(2)">Start Tour</button>
+    <span class="tut-skip" onclick="skipTutorial()">Skip tutorial</span>
+  </div>
+</div>
+
+<div class="tutorial-popup" id="tutorial2" style="top: 20%; left: 15%; transform: translateY(-50%);">
+  <div class="tutorial-arrow left"></div>
+  <div class="tut-num">Step 2 of 5</div>
+  <h3>Navigate with the <em>sidebar</em></h3>
+  <p>Use the left sidebar to access different sections: Overview, Calculator, Playbook, and your Saved Scenarios. Click "Calculator" to start modeling.</p>
+  <div class="tut-actions">
+    <button class="tut-btn" onclick="nextTutorial(3)">Next</button>
+    <span class="tut-skip" onclick="skipTutorial()">Skip</span>
+  </div>
+</div>
+
+<div class="tutorial-popup" id="tutorial3" style="top: 30%; right: 5%; transform: translateY(-50%);">
+  <div class="tutorial-arrow top"></div>
+  <div class="tut-num">Step 3 of 5</div>
+  <h3>Adjust your <em>inputs</em></h3>
+  <p>In the Calculator view, use the sliders on the left to adjust portfolio value, mortgage amount, dividend rates, and leverage. Watch the numbers update in real-time.</p>
+  <div class="tut-actions">
+    <button class="tut-btn" onclick="nextTutorial(4)">Next</button>
+    <span class="tut-skip" onclick="skipTutorial()">Skip</span>
+  </div>
+</div>
+
+<div class="tutorial-popup" id="tutorial4" style="bottom: 15%; left: 50%; transform: translateX(-50%);">
+  <div class="tutorial-arrow top"></div>
+  <div class="tut-num">Step 4 of 5</div>
+  <h3>Save your <em>scenarios</em></h3>
+  <p>Once you've found a configuration you like, save it as a scenario. You can compare multiple scenarios side-by-side to find the best strategy.</p>
+  <div class="tut-actions">
+    <button class="tut-btn" onclick="nextTutorial(5)">Next</button>
+    <span class="tut-skip" onclick="skipTutorial()">Skip</span>
+  </div>
+</div>
+
+<div class="tutorial-popup" id="tutorial5" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+  <div class="tut-num">Step 5 of 5</div>
+  <h3>Download the <em>playbook</em></h3>
+  <p>Access the complete Implementation Playbook from the sidebar. It includes step-by-step instructions, lender comparisons, and corporate structure templates.</p>
+  <div class="tut-actions">
+    <button class="tut-btn" onclick="completeTutorial()">Get Started</button>
+  </div>
 </div>
 
 <script>
@@ -3844,7 +4014,8 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
   const customNames = {
     'superkc@pompeiisurgical.com': 'Khan',
     'qcabrera32@gmail.com': 'Qcabrera32',
-    'aussiepowers555@gmail.com': 'Aussiepowers555'
+    'aussiepowers555@gmail.com': 'Aussiepowers555',
+    'nickola@sblmortgage.com': 'Nickola'
   };
   
   // Check if user has custom name, otherwise use email prefix
@@ -3883,7 +4054,52 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
       memberSince.textContent = monthYear;
     }
   }
+
+  // Start tutorial for nickola@sblmortgage.com
+  if (userEmail.toLowerCase() === 'nickola@sblmortgage.com') {
+    const tutorialCompleted = localStorage.getItem('sbl_tutorial_completed');
+    if (!tutorialCompleted) {
+      setTimeout(() => startTutorial(), 1000);
+    }
+  }
 })();
+
+// ================== TUTORIAL FUNCTIONS ==================
+let currentTutorialStep = 0;
+
+function startTutorial() {
+  currentTutorialStep = 1;
+  document.getElementById('tutorialOverlay').classList.add('active');
+  document.getElementById('tutorial1').classList.add('active');
+}
+
+function nextTutorial(step) {
+  // Hide current
+  document.getElementById('tutorial' + currentTutorialStep).classList.remove('active');
+  
+  // Show next
+  currentTutorialStep = step;
+  document.getElementById('tutorial' + step).classList.add('active');
+  
+  // Auto-navigate to calculator on step 3
+  if (step === 3) {
+    showView('calc');
+  }
+}
+
+function skipTutorial() {
+  // Hide all
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('tutorial' + i).classList.remove('active');
+  }
+  document.getElementById('tutorialOverlay').classList.remove('active');
+  localStorage.setItem('sbl_tutorial_completed', 'true');
+}
+
+function completeTutorial() {
+  skipTutorial();
+  showToast('Tutorial completed! You\'re ready to start modeling.');
+}
 </script>
 
 </body>
