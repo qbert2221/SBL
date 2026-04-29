@@ -657,15 +657,15 @@
         <h2>Reserve <em>your copy</em>.</h2>
         <p class="subhead">Enter your details to lock in your purchase. You'll be sent to the secure payment page next.</p>
 
-        <form id="signupForm" onsubmit="handleSubmit(event)">
+        <div id="signupForm">
           <div class="form-group">
             <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name" required>
+            <input type="text" id="name" name="name" placeholder="Your name">
           </div>
 
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            <input type="email" id="email" name="email" placeholder="you@example.com">
           </div>
 
           <div class="form-summary">
@@ -675,9 +675,9 @@
             <div class="row total"><span>Total today</span><span class="val">$97.00</span></div>
           </div>
 
-          <button type="submit" class="submit-btn" id="submitBtn">
+          <a href="https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true" class="gumroad-button submit-btn" id="submitBtn" data-gumroad-overlay-checkout="true" onclick="updateGumroadLink(event)">
             Continue to payment <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
-          </button>
+          </a>
 
           <p class="form-fineprint">
             By continuing, you agree to the <a href="#">terms</a> and <a href="#">privacy policy</a>. Your purchase is backed by a 30-day money-back guarantee.
@@ -687,7 +687,7 @@
             <span class="icon"></span>
             Secure payment processing
           </div>
-        </form>
+        </div>
       </div>
 
       <!-- SUCCESS STATE (placeholder for the redirect-to-payment flow) -->
@@ -807,34 +807,23 @@
 </footer>
 
 <script>
-function handleSubmit(e) {
-  e.preventDefault();
+function updateGumroadLink(e) {
   const email = document.getElementById('email').value;
   const name = document.getElementById('name').value;
-  const btn = document.getElementById('submitBtn');
-
-  btn.textContent = 'Reserving...';
-  btn.disabled = true;
-
-  // Open Gumroad overlay checkout (stays on your site)
-  setTimeout(() => {
-    const gumroadUrl = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
-    
-    // Open Gumroad overlay
-    if (window.GumroadOverlay) {
-      window.GumroadOverlay.open(gumroadUrl);
-    } else {
-      // Fallback to redirect if overlay doesn't load
-      window.location.href = gumroadUrl;
-    }
-    
-    btn.textContent = 'Continue to payment →';
-    btn.disabled = false;
-  }, 400);
+  
+  // Update the href with the email before Gumroad opens
+  if (email) {
+    const btn = document.getElementById('submitBtn');
+    btn.href = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
+  }
+  
+  // Let Gumroad's script handle the overlay
+  return true;
 }
 
 function resetForm() {
-  document.getElementById('signupForm').reset();
+  document.getElementById('name').value = '';
+  document.getElementById('email').value = '';
   document.getElementById('successState').classList.remove('visible');
   document.getElementById('formState').style.display = 'block';
 }
