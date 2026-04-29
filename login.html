@@ -988,14 +988,23 @@ function handleLogin(e) {
   
   btn.classList.add('loading');
 
-  // Simple password check (in production, verify against database)
+  // Admin account check
+  const ADMIN_EMAIL = 'qcabrera32@gmail.com';
+  const ADMIN_PASSWORD = 'Lettusin1!';
+  
   setTimeout(() => {
-    // Grant access
-    localStorage.setItem('sbl_user_email', email);
-    localStorage.setItem('sbl_access_token', 'login_' + Date.now());
-    
-    // Redirect to calculator
-    window.location.href = 'calculator.html';
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      // Grant access
+      localStorage.setItem('sbl_user_email', email);
+      localStorage.setItem('sbl_access_token', 'admin_' + Date.now());
+      
+      // Redirect to calculator
+      window.location.href = 'calculator.html';
+    } else {
+      // Invalid credentials
+      btn.classList.remove('loading');
+      alert('Invalid email or password. Please try again.');
+    }
   }, 1200);
 }
 </script>
