@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://gumroad.com/js/gumroad.js"></script>
 <script type="text/javascript">
   (function(){
     emailjs.init("UULcd71jnxhghrsxe");
@@ -1651,8 +1652,19 @@ function handlePaywallEmail(e) {
   emailjs.send('service_2x2pccf', 'template_6iqzrgs', templateParams)
     .then(function(response) {
       console.log('Email sent successfully!', response.status, response.text);
-      // Redirect directly to Gumroad checkout with email pre-filled
-      window.location.href = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
+      
+      // Open Gumroad overlay checkout (stays on your site)
+      const gumroadUrl = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
+      
+      if (window.GumroadOverlay) {
+        window.GumroadOverlay.open(gumroadUrl);
+      } else {
+        // Fallback to redirect if overlay doesn't load
+        window.location.href = gumroadUrl;
+      }
+      
+      btn.innerHTML = 'Get full access for $97 <span class="sbl-modal__cta-arrow">→</span>';
+      btn.disabled = false;
     }, function(error) {
       console.log('Email send failed...', error);
       alert('Something went wrong. Please try again or contact us directly.');
