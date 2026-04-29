@@ -1004,8 +1004,8 @@ function handleLogin(e) {
       localStorage.setItem('sbl_user_email', email);
       localStorage.setItem('sbl_access_token', 'admin_' + Date.now());
       
-      // Redirect to calculator
-      window.location.href = 'calculator.html';
+      // Redirect to dashboard
+      window.location.href = 'dashboard.html';
     } else {
       // Invalid credentials
       btn.classList.remove('loading');
