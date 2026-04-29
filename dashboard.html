@@ -2896,12 +2896,12 @@
           <p class="sub">Your account information and preferences.</p>
           <div class="account-row">
             <span class="lbl">Full Name</span>
-            <span class="val">Alex Johnson</span>
+            <span class="val" id="accountFullName">Member</span>
             <span class="edit">Edit →</span>
           </div>
           <div class="account-row">
             <span class="lbl">Email Address</span>
-            <span class="val">alex@example.com</span>
+            <span class="val" id="accountEmail">member@example.com</span>
             <span class="edit">Edit →</span>
           </div>
           <div class="account-row">
@@ -2921,7 +2921,7 @@
           </div>
           <div class="account-row">
             <span class="lbl">Member Since</span>
-            <span class="val">January 2026</span>
+            <span class="val" id="memberSince">January 2026</span>
             <span></span>
           </div>
           <div class="account-row">
@@ -3838,6 +3838,7 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
 // Populate user name from localStorage
 (function() {
   const userEmail = localStorage.getItem('sbl_user_email') || 'member@example.com';
+  const accessToken = localStorage.getItem('sbl_access_token');
   
   // Custom name mapping for specific users
   const customNames = {
@@ -3855,6 +3856,7 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
     displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
   }
   
+  // Update navigation
   document.getElementById('userName').textContent = displayName;
   document.getElementById('welcomeName').textContent = displayName;
   
@@ -3862,6 +3864,24 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
   const avatar = document.querySelector('.nav-user-avatar');
   if (avatar) {
     avatar.textContent = displayName.charAt(0).toUpperCase();
+  }
+  
+  // Update account settings page
+  const accountFullName = document.getElementById('accountFullName');
+  const accountEmail = document.getElementById('accountEmail');
+  const memberSince = document.getElementById('memberSince');
+  
+  if (accountFullName) accountFullName.textContent = displayName;
+  if (accountEmail) accountEmail.textContent = userEmail;
+  
+  // Calculate member since date from access token
+  if (memberSince && accessToken) {
+    const timestamp = accessToken.split('_')[1];
+    if (timestamp) {
+      const date = new Date(parseInt(timestamp));
+      const monthYear = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      memberSince.textContent = monthYear;
+    }
   }
 })();
 </script>
