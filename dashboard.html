@@ -2468,6 +2468,107 @@
     left: 50%;
     transform: translateX(-50%);
   }
+
+  /* ================== DELETE CONFIRMATION MODAL ================== */
+  .delete-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 21, 0.75);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+
+  .delete-modal-overlay.active { display: flex; }
+
+  .delete-modal {
+    background: var(--paper);
+    border: 2px solid var(--rust);
+    border-radius: 8px;
+    padding: 2.5rem;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(139, 44, 28, 0.3);
+  }
+
+  .delete-modal .icon-warning {
+    width: 48px;
+    height: 48px;
+    background: rgba(139, 44, 28, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--rust);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .delete-modal h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+
+  .delete-modal h3 em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .delete-modal p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+  }
+
+  .delete-modal .actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .delete-modal .btn-delete {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    background: var(--rust);
+    color: var(--pearl);
+    border: none;
+    border-radius: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .delete-modal .btn-delete:hover {
+    background: #7a2e15;
+    transform: translateY(-1px);
+  }
+
+  .delete-modal .btn-cancel {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    background: var(--pearl-2);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .delete-modal .btn-cancel:hover {
+    background: var(--pearl-3);
+    border-color: var(--ink-2);
+  }
 </style>
 </head>
 <body>
@@ -3090,6 +3191,19 @@
   <span id="toastMsg">Saved</span>
 </div>
 
+<!-- ============ DELETE CONFIRMATION MODAL ============ -->
+<div class="delete-modal-overlay" id="deleteModalOverlay">
+  <div class="delete-modal">
+    <div class="icon-warning">!</div>
+    <h3>Delete <em>scenario</em>?</h3>
+    <p id="deleteModalText">This will permanently remove this scenario. This action cannot be undone.</p>
+    <div class="actions">
+      <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-delete" onclick="confirmDelete()">Delete Scenario</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ TUTORIAL SYSTEM ============ -->
 <div class="tutorial-overlay" id="tutorialOverlay"></div>
 
@@ -3154,10 +3268,7 @@ const state = {
 };
 
 // In-memory saved scenarios (in production, persist to backend)
-let savedScenarios = [
-  { id: 1, name: 'Base case · $450K home', date: 'Apr 12, 2026', state: { homePrice: 450000, loanTerm: 30, rate: 5.98, shares: 10000, stockPrice: 10, divPerShare: 0.12, divFreq: 'monthly', addCap: 100000, leverage: 2, marginRate: 7 } },
-  { id: 2, name: 'Conservative · 1.5× leverage', date: 'Apr 18, 2026', state: { homePrice: 380000, loanTerm: 30, rate: 5.98, shares: 8000, stockPrice: 12, divPerShare: 0.10, divFreq: 'monthly', addCap: 80000, leverage: 1.5, marginRate: 7 } }
-];
+let savedScenarios = [];
 
 // ================== UTILITIES ==================
 const fmt = n => {
@@ -3530,20 +3641,22 @@ function renderSaved() {
     const m = calcMetrics(sc.state);
     const status = getStatus(m);
     html += `
-      <div class="saved-card" onclick="loadScenario(${sc.id})">
-        <button class="delete-btn" onclick="deleteScenario(${sc.id}, event)" title="Delete">✕</button>
-        <div class="name">${sc.name}</div>
-        <div class="date">Saved ${sc.date}</div>
-        <div class="pct-row">
-          <span class="pct ${status.class}">${m.coverage.toFixed(0)}%</span>
-          <span class="pct-lbl">Coverage</span>
+      <div class="saved-card" style="position: relative;">
+        <div onclick="loadScenario(${sc.id})" style="cursor: pointer;">
+          <div class="name">${sc.name}</div>
+          <div class="date">Saved ${sc.date}</div>
+          <div class="pct-row">
+            <span class="pct ${status.class}">${m.coverage.toFixed(0)}%</span>
+            <span class="pct-lbl">Coverage</span>
+          </div>
+          <div class="specs">
+            <div class="spec"><span>Home</span><span class="v">${fmt(sc.state.homePrice)}</span></div>
+            <div class="spec"><span>Shares</span><span class="v">${fmtShares(sc.state.shares)}</span></div>
+            <div class="spec"><span>Leverage</span><span class="v">${sc.state.leverage}×</span></div>
+            <div class="spec"><span>Surplus</span><span class="v">${(m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus)}/mo</span></div>
+          </div>
         </div>
-        <div class="specs">
-          <div class="spec"><span>Home</span><span class="v">${fmt(sc.state.homePrice)}</span></div>
-          <div class="spec"><span>Shares</span><span class="v">${fmtShares(sc.state.shares)}</span></div>
-          <div class="spec"><span>Leverage</span><span class="v">${sc.state.leverage}×</span></div>
-          <div class="spec"><span>Surplus</span><span class="v">${(m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus)}/mo</span></div>
-        </div>
+        <button onclick="event.stopPropagation(); openDeleteModal(${sc.id}, '${sc.name}')" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: 0.25rem 0.5rem; transition: color 0.2s;" onmouseover="this.style.color='var(--rust)'" onmouseout="this.style.color='var(--muted)'">×</button>
       </div>`;
   });
   html += '</div>';
@@ -4099,6 +4212,31 @@ function skipTutorial() {
 function completeTutorial() {
   skipTutorial();
   showToast('Tutorial completed! You\'re ready to start modeling.');
+}
+
+// ================== DELETE SCENARIO FUNCTIONS ==================
+let deleteScenarioId = null;
+
+function openDeleteModal(id, name) {
+  deleteScenarioId = id;
+  document.getElementById('deleteModalText').textContent = `This will permanently remove "${name}". This action cannot be undone.`;
+  document.getElementById('deleteModalOverlay').classList.add('active');
+}
+
+function closeDeleteModal() {
+  deleteScenarioId = null;
+  document.getElementById('deleteModalOverlay').classList.remove('active');
+}
+
+function confirmDelete() {
+  if (deleteScenarioId !== null) {
+    savedScenarios = savedScenarios.filter(sc => sc.id !== deleteScenarioId);
+    renderSaved();
+    renderRecent();
+    document.getElementById('hs-saved').textContent = savedScenarios.length;
+    closeDeleteModal();
+    showToast('Scenario deleted');
+  }
 }
 </script>
 
