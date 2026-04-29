@@ -988,12 +988,18 @@ function handleLogin(e) {
   
   btn.classList.add('loading');
 
-  // Admin account check
-  const ADMIN_EMAIL = 'qcabrera32@gmail.com';
-  const ADMIN_PASSWORD = 'Lettusin1!';
+  // Admin accounts
+  const ADMIN_ACCOUNTS = [
+    { email: 'qcabrera32@gmail.com', password: 'Lettusin1!' },
+    { email: 'aussiepowers555@gmail.com', password: 'mick12345' }
+  ];
   
   setTimeout(() => {
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const validAccount = ADMIN_ACCOUNTS.find(
+      acc => acc.email === email && acc.password === password
+    );
+    
+    if (validAccount) {
       // Grant access
       localStorage.setItem('sbl_user_email', email);
       localStorage.setItem('sbl_access_token', 'admin_' + Date.now());
