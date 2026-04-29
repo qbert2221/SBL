@@ -567,11 +567,9 @@
 </div>
 
 <div class="sbl-modal open" id="sblModal" role="dialog" aria-modal="true" aria-labelledby="sblModalTitle">
-  <div class="sbl-modal__backdrop" onclick="sblModalClose()"></div>
+  <div class="sbl-modal__backdrop"></div>
 
   <div class="sbl-modal__card">
-
-    <button class="sbl-modal__close" onclick="sblModalClose()" aria-label="Close">✕</button>
 
     <div class="sbl-modal__icon">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1650,10 +1648,10 @@ recompute();
   const userEmail = localStorage.getItem('sbl_user_email');
   
   if (accessToken && userEmail) {
-    // User has access, hide the paywall
+    // User has access, hide the paywall completely
     const modal = document.getElementById('sblModal');
     if (modal) {
-      modal.classList.remove('open');
+      modal.style.display = 'none';
       document.body.style.overflow = '';
     }
     
@@ -1663,8 +1661,14 @@ recompute();
       ebookSection.style.display = 'block';
     }
   } else {
-    // No access, redirect to login
-    window.location.href = 'login.html';
+    // No access, show paywall (it's already open by default)
+    // Remove ESC key close functionality
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
   }
 })();
 
@@ -1732,18 +1736,6 @@ function handlePaywallEmail(e) {
     });
 }
 
-// Modal functions
-function sblModalClose() {
-  document.getElementById('sblModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ESC key to close
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('sblModal').classList.contains('open')) {
-    sblModalClose();
-  }
-});
 </script>
 
 </body>
