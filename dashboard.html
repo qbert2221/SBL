@@ -3838,8 +3838,22 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
 // Populate user name from localStorage
 (function() {
   const userEmail = localStorage.getItem('sbl_user_email') || 'member@example.com';
-  const userName = userEmail.split('@')[0]; // Get part before @
-  const displayName = userName.charAt(0).toUpperCase() + userName.slice(1); // Capitalize first letter
+  
+  // Custom name mapping for specific users
+  const customNames = {
+    'superkc@pompeiisurgical.com': 'Khan',
+    'qcabrera32@gmail.com': 'Qcabrera32',
+    'aussiepowers555@gmail.com': 'Aussiepowers555'
+  };
+  
+  // Check if user has custom name, otherwise use email prefix
+  let displayName;
+  if (customNames[userEmail.toLowerCase()]) {
+    displayName = customNames[userEmail.toLowerCase()];
+  } else {
+    const userName = userEmail.split('@')[0];
+    displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
+  }
   
   document.getElementById('userName').textContent = displayName;
   document.getElementById('welcomeName').textContent = displayName;
