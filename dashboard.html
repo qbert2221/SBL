@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Access — SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .dashboard-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 4rem 2.5rem;
+  }
+
+  .dashboard-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .dashboard-hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .dashboard-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 3.5rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .dashboard-hero h1 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .dashboard-hero .deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--ink-2);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .access-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .access-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .access-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+
+  .access-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--green-2);
+  }
+
+  .access-card .icon {
+    width: 56px;
+    height: 56px;
+    background: var(--green-bg);
+    border: 1.5px solid var(--green-2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .access-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+
+  .access-card p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 1.75rem;
+  }
+
+  .access-card .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    padding: 0.95rem 1.75rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  .access-card .btn:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+  }
+
+  .access-card .btn-arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+  }
+
+  .access-card .btn:hover .btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .access-card .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+  }
+
+  .access-card .btn-secondary:hover {
+    background: var(--pearl-2);
+    border-color: var(--ink);
+  }
+
+  .user-info {
+    background: var(--pearl-2);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .user-info .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .user-info .email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .user-info .logout-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    padding: 0.65rem 1.25rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .user-info .logout-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .resources-section {
+    border-top: 1px solid var(--rule);
+    padding-top: 3rem;
+  }
+
+  .resources-section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .resources-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resources-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .resources-list li:last-child {
+    border-bottom: none;
+  }
+
+  .resources-list .resource-name {
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .resources-list .resource-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-hero h1 { font-size: 2.5rem; }
+    .access-grid { grid-template-columns: 1fr; }
+    .user-info { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="dashboard.html" class="active">My Access</a>
+  </nav>
+</header>
+
+<div class="dashboard-shell">
+
+  <div class="user-info">
+    <div>
+      <div class="label">Logged in as</div>
+      <div class="email" id="userEmail">your@email.com</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+
+  <div class="dashboard-hero">
+    <div class="eyebrow">Your Complete Access</div>
+    <h1>Everything you <em>purchased</em>.</h1>
+    <p class="deck">Your full calculator access and implementation playbook are ready. Start modeling your strategy or download the guide.</p>
+  </div>
+
+  <div class="access-grid">
+    
+    <div class="access-card">
+      <div class="icon">📊</div>
+      <h3>Full Calculator</h3>
+      <p>Access all 5 detailed views with unlimited scenarios. Model your exact numbers with 30-year projections and risk analysis.</p>
+      <a href="calculator.html" class="btn">
+        Open calculator
+        <span class="btn-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="access-card">
+      <div class="icon">📖</div>
+      <h3>Implementation Playbook</h3>
+      <p>Download the complete PDF guide with lender shortlists, corporate structures, tax templates, and step-by-step frameworks.</p>
+      <a href="#" onclick="downloadPlaybook(event)" class="btn btn-secondary">
+        Download PDF
+        <span class="btn-arrow">↓</span>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="resources-section">
+    <h2>Additional Resources</h2>
+    <ul class="resources-list">
+      <li>
+        <span class="resource-name">Lender Contact Templates</span>
+        <span class="resource-meta">Included in playbook</span>
+      </li>
+      <li>
+        <span class="resource-name">Corporate Formation Checklist</span>
+        <span class="resource-meta">Included in playbook</span>
+      </li>
+      <li>
+        <span class="resource-name">Brokerage Comparison Sheet</span>
+        <span class="resource-meta">Included in playbook</span>
+      </li>
+      <li>
+        <span class="resource-name">Free Updates</span>
+        <span class="resource-meta">Lifetime access</span>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="brand-mark">SBL</div>
+      <p>The Corporate Dividend Mortgage™ strategy explained.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+      <a href="mailto:contact@sblmortgage.com">Contact</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice.
+  </div>
+</footer>
+
+<script>
+// Check if user is logged in
+(function() {
+  const userEmail = localStorage.getItem('sbl_user_email');
+  const accessToken = localStorage.getItem('sbl_access_token');
+  
+  if (!userEmail || !accessToken) {
+    // Not logged in, redirect to login
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  // Display user email
+  document.getElementById('userEmail').textContent = userEmail;
+})();
+
+function logout() {
+  localStorage.removeItem('sbl_user_email');
+  localStorage.removeItem('sbl_access_token');
+  window.location.href = 'index.html';
+}
+
+function downloadPlaybook(e) {
+  e.preventDefault();
+  // In production, this would be a real download link
+  alert('Playbook download will be available after Stripe integration. For now, this is a placeholder.');
+}
+</script>
+
+</body>
+</html>

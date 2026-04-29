@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Your Purchase — SBL Mortgage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .login-shell {
+    min-height: calc(100vh - 73px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+
+  .login-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    max-width: 480px;
+    width: 100%;
+    padding: 3rem 2.5rem;
+    text-align: center;
+  }
+
+  .login-card .icon {
+    width: 64px;
+    height: 64px;
+    background: var(--green-bg);
+    border: 1.5px solid var(--green-2);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+  }
+
+  .login-card h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.25rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .login-card h1 em {
+    font-style: italic;
+    color: var(--green-2);
+  }
+
+  .login-card .deck {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+  }
+
+  .login-form {
+    margin-bottom: 1.5rem;
+  }
+
+  .login-form label {
+    display: block;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .login-form input {
+    width: 100%;
+    padding: 0.95rem 1.25rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.2s;
+    margin-bottom: 1.25rem;
+  }
+
+  .login-form input:focus {
+    border-color: var(--green-2);
+    box-shadow: 0 0 0 3px rgba(31, 74, 50, 0.08);
+  }
+
+  .login-form .submit-btn {
+    width: 100%;
+    background: var(--ink);
+    color: var(--pearl);
+    border: none;
+    padding: 1.1rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .login-form .submit-btn:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
+  .login-form .submit-btn:disabled {
+    background: var(--rule);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .login-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .login-meta a {
+    color: var(--green-2);
+    text-decoration: none;
+  }
+
+  .login-meta a:hover {
+    text-decoration: underline;
+  }
+
+  .success-state {
+    display: none;
+  }
+
+  .success-state.visible {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-state .icon-check {
+    width: 72px;
+    height: 72px;
+    background: var(--green-bg);
+    border: 2px solid var(--green-2);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    font-size: 2rem;
+  }
+
+  .success-state h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+
+  .success-state p {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .success-state .email-highlight {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--pearl-2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <div class="brand-mark">SBL</div>
+    <div class="brand-text">
+      <div class="name">sblmortgage<span class="tld">.com</span></div>
+      <div class="sub">Corporate Dividend Mortgage™</div>
+    </div>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html">Strategy</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="ebook-free.html">Free Guide</a>
+    <a href="signup.html" class="nav-cta">Get the Playbook</a>
+  </nav>
+</header>
+
+<div class="login-shell">
+  <div class="login-card">
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="icon">🔑</div>
+      <h1>Access your <em>purchase</em>.</h1>
+      <p class="deck">Enter the email you used to purchase. We'll send you a magic link to access your calculator and playbook.</p>
+
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        
+        <button type="submit" class="submit-btn" id="loginBtn">
+          Send magic link
+          <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
+        </button>
+      </form>
+
+      <p class="login-meta">
+        Don't have access yet? <a href="signup.html">Purchase here</a>
+      </p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="successState" class="success-state">
+      <div class="icon-check">✓</div>
+      <h2>Check your email!</h2>
+      <p>We sent a magic link to <span class="email-highlight" id="confirmEmail">your@email.com</span></p>
+      <p style="margin-bottom: 1.5rem;">Click the link in the email to access your dashboard. The link expires in 15 minutes.</p>
+      <p class="login-meta">
+        Didn't receive it? <a href="#" onclick="resendLink(event)">Resend link</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="brand-mark">SBL</div>
+      <p>The Corporate Dividend Mortgage™ strategy explained.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+      <a href="mailto:contact@sblmortgage.com">Contact</a>
+    </div>
+  </div>
+  <div class="legal">
+    © 2026 sblmortgage.com — Educational content only. Not financial advice.
+  </div>
+</footer>
+
+<script>
+function handleLogin(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('email').value;
+  const btn = document.getElementById('loginBtn');
+  
+  btn.innerHTML = 'Sending...';
+  btn.disabled = true;
+  
+  // In production, this would call your backend to send a magic link email
+  // For now, simulate the process
+  setTimeout(() => {
+    document.getElementById('confirmEmail').textContent = email;
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('successState').classList.add('visible');
+    
+    btn.innerHTML = 'Send magic link <span style="font-family: \'Fraunces\', serif; font-style: italic;">→</span>';
+    btn.disabled = false;
+    
+    // For demo purposes, auto-login after 2 seconds
+    // Remove this in production
+    setTimeout(() => {
+      localStorage.setItem('sbl_user_email', email);
+      localStorage.setItem('sbl_access_token', 'demo_token_' + Date.now());
+      window.location.href = 'dashboard.html';
+    }, 2000);
+  }, 800);
+}
+
+function resendLink(e) {
+  e.preventDefault();
+  alert('Link resent! Check your email.');
+}
+</script>
+
+</body>
+</html>

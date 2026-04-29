@@ -1618,6 +1618,19 @@ document.getElementById('divFreq').addEventListener('change', e => {
 // Init
 recompute();
 
+// Check if user has access (hide paywall if logged in)
+(function() {
+  const accessToken = localStorage.getItem('sbl_access_token');
+  if (accessToken) {
+    // User has access, hide the paywall
+    const modal = document.getElementById('sblModal');
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+})();
+
 // Email capture handler
 function handlePaywallEmail(e) {
   e.preventDefault();
