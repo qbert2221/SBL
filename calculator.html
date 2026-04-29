@@ -566,7 +566,7 @@
   </div>
 </div>
 
-<div class="sbl-modal open" id="sblModal" role="dialog" aria-modal="true" aria-labelledby="sblModalTitle">
+<div class="sbl-modal" id="sblModal" role="dialog" aria-modal="true" aria-labelledby="sblModalTitle">
   <div class="sbl-modal__backdrop"></div>
 
   <div class="sbl-modal__card">
@@ -1647,13 +1647,18 @@ recompute();
   const accessToken = localStorage.getItem('sbl_access_token');
   const userEmail = localStorage.getItem('sbl_user_email');
   
+  console.log('Access check:', { accessToken, userEmail }); // Debug
+  
   if (accessToken && userEmail) {
-    // User has access, hide the paywall completely
+    // User has access - show ebook section, NO paywall
+    console.log('User has access - hiding paywall');
+    
     const modal = document.getElementById('sblModal');
     if (modal) {
       modal.style.display = 'none';
-      document.body.style.overflow = '';
     }
+    
+    document.body.style.overflow = '';
     
     // Show ebook section
     const ebookSection = document.getElementById('ebookSection');
@@ -1661,8 +1666,16 @@ recompute();
       ebookSection.style.display = 'block';
     }
   } else {
-    // No access, show paywall (it's already open by default)
-    // Remove ESC key close functionality
+    // No access - show paywall and lock it
+    console.log('No access - showing paywall');
+    
+    const modal = document.getElementById('sblModal');
+    if (modal) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Prevent ESC key close
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         e.preventDefault();
