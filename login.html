@@ -220,14 +220,17 @@
     <div id="loginForm">
       <div class="icon">🔑</div>
       <h1>Access your <em>purchase</em>.</h1>
-      <p class="deck">Enter the email you used to purchase. We'll send you a magic link to access your calculator and playbook.</p>
+      <p class="deck">Enter your email and password to access the calculator and playbook.</p>
 
       <form class="login-form" onsubmit="handleLogin(event)">
         <label for="email">Email Address</label>
         <input type="email" id="email" name="email" placeholder="you@example.com" required>
         
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        
         <button type="submit" class="submit-btn" id="loginBtn">
-          Send magic link
+          Sign in
           <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
         </button>
       </form>
@@ -273,29 +276,22 @@ function handleLogin(e) {
   e.preventDefault();
   
   const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   const btn = document.getElementById('loginBtn');
   
-  btn.innerHTML = 'Sending...';
+  btn.innerHTML = 'Signing in...';
   btn.disabled = true;
   
-  // In production, this would call your backend to send a magic link email
-  // For now, simulate the process
+  // Simple password check (in production, verify against database)
+  // For now, accept any password for purchased users
   setTimeout(() => {
-    document.getElementById('confirmEmail').textContent = email;
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('successState').classList.add('visible');
+    // Grant access
+    localStorage.setItem('sbl_user_email', email);
+    localStorage.setItem('sbl_access_token', 'login_' + Date.now());
     
-    btn.innerHTML = 'Send magic link <span style="font-family: \'Fraunces\', serif; font-style: italic;">→</span>';
-    btn.disabled = false;
-    
-    // For demo purposes, auto-login after 2 seconds
-    // Remove this in production
-    setTimeout(() => {
-      localStorage.setItem('sbl_user_email', email);
-      localStorage.setItem('sbl_access_token', 'demo_token_' + Date.now());
-      window.location.href = 'dashboard.html';
-    }, 2000);
-  }, 800);
+    // Redirect to calculator
+    window.location.href = 'calculator.html';
+  }, 600);
 }
 
 function resendLink(e) {
