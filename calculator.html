@@ -9,6 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+    emailjs.init("UULcd71jnxhghrsxe");
+  })();
+</script>
 <style>
   /* Calculator-specific layout */
   .calc-shell {
@@ -549,7 +555,16 @@
       </ul>
     </div>
 
-    <a href="signup.html" class="sbl-modal__cta">
+    <form id="paywallEmailForm" onsubmit="handlePaywallEmail(event)" style="margin-bottom: 1.5rem;">
+      <input type="text" id="paywall_name" placeholder="Your name" required style="width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-family: 'Inter Tight', sans-serif; font-size: 0.95rem; background: var(--pearl); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; outline: none;">
+      <input type="email" id="paywall_email" placeholder="Your email" required style="width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-family: 'Inter Tight', sans-serif; font-size: 0.95rem; background: var(--pearl); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; outline: none;">
+      <button type="submit" class="sbl-modal__cta" id="paywallSubmitBtn" style="width: 100%; margin: 0;">
+        Get full access for $97
+        <span class="sbl-modal__cta-arrow">→</span>
+      </button>
+    </form>
+
+    <a href="signup.html" class="sbl-modal__cta" id="paywallDirectLink" style="display: none;">
       Get full access for $97
       <span class="sbl-modal__cta-arrow">→</span>
     </a>
@@ -1585,6 +1600,35 @@ document.getElementById('divFreq').addEventListener('change', e => {
 
 // Init
 recompute();
+
+// Email capture handler
+function handlePaywallEmail(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('paywall_name').value;
+  const email = document.getElementById('paywall_email').value;
+  const btn = document.getElementById('paywallSubmitBtn');
+  
+  btn.innerHTML = 'Sending...';
+  btn.disabled = true;
+  
+  const templateParams = {
+    user_name: name,
+    user_email: email,
+    timestamp: new Date().toLocaleString()
+  };
+  
+  emailjs.send('service_2x2pccf', 'template_6iqzrgs', templateParams)
+    .then(function(response) {
+      console.log('Email sent successfully!', response.status, response.text);
+      window.location.href = 'signup.html';
+    }, function(error) {
+      console.log('Email send failed...', error);
+      alert('Something went wrong. Please try again or contact us directly.');
+      btn.innerHTML = 'Get full access for $97 <span class="sbl-modal__cta-arrow">→</span>';
+      btn.disabled = false;
+    });
+}
 
 // Modal functions
 function sblModalClose() {
