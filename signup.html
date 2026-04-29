@@ -815,24 +815,10 @@ function handleSubmit(e) {
   btn.textContent = 'Reserving...';
   btn.disabled = true;
 
-  // Simulate the submission — in production, replace with real API call
-  // to your CRM/email tool, then redirect to Stripe / Lemon Squeezy / etc.
+  // Redirect to Gumroad checkout with pre-filled email
   setTimeout(() => {
-    document.getElementById('confirmEmail').textContent = email;
-    document.getElementById('formState').style.display = 'none';
-    document.getElementById('successState').classList.add('visible');
-
-    // Smooth scroll to top of card on mobile
-    document.getElementById('signupCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // === REPLACE WITH ACTUAL PAYMENT REDIRECT ===
-    // Example: window.location.href = `https://buy.stripe.com/yourLink?email=${encodeURIComponent(email)}`;
-    // Or:      window.location.href = `https://yourbrand.lemonsqueezy.com/checkout/buy/PRODUCT_ID?checkout[email]=${encodeURIComponent(email)}`;
-    // ============================================
-
-    btn.textContent = 'Continue to payment →';
-    btn.disabled = false;
-  }, 600);
+    window.location.href = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
+  }, 400);
 }
 
 function resetForm() {
