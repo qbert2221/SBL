@@ -436,12 +436,11 @@
   .playbook-cover {
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, var(--ink) 0%, #0a0a0a 100%);
+    background: linear-gradient(135deg, #1a3325 0%, #0d1f15 100%);
     border-radius: 4px 12px 12px 4px;
     box-shadow:
       -20px 20px 60px rgba(0,0,0,0.3),
-      -5px 5px 20px rgba(0,0,0,0.2),
-      inset -2px 0 8px rgba(255,255,255,0.05);
+      -5px 5px 20px rgba(0,0,0,0.2);
     position: absolute;
     top: 0; left: 0;
     display: flex;
@@ -454,18 +453,19 @@
   .playbook-cover::before {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 10px;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
+    inset: 12px;
+    border: 1px solid rgba(184, 153, 104, 0.4);
+    border-radius: 4px;
+    pointer-events: none;
   }
 
   .playbook-cover::after {
     content: '';
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 120px;
-    background: linear-gradient(180deg, transparent, rgba(31, 74, 50, 0.25));
+    inset: 18px;
+    border: 1px solid rgba(184, 153, 104, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
   }
 
   .playbook-label {
@@ -1499,9 +1499,20 @@
               <div style="width: 60px; height: 1px; background: var(--gold); margin: 12px 0 16px;"></div>
               <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: rgba(247, 245, 239, 0.7); margin-bottom: 8px;">The Corporate Dividend Mortgage™</div>
             </div>
-            <div class="playbook-title-text" style="margin: auto 0; text-align: center;">
-              The <em style="font-style: italic; color: var(--gold-light);">Implementation</em> Playbook
-              <span style="font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: rgba(247, 245, 239, 0.65); margin-top: 12px; line-height: 1.4; display: block;">Corporate structures, lender shortlists, brokerage rankings & tax optimization strategies.</span>
+            <div style="text-align: center; margin: auto 0;">
+              <div class="playbook-title-text" style="margin-bottom: 16px;">
+                The <em style="font-style: italic; color: var(--gold-light);">Implementation</em> Playbook
+              </div>
+              <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 11px; color: rgba(247, 245, 239, 0.65); line-height: 1.4; max-width: 220px; margin: 0 auto 16px;">Corporate structures, lender shortlists, brokerage rankings & tax optimization strategies.</div>
+              <svg width="60" height="60" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="#d4b76a" stroke-width="1"/>
+                <circle cx="40" cy="40" r="26" fill="none" stroke="#d4b76a" stroke-width="0.6" opacity="0.6"/>
+                <circle cx="40" cy="40" r="6" fill="#d4b76a"/>
+                <line x1="40" y1="12" x2="40" y2="18" stroke="#d4b76a" stroke-width="1"/>
+                <line x1="40" y1="62" x2="40" y2="68" stroke="#d4b76a" stroke-width="1"/>
+                <line x1="12" y1="40" x2="18" y2="40" stroke="#d4b76a" stroke-width="1"/>
+                <line x1="62" y1="40" x2="68" y2="40" stroke="#d4b76a" stroke-width="1"/>
+              </svg>
             </div>
             <div style="position: relative; z-index: 2; text-align: center;">
               <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 13px; color: var(--gold-light); margin-bottom: 8px;">+ Full Calculator Access</div>
