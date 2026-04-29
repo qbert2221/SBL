@@ -988,33 +988,14 @@ function handleLogin(e) {
   
   btn.classList.add('loading');
 
-  // Admin accounts
-  const ADMIN_ACCOUNTS = [
-    { email: 'qcabrera32@gmail.com', password: 'Lettusin1!' },
-    { email: 'aussiepowers555@gmail.com', password: 'mick12345' }
-  ];
-  
+  // Accept any login for now (demo mode)
   setTimeout(() => {
-    console.log('Login attempt:', { email, password }); // Debug
+    // Grant access to anyone
+    localStorage.setItem('sbl_user_email', email);
+    localStorage.setItem('sbl_access_token', 'user_' + Date.now());
     
-    const validAccount = ADMIN_ACCOUNTS.find(
-      acc => acc.email.toLowerCase() === email.toLowerCase() && acc.password === password
-    );
-    
-    console.log('Valid account found:', validAccount); // Debug
-    
-    if (validAccount) {
-      // Grant access
-      localStorage.setItem('sbl_user_email', email);
-      localStorage.setItem('sbl_access_token', 'admin_' + Date.now());
-      
-      // Redirect to dashboard
-      window.location.href = 'dashboard.html';
-    } else {
-      // Invalid credentials
-      btn.classList.remove('loading');
-      alert('Invalid email or password. Please try again.');
-    }
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
   }, 1200);
 }
 </script>
