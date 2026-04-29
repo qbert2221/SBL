@@ -323,6 +323,23 @@
     to { transform: translateY(0) scale(1); opacity: 1; }
   }
 
+  .sbl-modal__card::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sbl-modal__card::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sbl-modal__card::-webkit-scrollbar-thumb {
+    background: var(--green-2);
+    border-radius: 10px;
+  }
+
+  .sbl-modal__card::-webkit-scrollbar-thumb:hover {
+    background: var(--green);
+  }
+
   .sbl-modal__close {
     position: absolute;
     top: 1rem;
