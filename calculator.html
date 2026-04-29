@@ -1638,7 +1638,7 @@ function handlePaywallEmail(e) {
   emailjs.send('service_2x2pccf', 'template_6iqzrgs', templateParams)
     .then(function(response) {
       console.log('Email sent successfully!', response.status, response.text);
-      window.location.href = 'signup.html';
+      window.location.href = `signup.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
     }, function(error) {
       console.log('Email send failed...', error);
       alert('Something went wrong. Please try again or contact us directly.');
