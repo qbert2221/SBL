@@ -3,384 +3,3853 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Access — SBL Mortgage</title>
+<title>Dashboard — SBL Mortgage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  .dashboard-shell {
-    max-width: 1180px;
+  /* =========================================================
+     SBL DASHBOARD — Member portal
+     Pearl white + deep forest green + gold accents
+     ========================================================= */
+  :root {
+    --pearl: #f7f5ef;
+    --pearl-2: #efece2;
+    --pearl-3: #e6e2d4;
+    --paper: #fbfaf6;
+    --ink: #0d1f15;
+    --ink-2: #1a3325;
+    --green: #1f4a32;
+    --green-2: #2a6043;
+    --green-3: #3a7a55;
+    --green-light: #6b9b7e;
+    --green-pale: #c5d8cb;
+    --green-bg: rgba(31, 74, 50, 0.04);
+    --gold: #b89968;
+    --gold-light: #d4b76a;
+    --gold-deep: #8a7148;
+    --rust: #9a3f1c;
+    --muted: #6b7569;
+    --rule: rgba(13, 31, 21, 0.16);
+    --rule-soft: rgba(13, 31, 21, 0.08);
+    --rule-faint: rgba(13, 31, 21, 0.04);
+    --shadow: rgba(13, 31, 21, 0.08);
+    --shadow-strong: rgba(13, 31, 21, 0.25);
+    --red: #8b2c1c;
+    --amber: #8a6f1f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--pearl);
+    color: var(--ink);
+    font-family: 'Inter Tight', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 999;
+    mix-blend-mode: multiply;
+    opacity: 0.4;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ================== APP SHELL ================== */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ================== LEFT SIDEBAR ================== */
+  .nav {
+    background: var(--ink);
+    color: var(--pearl);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    border-right: 1px solid rgba(247, 245, 239, 0.08);
+  }
+
+  .nav::-webkit-scrollbar { width: 4px; }
+  .nav::-webkit-scrollbar-track { background: transparent; }
+  .nav::-webkit-scrollbar-thumb { background: rgba(247, 245, 239, 0.1); border-radius: 2px; }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(247, 245, 239, 0.1);
+    margin-bottom: 1.25rem;
+  }
+
+  .nav-brand-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--pearl);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-style: italic;
+    border-radius: 4px;
+    letter-spacing: -0.02em;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .nav-brand-mark::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 5px;
+    height: 5px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .nav-brand-text .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.015em;
+    color: var(--pearl);
+    line-height: 1.1;
+  }
+
+  .nav-brand-text .name .tld {
+    color: var(--green-light);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .nav-brand-text .sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.5);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .nav-section {
+    padding: 0 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247, 245, 239, 0.4);
+    font-weight: 600;
+    padding: 0 0.5rem 0.65rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgba(247, 245, 239, 0.75);
+    font-size: 0.88rem;
+    font-weight: 400;
+    margin-bottom: 0.15rem;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: rgba(247, 245, 239, 0.05);
+    color: var(--pearl);
+  }
+
+  .nav-item.active {
+    background: rgba(58, 122, 85, 0.18);
+    color: var(--pearl);
+    border-color: rgba(107, 155, 126, 0.25);
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    background: var(--gold-light);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .nav-item .icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--green-light);
+    font-weight: 500;
+  }
+
+  .nav-item.active .icon {
+    color: var(--gold-light);
+  }
+
+  .nav-item .badge {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    background: rgba(184, 153, 104, 0.18);
+    color: var(--gold-light);
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  /* User card at bottom */
+  .nav-user {
+    margin-top: auto;
+    padding: 1rem 1.5rem 0.5rem;
+    border-top: 1px solid rgba(247, 245, 239, 0.1);
+  }
+
+  .nav-user-card {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.65rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .nav-user-card:hover {
+    background: rgba(247, 245, 239, 0.05);
+  }
+
+  .nav-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    font-style: italic;
+  }
+
+  .nav-user-info {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .nav-user-info .name {
+    font-size: 0.83rem;
+    color: var(--pearl);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-user-info .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: rgba(247, 245, 239, 0.5);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* ================== MAIN AREA ================== */
+  .main {
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Top bar */
+  .topbar {
+    height: 64px;
+    background: var(--pearl);
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(247, 245, 239, 0.92);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.85rem;
+    color: var(--ink-2);
+  }
+
+  .breadcrumb .sep {
+    color: var(--muted);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+
+  .breadcrumb .current {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .cmdk-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.75rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--muted);
+    font-size: 0.83rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 220px;
+  }
+
+  .cmdk-trigger:hover {
+    border-color: var(--green-2);
+    color: var(--ink-2);
+  }
+
+  .cmdk-trigger .placeholder {
+    flex: 1;
+    text-align: left;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+    font-size: 0.85rem;
+  }
+
+  .cmdk-trigger .kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    background: var(--pearl-2);
+    border: 1px solid var(--rule-soft);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .topbar-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-2);
+    transition: all 0.15s;
+  }
+
+  .topbar-action:hover {
+    border-color: var(--rule);
+    background: var(--paper);
+  }
+
+  .topbar-action svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ================== VIEW CONTAINER ================== */
+  .view {
+    display: none;
+    animation: viewFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .view.active { display: block; }
+
+  @keyframes viewFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ================== VIEW: HOME / OVERVIEW ================== */
+  .home-view {
+    padding: 2.5rem 3rem 4rem;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 4rem 2.5rem;
   }
 
-  .dashboard-hero {
-    text-align: center;
-    margin-bottom: 4rem;
+  .welcome {
+    margin-bottom: 3rem;
   }
 
-  .dashboard-hero .eyebrow {
+  .welcome-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .welcome-eyebrow .vol {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--green-2);
+  }
+
+  .welcome-eyebrow .divider {
+    width: 28px;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.4;
+  }
+
+  .welcome-eyebrow .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .welcome h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4rem;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 0.85rem;
+  }
+
+  .welcome h1 em { font-style: italic; color: var(--green-2); font-weight: 400; }
+
+  .welcome p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--ink-2);
+    max-width: 620px;
+    line-height: 1.45;
+  }
+
+  /* Quick stats */
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    margin: 2.5rem 0 3rem;
+    padding: 1.75rem 0;
+  }
+
+  .quick-stat {
+    padding: 0 1.5rem;
+    border-right: 1px solid var(--rule-soft);
+  }
+
+  .quick-stat:last-child { border-right: none; }
+
+  .quick-stat .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .quick-stat .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+
+  .quick-stat .num.gold { color: var(--gold-deep); font-style: italic; }
+  .quick-stat .num.green { color: var(--green-2); font-style: italic; }
+
+  .quick-stat .delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* Resource cards on home */
+  .home-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+
+  .home-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-card::after {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(31, 74, 50, 0.05), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+  }
+
+  .home-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px var(--shadow);
+  }
+
+  .home-card:hover::after { opacity: 1; }
+
+  .home-card .icon {
+    width: 44px;
+    height: 44px;
+    background: var(--green-bg);
+    border: 1px solid rgba(31, 74, 50, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.4rem;
+  }
+
+  .home-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.012em;
+    line-height: 1.15;
+  }
+
+  .home-card h3 em { font-style: italic; color: var(--green-2); }
+
+  .home-card p {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .home-card .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--green-2);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    transition: gap 0.2s;
+  }
+
+  .home-card:hover .arrow-link { gap: 0.7rem; }
+
+  .home-card .arrow-link .arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+
+  /* Activity / Recent saved */
+  .home-section-h {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 2rem 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .home-section-h h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: -0.015em;
+  }
+
+  .home-section-h h2 em { font-style: italic; color: var(--green-2); }
+
+  .home-section-h .link {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--green-2);
+    cursor: pointer;
+  }
+
+  /* ================== VIEW: CALCULATOR ================== */
+  .calc-view {
+    display: none;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 64px);
+  }
+
+  .calc-view.active { display: grid; }
+
+  .calc-sidebar {
+    border-right: 1px solid var(--rule-soft);
+    background: var(--paper);
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    padding: 1.75rem 0;
+    position: sticky;
+    top: 64px;
+  }
+
+  .calc-sidebar::-webkit-scrollbar { width: 5px; }
+  .calc-sidebar::-webkit-scrollbar-track { background: transparent; }
+  .calc-sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  .calc-sidebar-section {
+    padding: 0 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-sidebar-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .input-group { margin-bottom: 1.125rem; }
+
+  .input-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .input-label .lbl {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+  }
+
+  .input-label .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: var(--rule);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--green);
+    transition: transform 0.1s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--green);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--green);
+  }
+
+  select {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  select:focus { border-color: var(--green-2); }
+
+  /* Sidebar action buttons */
+  .sidebar-actions {
+    padding: 0 1.5rem 1.5rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .sidebar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--ink);
+    color: var(--pearl);
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .sidebar-btn:hover {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .sidebar-btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+
+  .sidebar-btn.secondary:hover {
+    background: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* Calculator main pane */
+  .calc-main {
+    padding: 2.5rem 3rem 5rem;
+    max-width: 1100px;
+  }
+
+  .calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .calc-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .calc-eyebrow .vol {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--green-2);
+  }
+
+  .calc-eyebrow .divider {
+    width: 22px;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .calc-eyebrow .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .calc-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.75rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  .calc-header h1 em { font-style: italic; color: var(--green-2); }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 2rem;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .tab-bar::-webkit-scrollbar { display: none; }
+
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.875rem 1.25rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.92rem;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--ink); }
+
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--green-2);
+  }
+
+  .tab .tab-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--green-2);
+  }
+
+  .tab-content { display: none; animation: tabFade 0.3s ease; }
+  .tab-content.active { display: block; }
+
+  @keyframes tabFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Lede */
+  .lede {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    line-height: 1.42;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    font-weight: 400;
+    max-width: 740px;
+    letter-spacing: -0.01em;
+  }
+
+  .lede em { font-style: italic; color: var(--green-2); }
+  .lede strong { font-weight: 600; color: var(--ink); }
+
+  /* Stat grid */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    margin: 2rem 0 2.5rem;
+  }
+
+  .stat {
+    padding: 1.5rem 1.25rem;
+    border-right: 1px solid var(--rule-soft);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .stat .value {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .stat .value.green { color: var(--green-2); }
+  .stat .value.red { color: var(--red); }
+  .stat .value.amber { color: var(--amber); }
+
+  .stat .delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    margin-top: 0.4rem;
+    color: var(--muted);
+  }
+
+  /* Coverage block */
+  .coverage-block {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .coverage-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.25rem;
+  }
+
+  .coverage-head .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .coverage-head .lbl .name {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: none;
+    margin-top: 0.25rem;
+  }
+
+  .coverage-head .pct {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+
+  .coverage-head .pct.green { color: var(--green-2); }
+  .coverage-head .pct.amber { color: var(--amber); }
+  .coverage-head .pct.red { color: var(--red); }
+
+  .coverage-bar-wrap {
+    height: 14px;
+    background: var(--pearl-3);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .coverage-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-light), var(--green-2));
+    transition: width 0.5s ease;
+    border-radius: 7px;
+  }
+
+  .coverage-bar.amber { background: linear-gradient(90deg, #d4b76a, #8a6f1f); }
+  .coverage-bar.red { background: linear-gradient(90deg, #c97c69, var(--red)); }
+
+  .coverage-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+  }
+
+  .coverage-status {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .coverage-status .text {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    flex: 1;
+  }
+
+  .coverage-status .text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 5px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(31, 74, 50, 0.2); }
+  .badge-amber { background: rgba(138, 111, 31, 0.08); color: var(--amber); border: 1px solid rgba(138, 111, 31, 0.2); }
+  .badge-red { background: rgba(139, 44, 28, 0.08); color: var(--red); border: 1px solid rgba(139, 44, 28, 0.2); }
+
+  /* Section heading */
+  .section-h {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin: 2.75rem 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .section-h .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--green-2);
+  }
+
+  .section-h h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+  }
+
+  .section-h .rule-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule-soft);
+  }
+
+  /* Narrative */
+  .narrative {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin-bottom: 2rem;
+    max-width: 720px;
+  }
+
+  .narrative p { margin-bottom: 1.1rem; }
+  .narrative p strong { font-weight: 600; color: var(--ink); }
+  .narrative p em { font-style: italic; color: var(--green-2); }
+
+  .narrative.dropcap p:first-child::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.1em 0.12em 0 0;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* Callout */
+  .callout {
+    border-left: 3px solid var(--green-2);
+    padding: 1.25rem 1.5rem;
+    background: var(--green-bg);
+    margin: 1.5rem 0 2rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .callout .tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--green-2);
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
-  .dashboard-hero h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 400;
-    font-size: 3.5rem;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin-bottom: 1rem;
-  }
-
-  .dashboard-hero h1 em {
-    font-style: italic;
-    color: var(--green-2);
-  }
-
-  .dashboard-hero .deck {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: 1.25rem;
-    line-height: 1.4;
+  .callout p {
+    font-size: 0.96rem;
+    line-height: 1.65;
     color: var(--ink-2);
-    max-width: 600px;
-    margin: 0 auto;
   }
 
-  .access-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 4rem;
-  }
+  .callout p strong { color: var(--ink); font-weight: 600; }
+  .callout p em { font-style: italic; color: var(--green-2); }
 
-  .access-card {
+  /* Story flow */
+  .story-flow {
     background: var(--paper);
     border: 1px solid var(--ink);
     border-radius: 8px;
-    padding: 2.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s;
+    padding: 2rem;
+    margin: 2rem 0 2.5rem;
   }
 
-  .access-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px var(--shadow);
-  }
-
-  .access-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--green-2);
-  }
-
-  .access-card .icon {
-    width: 56px;
-    height: 56px;
-    background: var(--green-bg);
-    border: 1.5px solid var(--green-2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .story-flow .head {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
     margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-  }
-
-  .access-card h3 {
-    font-family: 'Fraunces', serif;
-    font-size: 1.75rem;
-    font-weight: 500;
-    margin-bottom: 0.75rem;
+    letter-spacing: -0.012em;
     color: var(--ink);
-    letter-spacing: -0.015em;
   }
 
-  .access-card p {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--ink-2);
-    margin-bottom: 1.75rem;
+  .story-flow .head em { color: var(--green-2); font-style: italic; }
+
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: stretch;
   }
 
-  .access-card .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: var(--ink);
-    color: var(--pearl);
-    border: none;
-    padding: 0.95rem 1.75rem;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.15s;
-  }
-
-  .access-card .btn:hover {
-    background: var(--green);
-    transform: translateY(-1px);
-  }
-
-  .access-card .btn-arrow {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: 1.1rem;
-    transition: transform 0.2s;
-  }
-
-  .access-card .btn:hover .btn-arrow {
-    transform: translateX(3px);
-  }
-
-  .access-card .btn-secondary {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--rule);
-  }
-
-  .access-card .btn-secondary:hover {
-    background: var(--pearl-2);
-    border-color: var(--ink);
-  }
-
-  .user-info {
-    background: var(--pearl-2);
+  .flow-card {
+    background: var(--paper);
     border: 1px solid var(--rule);
     border-radius: 6px;
-    padding: 1.5rem 2rem;
-    margin-bottom: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: border-color 0.2s;
   }
 
-  .user-info .label {
+  .flow-card.income { border-color: rgba(31, 74, 50, 0.3); background: rgba(31, 74, 50, 0.03); }
+  .flow-card.expense { border-color: rgba(154, 63, 28, 0.3); background: rgba(154, 63, 28, 0.03); }
+  .flow-card.result { border-color: var(--green-2); background: var(--green-bg); border-width: 2px; }
+
+  .flow-card .lbl {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .flow-card .val {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
     margin-bottom: 0.4rem;
   }
 
-  .user-info .email {
+  .flow-card.income .val { color: var(--green-2); }
+  .flow-card.expense .val { color: var(--rust); }
+  .flow-card.result .val { color: var(--green); font-weight: 600; }
+
+  .flow-card .sub {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.95rem;
-    color: var(--ink);
-    font-weight: 500;
+    font-size: 0.65rem;
+    color: var(--muted);
   }
 
-  .user-info .logout-btn {
-    background: transparent;
-    border: 1px solid var(--rule);
+  .flow-op {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--muted);
+    align-self: center;
+    font-style: italic;
+  }
+
+  /* Data table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 2rem;
+    font-size: 0.93rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .data-table th:last-child,
+  .data-table td:last-child { text-align: right; }
+
+  .data-table td {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--rule-soft);
     color: var(--ink-2);
-    padding: 0.65rem 1.25rem;
+  }
+
+  .data-table tr.bottom td {
+    border-bottom: none;
+    border-top: 1px solid var(--ink);
+    font-weight: 600;
+    color: var(--ink);
+    padding-top: 0.875rem;
+  }
+
+  .data-table .mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: "tnum" 1; }
+  .data-table .green-text { color: var(--green-2); }
+  .data-table .red-text { color: var(--red); }
+  .data-table .muted-text { color: var(--muted); }
+
+  /* Chart block */
+  .chart-block {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0 2rem;
+  }
+
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .chart-head h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .chart-head .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  }
+
+  /* ================== VIEW: PLAYBOOK (FLIP BOOK) ================== */
+  .book-view {
+    padding: 2rem 2rem 4rem;
+    min-height: calc(100vh - 64px);
+    background:
+      radial-gradient(circle at 20% 20%, rgba(31, 74, 50, 0.06), transparent 45%),
+      radial-gradient(circle at 80% 80%, rgba(184, 153, 104, 0.06), transparent 45%),
+      var(--pearl);
+  }
+
+  .book-header {
+    max-width: 1280px;
+    margin: 0 auto 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .book-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2.25rem;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .book-header h1 em { font-style: italic; color: var(--green-2); }
+
+  .book-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .book-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    border-radius: 4px;
     font-family: 'Inter Tight', sans-serif;
     font-size: 0.85rem;
-    border-radius: 4px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
+    text-decoration: none;
   }
 
-  .user-info .logout-btn:hover {
+  .book-action-btn:hover {
     border-color: var(--ink);
-    color: var(--ink);
+    background: var(--pearl);
+    transform: translateY(-1px);
   }
 
-  .resources-section {
-    border-top: 1px solid var(--rule);
-    padding-top: 3rem;
+  .book-action-btn.primary {
+    background: var(--ink);
+    color: var(--pearl);
+    border-color: var(--ink);
   }
 
-  .resources-section h2 {
+  .book-action-btn.primary:hover {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .book-action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* The book itself */
+  .book-stage {
+    max-width: 1180px;
+    margin: 0 auto;
+    perspective: 2400px;
+    padding: 2rem 0;
+  }
+
+  .book {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: 720px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: 0 auto;
+  }
+
+  /* Pages */
+  .page {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: var(--paper);
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+    box-shadow: inset -10px 0 30px -10px rgba(0,0,0,0.1);
+    padding: 3rem 3.5rem;
+    overflow: hidden;
+    backface-visibility: hidden;
+  }
+
+  .page.left {
+    left: 0;
+    transform-origin: right center;
+    box-shadow: inset 10px 0 30px -10px rgba(0,0,0,0.1);
+  }
+
+  .page.right {
+    right: 0;
+    left: 50%;
+  }
+
+  /* Spine shadow */
+  .book::before {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    width: 30px;
+    height: 90%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(13, 31, 21, 0.18) 45%,
+      rgba(13, 31, 21, 0.25) 50%,
+      rgba(13, 31, 21, 0.18) 55%,
+      transparent 100%);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* Gold edge gilding */
+  .book::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -3px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 50%, var(--gold) 100%);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 1px 0 4px rgba(184, 153, 104, 0.3);
+    pointer-events: none;
+  }
+
+  .book .left-edge {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -3px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 50%, var(--gold) 100%);
+    border-radius: 2px 0 0 2px;
+    box-shadow: -1px 0 4px rgba(184, 153, 104, 0.3);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Cover page (special) */
+  .page.cover {
+    background:
+      linear-gradient(135deg, #1a3325 0%, #0d1f15 100%);
+    color: var(--pearl);
+    padding: 4rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page.cover::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(184, 153, 104, 0.4);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .page.cover::after {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(184, 153, 104, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .cover-top {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .cover-vol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+
+  .cover-rule {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 2rem;
+  }
+
+  .cover-tag {
     font-family: 'Fraunces', serif;
-    font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-    color: var(--ink);
-    letter-spacing: -0.02em;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: rgba(247, 245, 239, 0.7);
+    margin-bottom: 0.5rem;
   }
 
-  .resources-list {
+  .cover-center {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cover-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 3.6rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--gold-light);
+    font-weight: 400;
+  }
+
+  .cover-subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: rgba(247, 245, 239, 0.75);
+    margin-top: 1rem;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+  }
+
+  .cover-medallion {
+    width: 80px;
+    height: 80px;
+    margin: 2rem auto 0;
+    position: relative;
+  }
+
+  .cover-bottom {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-byline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+
+  /* Inside pages */
+  .page-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .page-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .page.right .page-num { text-align: right; }
+
+  .page-chapter-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+  }
+
+  .page-h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.85rem;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.25rem;
+    color: var(--ink);
+  }
+
+  .page-h2 em { font-style: italic; color: var(--green-2); }
+
+  .page-h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    margin: 1rem 0 0.5rem;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+  }
+
+  .page-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin-bottom: 0.9rem;
+  }
+
+  .page-text strong { color: var(--ink); font-weight: 600; }
+  .page-text em { font-style: italic; color: var(--green-2); }
+
+  .page-text.dropcap::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 3.5rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.05em 0.1em 0 0;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .page-pull {
+    margin: 1.25rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .page-math {
+    background: var(--pearl-2);
+    border-left: 3px solid var(--green-2);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .page-math .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+  }
+
+  .page-math .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  .page-math .formula .equals { color: var(--green-2); font-weight: 600; }
+  .page-math .formula .result { color: var(--green-2); font-weight: 600; }
+
+  .page-list {
+    padding-left: 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 1rem;
+  }
+
+  .page-list li { margin-bottom: 0.4rem; }
+  .page-list li strong { color: var(--ink); }
+
+  /* TOC page */
+  .page-toc h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-toc h2 em { font-style: italic; color: var(--green-2); }
+
+  .page-toc-sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .page-toc-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
-  .resources-list li {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--rule-faint);
+  .page-toc-item {
+    display: flex;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .page-toc-item:hover { color: var(--green-2); }
+
+  .page-toc-item .ch {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--green-2);
+    width: 30px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+
+  .page-toc-item .name {
+    flex: 1;
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+
+  .page-toc-item .dots {
+    flex: 0 0 auto;
+    border-bottom: 1px dotted var(--muted);
+    margin: 0 0.5rem;
+    min-width: 20px;
+    align-self: end;
+    margin-bottom: 4px;
+    flex: 1;
+  }
+
+  .page-toc-item .pg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* Decorative ornament */
+  .page-ornament {
+    text-align: center;
+    margin: 1rem 0;
+    color: var(--gold);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* Book navigation controls */
+  .book-controls {
+    max-width: 1180px;
+    margin: 1.5rem auto 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+  }
+
+  .book-nav-btn {
     display: flex;
     align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 1.25rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+
+  .book-nav-btn:hover:not(:disabled) {
+    border-color: var(--green-2);
+    background: var(--green-bg);
+  }
+
+  .book-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .book-nav-btn .arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  .book-nav-info {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .book-nav-info .current {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* Page jumper dots */
+  .book-progress {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .book-progress .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--rule);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .book-progress .dot.active {
+    background: var(--green-2);
+    transform: scale(1.4);
+  }
+
+  .book-progress .dot:hover { background: var(--green-light); }
+
+  /* ================== VIEW: SAVED SCENARIOS ================== */
+  .saved-view {
+    padding: 2.5rem 3rem 4rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .saved-header {
+    display: flex;
     justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ink);
   }
 
-  .resources-list li:last-child {
-    border-bottom: none;
+  .saved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
   }
 
-  .resources-list .resource-name {
-    font-size: 0.95rem;
+  .saved-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .saved-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px var(--shadow);
+    border-color: var(--green-2);
+  }
+
+  .saved-card .name {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+
+  .saved-card .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .saved-card .pct-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-card .pct {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  .saved-card .pct.green { color: var(--green-2); }
+  .saved-card .pct.amber { color: var(--amber); }
+  .saved-card .pct.red { color: var(--red); }
+
+  .saved-card .pct-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .saved-card .specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  .saved-card .spec {
+    font-size: 0.78rem;
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+  }
+
+  .saved-card .spec .v {
+    color: var(--ink);
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .saved-card .delete-btn {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+    opacity: 0;
+    transition: all 0.15s;
+  }
+
+  .saved-card:hover .delete-btn {
+    opacity: 1;
+  }
+
+  .saved-card .delete-btn:hover {
+    background: rgba(139, 44, 28, 0.08);
+    color: var(--red);
+  }
+
+  .saved-empty {
+    text-align: center;
+    padding: 5rem 2rem;
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+  }
+
+  .saved-empty .icon {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 3rem;
+    color: var(--green-pale);
+    margin-bottom: 1rem;
+  }
+
+  .saved-empty h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.012em;
+  }
+
+  .saved-empty p {
+    color: var(--muted);
+    max-width: 380px;
+    margin: 0 auto 1.5rem;
+  }
+
+  /* ================== VIEW: ACCOUNT ================== */
+  .account-view {
+    padding: 2.5rem 3rem 4rem;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .account-section {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .account-section h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.012em;
+  }
+
+  .account-section .sub {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .account-row {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .account-row:last-child { border-bottom: none; }
+
+  .account-row .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .account-row .val {
+    font-size: 0.92rem;
     color: var(--ink);
     font-weight: 500;
   }
 
-  .resources-list .resource-meta {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
+  .account-row .edit {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--green-2);
+    cursor: pointer;
   }
 
-  @media (max-width: 768px) {
-    .dashboard-hero h1 { font-size: 2.5rem; }
-    .access-grid { grid-template-columns: 1fr; }
-    .user-info { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  /* ================== COMMAND PALETTE (⌘K) ================== */
+  .cmdk-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 21, 0.55);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12vh;
+  }
+
+  .cmdk-overlay.open {
+    display: flex;
+    animation: cmdkFade 0.2s ease;
+  }
+
+  @keyframes cmdkFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .cmdk-panel {
+    width: 100%;
+    max-width: 540px;
+    background: var(--paper);
+    border-radius: 10px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 20px 50px var(--shadow-strong);
+    overflow: hidden;
+    animation: cmdkRise 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes cmdkRise {
+    from { transform: translateY(15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .cmdk-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .cmdk-search-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+  }
+
+  .cmdk-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    font-style: italic;
+    letter-spacing: -0.012em;
+  }
+
+  .cmdk-input::placeholder { color: var(--muted); opacity: 0.55; }
+
+  .cmdk-results {
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+
+  .cmdk-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.65rem 0.85rem 0.4rem;
+    font-weight: 600;
+  }
+
+  .cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .cmdk-item:hover, .cmdk-item.focused {
+    background: var(--green-bg);
+  }
+
+  .cmdk-item .icon {
+    width: 22px;
+    height: 22px;
+    background: var(--pearl-2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green-2);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .cmdk-item .text { flex: 1; font-size: 0.9rem; color: var(--ink); }
+
+  .cmdk-item .hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .cmdk-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 1.25rem;
+    border-top: 1px solid var(--rule-soft);
+    background: var(--pearl-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .cmdk-footer .kbd {
+    background: var(--paper);
+    border: 1px solid var(--rule-soft);
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin: 0 4px;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ink);
+    color: var(--pearl);
+    padding: 0.85rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    box-shadow: 0 12px 28px var(--shadow-strong);
+    z-index: 300;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    border-left: 3px solid var(--green-light);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .toast .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--green-light);
+  }
+
+  /* ================== RESPONSIVE ================== */
+  @media (max-width: 1024px) {
+    .app { grid-template-columns: 1fr; }
+    .nav {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 240px;
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 100;
+    }
+    .nav.open { transform: translateX(0); }
+    .calc-view.active { grid-template-columns: 1fr; }
+    .calc-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 320px;
+      height: calc(100vh - 64px);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+      z-index: 90;
+      box-shadow: 4px 0 20px var(--shadow-strong);
+    }
+    .calc-sidebar.open { transform: translateX(0); }
+    .home-cards { grid-template-columns: 1fr; }
+    .quick-stats { grid-template-columns: repeat(2, 1fr); }
+    .home-view, .saved-view, .account-view { padding: 2rem 1.5rem 3rem; }
+    .calc-main { padding: 2rem 1.5rem 4rem; }
+    .welcome h1 { font-size: 2.5rem; }
+    .calc-header h1 { font-size: 2rem; }
+
+    .book-stage { padding: 1rem 0; perspective: 1500px; }
+    .book { aspect-ratio: 4/5; max-height: 800px; }
+    .page { padding: 1.5rem; }
+    .cover-title { font-size: 2rem; }
+    .page-h2 { font-size: 1.4rem; }
+    .book-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+
+  @media (max-width: 640px) {
+    .quick-stats { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--rule-soft); }
+    .flow { grid-template-columns: 1fr; }
+    .flow-op { display: none; }
+    .topbar { padding: 0 1rem; }
+    .cmdk-trigger { min-width: auto; padding: 0.45rem 0.6rem; }
+    .cmdk-trigger .placeholder { display: none; }
+    .breadcrumb { font-size: 0.78rem; }
+    .breadcrumb .item:not(.current) { display: none; }
+    .breadcrumb .sep { display: none; }
+  }
+
+  /* Mobile menu toggle button */
+  .mobile-menu-btn {
+    display: none;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  @media (max-width: 1024px) {
+    .mobile-menu-btn { display: flex; }
   }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <a href="index.html" class="brand">
-    <div class="brand-mark">SBL</div>
-    <div class="brand-text">
-      <div class="name">sblmortgage<span class="tld">.com</span></div>
-      <div class="sub">Corporate Dividend Mortgage™</div>
-    </div>
-  </a>
-  <nav class="site-nav">
-    <a href="index.html">Strategy</a>
-    <a href="calculator.html">Calculator</a>
-    <a href="ebook-free.html">Free Guide</a>
-    <a href="dashboard.html" class="active">My Access</a>
-  </nav>
-</header>
+<div class="app">
 
-<div class="dashboard-shell">
+  <!-- ============ LEFT NAV ============ -->
+  <aside class="nav" id="nav">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-brand-mark">SBL</div>
+      <div class="nav-brand-text">
+        <div class="name">sblmortgage<span class="tld">.com</span></div>
+        <div class="sub">Member Portal</div>
+      </div>
+    </a>
 
-  <div class="user-info">
-    <div>
-      <div class="label">Logged in as</div>
-      <div class="email" id="userEmail">your@email.com</div>
-    </div>
-    <button class="logout-btn" onclick="logout()">Sign out</button>
-  </div>
-
-  <div class="dashboard-hero">
-    <div class="eyebrow">Your Complete Access</div>
-    <h1>Everything you <em>purchased</em>.</h1>
-    <p class="deck">Your full calculator access and implementation playbook are ready. Start modeling your strategy or download the guide.</p>
-  </div>
-
-  <div class="access-grid">
-    
-    <div class="access-card">
-      <div class="icon">📊</div>
-      <h3>Full Calculator</h3>
-      <p>Access all 5 detailed views with unlimited scenarios. Model your exact numbers with 30-year projections and risk analysis.</p>
-      <a href="calculator.html" class="btn">
-        Open calculator
-        <span class="btn-arrow">→</span>
-      </a>
+    <div class="nav-section">
+      <div class="nav-section-label">Workspace</div>
+      <div class="nav-item active" data-view="home" onclick="showView('home')">
+        <span class="icon">i.</span>
+        <span>Overview</span>
+      </div>
+      <div class="nav-item" data-view="calc" onclick="showView('calc')">
+        <span class="icon">ii.</span>
+        <span>Calculator</span>
+      </div>
+      <div class="nav-item" data-view="book" onclick="showView('book')">
+        <span class="icon">iii.</span>
+        <span>The Playbook</span>
+        <span class="badge">PDF</span>
+      </div>
+      <div class="nav-item" data-view="saved" onclick="showView('saved')">
+        <span class="icon">iv.</span>
+        <span>Saved Scenarios</span>
+      </div>
     </div>
 
-    <div class="access-card">
-      <div class="icon">📖</div>
-      <h3>Implementation Playbook</h3>
-      <p>Download the complete PDF guide with lender shortlists, corporate structures, tax templates, and step-by-step frameworks.</p>
-      <a href="#" onclick="downloadPlaybook(event)" class="btn btn-secondary">
-        Download PDF
-        <span class="btn-arrow">↓</span>
-      </a>
+    <div class="nav-section">
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" data-view="account" onclick="showView('account')">
+        <span class="icon">v.</span>
+        <span>Profile & Billing</span>
+      </div>
+      <div class="nav-item" onclick="alert('Logout flow')">
+        <span class="icon">→</span>
+        <span>Sign Out</span>
+      </div>
     </div>
 
-  </div>
+    <div class="nav-user">
+      <div class="nav-user-card">
+        <div class="nav-user-avatar">A</div>
+        <div class="nav-user-info">
+          <div class="name" id="userName">Member</div>
+          <div class="role">Member · Vol. III</div>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-  <div class="resources-section">
-    <h2>Additional Resources</h2>
-    <ul class="resources-list">
-      <li>
-        <span class="resource-name">Lender Contact Templates</span>
-        <span class="resource-meta">Included in playbook</span>
-      </li>
-      <li>
-        <span class="resource-name">Corporate Formation Checklist</span>
-        <span class="resource-meta">Included in playbook</span>
-      </li>
-      <li>
-        <span class="resource-name">Brokerage Comparison Sheet</span>
-        <span class="resource-meta">Included in playbook</span>
-      </li>
-      <li>
-        <span class="resource-name">Free Updates</span>
-        <span class="resource-meta">Lifetime access</span>
-      </li>
-    </ul>
-  </div>
+  <!-- ============ MAIN ============ -->
+  <main class="main">
 
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="document.getElementById('nav').classList.toggle('open')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span class="item">Dashboard</span>
+          <span class="sep">/</span>
+          <span class="current" id="bc-current">Overview</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="cmdk-trigger" onclick="openCmdk()">
+          <svg class="cmdk-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="placeholder">Quick search</span>
+          <span class="kbd">⌘K</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: HOME ============ -->
+    <div class="view active" id="view-home">
+      <div class="home-view">
+
+        <div class="welcome">
+          <div class="welcome-eyebrow">
+            <span class="vol">Vol. III</span>
+            <span class="divider"></span>
+            <span class="label">Member Dashboard · 2026 Edition</span>
+          </div>
+          <h1>Welcome back, <em id="welcomeName">Member</em>.</h1>
+          <p>Your portfolio has been working while you were away. Pick up where you left off — or explore something new.</p>
+        </div>
+
+        <div class="quick-stats">
+          <div class="quick-stat">
+            <div class="label">Current Coverage</div>
+            <div class="num green" id="hs-coverage">144%</div>
+            <div class="delta">From your last calculation</div>
+          </div>
+          <div class="quick-stat">
+            <div class="label">Monthly Surplus</div>
+            <div class="num gold" id="hs-surplus">$923</div>
+            <div class="delta">Self-funding by $923/mo</div>
+          </div>
+          <div class="quick-stat">
+            <div class="label">Saved Scenarios</div>
+            <div class="num" id="hs-saved">2</div>
+            <div class="delta">Across your portfolio</div>
+          </div>
+          <div class="quick-stat">
+            <div class="label">Member Since</div>
+            <div class="num">2026</div>
+            <div class="delta">Lifetime access</div>
+          </div>
+        </div>
+
+        <div class="home-cards">
+          <div class="home-card" onclick="showView('calc')">
+            <div class="icon">⌘</div>
+            <h3>Run the <em>calculator</em></h3>
+            <p>Adjust your inputs, watch coverage update in real time, and explore five detailed views of your scenario.</p>
+            <span class="arrow-link">Open calculator <span class="arrow">→</span></span>
+          </div>
+          <div class="home-card" onclick="showView('book')">
+            <div class="icon">§</div>
+            <h3>Read the <em>playbook</em></h3>
+            <p>Eight chapters of advanced implementation guidance — corporate structures, lender selection, exit strategies.</p>
+            <span class="arrow-link">Open the book <span class="arrow">→</span></span>
+          </div>
+          <div class="home-card" onclick="showView('saved')">
+            <div class="icon">¶</div>
+            <h3>Your <em>scenarios</em></h3>
+            <p>Pick up where you left off. Compare different configurations side by side.</p>
+            <span class="arrow-link">View saved <span class="arrow">→</span></span>
+          </div>
+        </div>
+
+        <div class="home-section-h">
+          <h2>Recent <em>activity</em></h2>
+          <span class="link" onclick="showView('saved')">See all →</span>
+        </div>
+
+        <div class="saved-grid" id="recent-grid">
+          <!-- populated by JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ VIEW: CALCULATOR ============ -->
+    <div class="view" id="view-calc">
+      <div class="calc-view active">
+
+        <aside class="calc-sidebar" id="calcSidebar">
+          <div class="calc-sidebar-section">
+            <h3>The Property</h3>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Home price</span><span class="val" id="v-homePrice">$450K</span></div>
+              <input type="range" id="homePrice" min="150000" max="2000000" step="10000" value="450000">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Loan term</span><span class="val" id="v-loanTerm">30 yrs</span></div>
+              <input type="range" id="loanTerm" min="10" max="30" step="5" value="30">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Mortgage rate</span><span class="val" id="v-rate">5.98%</span></div>
+              <input type="range" id="rate" min="3" max="10" step="0.125" value="5.98">
+            </div>
+          </div>
+
+          <div class="calc-sidebar-section">
+            <h3>Down Payment Shares</h3>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Shares pledged</span><span class="val" id="v-shares">10,000</span></div>
+              <input type="range" id="shares" min="1000" max="100000" step="500" value="10000">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Stock price / share</span><span class="val" id="v-stockPrice">$10.00</span></div>
+              <input type="range" id="stockPrice" min="1" max="200" step="0.5" value="10">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Dividend / share</span><span class="val" id="v-divPerShare">$0.12</span></div>
+              <input type="range" id="divPerShare" min="0.01" max="2" step="0.01" value="0.12">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Dividend frequency</span></div>
+              <select id="divFreq">
+                <option value="monthly" selected>Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="annual">Annual</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-sidebar-section">
+            <h3>Additional Capital</h3>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Additional capital</span><span class="val" id="v-addCap">$100K</span></div>
+              <input type="range" id="addCap" min="0" max="1000000" step="5000" value="100000">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Leverage multiplier</span><span class="val" id="v-leverage">2.0×</span></div>
+              <input type="range" id="leverage" min="1" max="3" step="0.1" value="2">
+            </div>
+            <div class="input-group">
+              <div class="input-label"><span class="lbl">Margin rate (annual)</span><span class="val" id="v-marginRate">7.0%</span></div>
+              <input type="range" id="marginRate" min="3" max="12" step="0.25" value="7">
+            </div>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="sidebar-btn" onclick="saveCurrentScenario()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save scenario
+            </button>
+            <button class="sidebar-btn secondary" onclick="resetCalc()">Reset to defaults</button>
+          </div>
+        </aside>
+
+        <main class="calc-main">
+
+          <div class="calc-header">
+            <div>
+              <div class="calc-eyebrow">
+                <span class="vol">№ 01</span>
+                <span class="divider"></span>
+                <span class="label">Live Calculator</span>
+              </div>
+              <h1>Your <em>numbers</em>, in real time.</h1>
+            </div>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab active" onclick="showTab('snapshot', event)"><span class="tab-num">i.</span> Snapshot</button>
+            <button class="tab" onclick="showTab('story', event)"><span class="tab-num">ii.</span> The Story</button>
+            <button class="tab" onclick="showTab('breakdown', event)"><span class="tab-num">iii.</span> Breakdown</button>
+            <button class="tab" onclick="showTab('projection', event)"><span class="tab-num">iv.</span> Projection</button>
+            <button class="tab" onclick="showTab('verdict', event)"><span class="tab-num">v.</span> Verdict</button>
+          </div>
+
+          <!-- TAB: SNAPSHOT -->
+          <div class="tab-content active" id="tab-snapshot">
+            <p class="lede" id="snapshot-lede">
+              Your <em><span id="lede-shares">10,000</span> pledged shares</em> generate <strong><span id="lede-divIncome">$1,200</span> in monthly dividend income</strong>, against a mortgage payment of <span id="lede-mortgage">$2,094</span>. With <span id="lede-leverage">2.0×</span> leverage on additional capital, your total dividend stream is <em><span id="lede-totalDiv">$3,017</span></em>, producing a coverage ratio of <strong><span id="lede-coverage">144%</span></strong>.
+            </p>
+
+            <div class="stat-grid">
+              <div class="stat">
+                <div class="label">Mortgage payment</div>
+                <div class="value" id="stat-mortgage">$2,094</div>
+                <div class="delta" id="stat-mortgage-sub">$450K @ 5.98%</div>
+              </div>
+              <div class="stat">
+                <div class="label">Net dividend income</div>
+                <div class="value green" id="stat-netDiv">$3,017</div>
+                <div class="delta" id="stat-netDiv-sub">After margin cost</div>
+              </div>
+              <div class="stat">
+                <div class="label">Coverage ratio</div>
+                <div class="value" id="stat-coverage">144%</div>
+                <div class="delta" id="stat-coverage-sub">Mortgage covered</div>
+              </div>
+              <div class="stat">
+                <div class="label">Monthly surplus</div>
+                <div class="value green" id="stat-surplus">+$923</div>
+                <div class="delta" id="stat-surplus-sub">Corporate profit</div>
+              </div>
+            </div>
+
+            <div class="coverage-block">
+              <div class="coverage-head">
+                <div class="lbl">
+                  Mortgage coverage
+                  <span class="name">How much of your payment dividends absorb</span>
+                </div>
+                <div class="pct green" id="cov-pct">144%</div>
+              </div>
+              <div class="coverage-bar-wrap">
+                <div class="coverage-bar" id="cov-bar" style="width: 100%;"></div>
+              </div>
+              <div class="coverage-marks">
+                <span>0%</span><span>50%</span><span>100% (break-even)</span><span>150%</span><span>200%+</span>
+              </div>
+              <div class="coverage-status">
+                <div class="text" id="cov-text">Your dividends cover the mortgage <strong>1.44x over</strong>. Each month, $923 in surplus accrues to the corporation as profit.</div>
+                <span class="badge badge-green" id="cov-badge">Cash flow positive</span>
+              </div>
+            </div>
+
+            <div class="section-h">
+              <span class="num">§ 1.1</span>
+              <h2>The strategic position</h2>
+              <span class="rule-line"></span>
+            </div>
+
+            <div class="narrative dropcap" id="snapshot-narrative"></div>
+
+            <div class="callout">
+              <div class="tag">Editor's read</div>
+              <p id="snapshot-callout">Your position is structurally sound.</p>
+            </div>
+          </div>
+
+          <!-- TAB: STORY -->
+          <div class="tab-content" id="tab-story">
+            <p class="lede">
+              The Corporate Dividend Mortgage™ has <em>three engines</em> running simultaneously. Below, see how income flows in, expenses flow out, and what's left over each month.
+            </p>
+
+            <div class="story-flow">
+              <div class="head">The <em>monthly equation</em>: how dividends meet the mortgage</div>
+              <div class="flow">
+                <div class="flow-card income">
+                  <div class="lbl">Down Payment Div.</div>
+                  <div class="val" id="flow-downDiv">$1,200</div>
+                  <div class="sub" id="flow-downDiv-sub">10,000 shares</div>
+                </div>
+                <div class="flow-op">+</div>
+                <div class="flow-card income">
+                  <div class="lbl">Leveraged Div. (net)</div>
+                  <div class="val" id="flow-leveredDiv">$1,817</div>
+                  <div class="sub" id="flow-leveredDiv-sub">After margin</div>
+                </div>
+                <div class="flow-op">−</div>
+                <div class="flow-card expense">
+                  <div class="lbl">Mortgage P&I</div>
+                  <div class="val" id="flow-mortPmt">$2,094</div>
+                  <div class="sub" id="flow-mortPmt-sub">$450K loan</div>
+                </div>
+                <div class="flow-op">=</div>
+                <div class="flow-card result">
+                  <div class="lbl">Monthly Surplus</div>
+                  <div class="val" id="flow-surplus">$923</div>
+                  <div class="sub" id="flow-surplus-sub">To the corp</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-h">
+              <span class="num">§ 2.1</span>
+              <h2>How the leverage works</h2>
+              <span class="rule-line"></span>
+            </div>
+
+            <div class="narrative" id="story-leverage-narrative"></div>
+
+            <div class="section-h">
+              <span class="num">§ 2.2</span>
+              <h2>The two share blocks</h2>
+              <span class="rule-line"></span>
+            </div>
+
+            <table class="data-table">
+              <thead><tr><th>Share Block</th><th>Type</th><th>Shares</th><th>Monthly Div.</th></tr></thead>
+              <tbody id="shares-table"></tbody>
+            </table>
+          </div>
+
+          <!-- TAB: BREAKDOWN -->
+          <div class="tab-content" id="tab-breakdown">
+            <p class="lede">Every dollar in, every dollar out — the full <em>monthly profit and loss</em>.</p>
+            <div class="section-h"><span class="num">§ 3.1</span><h2>Monthly P&L</h2><span class="rule-line"></span></div>
+            <table class="data-table">
+              <thead><tr><th>Line item</th><th>Category</th><th>Annual</th><th>Monthly</th></tr></thead>
+              <tbody id="pl-table"></tbody>
+            </table>
+
+            <div class="section-h"><span class="num">§ 3.2</span><h2>Dividend yield analysis</h2><span class="rule-line"></span></div>
+            <div class="stat-grid">
+              <div class="stat">
+                <div class="label">Down payment value</div>
+                <div class="value" id="yield-dpVal">$100K</div>
+                <div class="delta">Pledged collateral</div>
+              </div>
+              <div class="stat">
+                <div class="label">Annual dividend yield</div>
+                <div class="value green" id="yield-annual">14.4%</div>
+                <div class="delta">On total portfolio</div>
+              </div>
+              <div class="stat">
+                <div class="label">Effective annual return</div>
+                <div class="value" id="yield-effective">36.2%</div>
+                <div class="delta">After leverage</div>
+              </div>
+              <div class="stat">
+                <div class="label">Margin cost burden</div>
+                <div class="value amber" id="yield-margin">19.4%</div>
+                <div class="delta">Of gross dividends</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: PROJECTION -->
+          <div class="tab-content" id="tab-projection">
+            <p class="lede">Run the strategy forward over the <em>full mortgage term</em>.</p>
+            <div class="stat-grid">
+              <div class="stat">
+                <div class="label">Total dividends</div>
+                <div class="value green" id="proj-totalDiv">$1.09M</div>
+                <div class="delta">Over loan term</div>
+              </div>
+              <div class="stat">
+                <div class="label">Total mortgage paid</div>
+                <div class="value" id="proj-totalMort">$754K</div>
+                <div class="delta">Principal + interest</div>
+              </div>
+              <div class="stat">
+                <div class="label">Cumulative net flow</div>
+                <div class="value green" id="proj-netFlow">+$332K</div>
+                <div class="delta">Surplus to corp</div>
+              </div>
+              <div class="stat">
+                <div class="label">Final net worth</div>
+                <div class="value" id="proj-netWorth">$650K</div>
+                <div class="delta">Equity + portfolio</div>
+              </div>
+            </div>
+            <div class="chart-block">
+              <div class="chart-head">
+                <h3>Cumulative dividends vs. mortgage payments</h3>
+                <span class="meta">Full loan term</span>
+              </div>
+              <div class="chart-wrap"><canvas id="chart-cumulative"></canvas></div>
+            </div>
+            <div class="chart-block">
+              <div class="chart-head">
+                <h3>Net worth trajectory</h3>
+                <span class="meta">Home equity + portfolio</span>
+              </div>
+              <div class="chart-wrap"><canvas id="chart-networth"></canvas></div>
+            </div>
+          </div>
+
+          <!-- TAB: VERDICT -->
+          <div class="tab-content" id="tab-verdict">
+            <p class="lede" id="verdict-lede">Based on your inputs, this strategy is <em><span id="verdict-status">strongly viable</span></em>.</p>
+            <div class="section-h"><span class="num">§ 5.1</span><h2>The verdict, in plain English</h2><span class="rule-line"></span></div>
+            <div class="narrative" id="verdict-narrative"></div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- ============ VIEW: BOOK (FLIP BOOK) ============ -->
+    <div class="view" id="view-book">
+      <div class="book-view">
+
+        <div class="book-header">
+          <div>
+            <div class="calc-eyebrow">
+              <span class="vol">Vol. II</span>
+              <span class="divider"></span>
+              <span class="label">The Implementation Playbook</span>
+            </div>
+            <h1>The <em>Playbook</em></h1>
+          </div>
+          <div class="book-header-meta">
+            <button class="book-action-btn" onclick="goToTOC()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Contents
+            </button>
+            <button class="book-action-btn primary" onclick="downloadPDF()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="book-stage">
+          <div class="book" id="book">
+            <span class="left-edge"></span>
+            <!-- Pages dynamically inserted -->
+          </div>
+        </div>
+
+        <div class="book-controls">
+          <button class="book-nav-btn" id="prevBtn" onclick="prevPage()">
+            <span class="arrow">←</span>
+            Previous
+          </button>
+          <div class="book-nav-info">
+            <span id="pageLabel" class="current">Cover</span>
+            <span>·</span>
+            <span id="pageNumber">— of —</span>
+          </div>
+          <button class="book-nav-btn" id="nextBtn" onclick="nextPage()">
+            Next
+            <span class="arrow">→</span>
+          </button>
+        </div>
+
+        <div class="book-progress" id="bookProgress" style="justify-content: center; margin-top: 1rem; display: flex;"></div>
+
+      </div>
+    </div>
+
+    <!-- ============ VIEW: SAVED ============ -->
+    <div class="view" id="view-saved">
+      <div class="saved-view">
+
+        <div class="saved-header">
+          <div>
+            <div class="calc-eyebrow">
+              <span class="vol">№ 04</span>
+              <span class="divider"></span>
+              <span class="label">Your Library</span>
+            </div>
+            <h1 style="font-family: 'Fraunces', serif; font-weight: 400; font-size: 2.75rem; line-height: 1; letter-spacing: -0.025em;">Saved <em style="font-style: italic; color: var(--green-2);">scenarios</em></h1>
+          </div>
+          <button class="book-action-btn primary" onclick="showView('calc')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New scenario
+          </button>
+        </div>
+
+        <div id="saved-container">
+          <!-- populated -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ VIEW: ACCOUNT ============ -->
+    <div class="view" id="view-account">
+      <div class="account-view">
+        <div class="calc-eyebrow">
+          <span class="vol">№ 05</span>
+          <span class="divider"></span>
+          <span class="label">Account Settings</span>
+        </div>
+        <h1 style="font-family: 'Fraunces', serif; font-weight: 400; font-size: 2.75rem; line-height: 1; letter-spacing: -0.025em; margin-bottom: 2.5rem;">Profile & <em style="font-style: italic; color: var(--green-2);">membership</em></h1>
+
+        <div class="account-section">
+          <h3>Profile</h3>
+          <p class="sub">Your account information and preferences.</p>
+          <div class="account-row">
+            <span class="lbl">Full Name</span>
+            <span class="val">Alex Johnson</span>
+            <span class="edit">Edit →</span>
+          </div>
+          <div class="account-row">
+            <span class="lbl">Email Address</span>
+            <span class="val">alex@example.com</span>
+            <span class="edit">Edit →</span>
+          </div>
+          <div class="account-row">
+            <span class="lbl">Password</span>
+            <span class="val">••••••••••</span>
+            <span class="edit">Change →</span>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h3>Membership</h3>
+          <p class="sub">Your subscription and access details.</p>
+          <div class="account-row">
+            <span class="lbl">Plan</span>
+            <span class="val">Implementation Playbook · Lifetime Access</span>
+            <span></span>
+          </div>
+          <div class="account-row">
+            <span class="lbl">Member Since</span>
+            <span class="val">January 2026</span>
+            <span></span>
+          </div>
+          <div class="account-row">
+            <span class="lbl">Total Paid</span>
+            <span class="val">$97.00 (one-time)</span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h3>Downloads</h3>
+          <p class="sub">Access your purchased materials anytime.</p>
+          <div class="account-row">
+            <span class="lbl">Implementation Playbook</span>
+            <span class="val">PDF · v1.2 · Updated April 2026</span>
+            <span class="edit" onclick="downloadPDF()">Download →</span>
+          </div>
+          <div class="account-row">
+            <span class="lbl">Templates Pack</span>
+            <span class="val">ZIP · 12 documents</span>
+            <span class="edit">Download →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-content">
-    <div class="footer-brand">
-      <div class="brand-mark">SBL</div>
-      <p>The Corporate Dividend Mortgage™ strategy explained.</p>
+<!-- ============ COMMAND PALETTE ============ -->
+<div class="cmdk-overlay" id="cmdkOverlay" onclick="closeCmdk(event)">
+  <div class="cmdk-panel" onclick="event.stopPropagation()">
+    <div class="cmdk-input-wrap">
+      <svg class="cmdk-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="cmdk-input" id="cmdkInput" placeholder="Search the dashboard..." oninput="filterCmdk()">
     </div>
-    <div class="footer-links">
-      <a href="#">Terms</a>
-      <a href="#">Privacy</a>
-      <a href="mailto:contact@sblmortgage.com">Contact</a>
+    <div class="cmdk-results" id="cmdkResults">
+      <!-- populated -->
+    </div>
+    <div class="cmdk-footer">
+      <span><span class="kbd">↑↓</span> Navigate</span>
+      <span><span class="kbd">↵</span> Select</span>
+      <span><span class="kbd">esc</span> Close</span>
     </div>
   </div>
-  <div class="legal">
-    © 2026 sblmortgage.com — Educational content only. Not financial advice.
-  </div>
-</footer>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast">
+  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
 
 <script>
-// Check if user is logged in
-(function() {
-  const userEmail = localStorage.getItem('sbl_user_email');
-  const accessToken = localStorage.getItem('sbl_access_token');
-  
-  if (!userEmail || !accessToken) {
-    // Not logged in, redirect to login
-    window.location.href = 'login.html';
+// ================== STATE ==================
+const state = {
+  homePrice: 450000, loanTerm: 30, rate: 5.98,
+  shares: 10000, stockPrice: 10, divPerShare: 0.12, divFreq: 'monthly',
+  addCap: 100000, leverage: 2, marginRate: 7
+};
+
+// In-memory saved scenarios (in production, persist to backend)
+let savedScenarios = [
+  { id: 1, name: 'Base case · $450K home', date: 'Apr 12, 2026', state: { homePrice: 450000, loanTerm: 30, rate: 5.98, shares: 10000, stockPrice: 10, divPerShare: 0.12, divFreq: 'monthly', addCap: 100000, leverage: 2, marginRate: 7 } },
+  { id: 2, name: 'Conservative · 1.5× leverage', date: 'Apr 18, 2026', state: { homePrice: 380000, loanTerm: 30, rate: 5.98, shares: 8000, stockPrice: 12, divPerShare: 0.10, divFreq: 'monthly', addCap: 80000, leverage: 1.5, marginRate: 7 } }
+];
+
+// ================== UTILITIES ==================
+const fmt = n => {
+  if (n === undefined || isNaN(n)) return '$0';
+  const v = Math.round(n);
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(2) + 'M';
+  if (Math.abs(v) >= 10000) return '$' + (v/1000).toFixed(0) + 'K';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(1) + 'K';
+  return '$' + v.toLocaleString();
+};
+const fmtFull = n => '$' + Math.round(n).toLocaleString();
+const fmtShares = n => Math.round(n).toLocaleString();
+const fmtDol = n => '$' + n.toFixed(2);
+
+function calcMortgagePmt(principal, ratePct, years) {
+  const r = ratePct / 100 / 12;
+  const n = years * 12;
+  if (r === 0) return principal / n;
+  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+}
+function freqMult(f) { return { monthly: 12, quarterly: 4, annual: 1 }[f] || 12; }
+
+function calcMetrics(s = state) {
+  const m = {};
+  m.loanAmount = s.homePrice;
+  m.mortgagePmt = calcMortgagePmt(m.loanAmount, s.rate, s.loanTerm);
+  m.dpShares = s.shares;
+  m.dpValue = s.shares * s.stockPrice;
+  m.fm = freqMult(s.divFreq);
+  m.monthlyDivPerShare = s.divPerShare * (m.fm / 12);
+  m.dpMonthlyDiv = m.dpShares * m.monthlyDivPerShare;
+  m.dpAnnualDiv = m.dpMonthlyDiv * 12;
+  m.buyingPower = s.addCap * s.leverage;
+  m.borrowed = m.buyingPower - s.addCap;
+  m.addShares = s.stockPrice > 0 ? m.buyingPower / s.stockPrice : 0;
+  m.addGrossMonthly = m.addShares * m.monthlyDivPerShare;
+  m.addGrossAnnual = m.addGrossMonthly * 12;
+  m.marginCostMonthly = m.borrowed * (s.marginRate / 100) / 12;
+  m.marginCostAnnual = m.marginCostMonthly * 12;
+  m.addNetMonthly = m.addGrossMonthly - m.marginCostMonthly;
+  m.addNetAnnual = m.addGrossAnnual - m.marginCostAnnual;
+  m.totalShares = m.dpShares + m.addShares;
+  m.totalNetMonthly = m.dpMonthlyDiv + m.addNetMonthly;
+  m.totalNetAnnual = m.totalNetMonthly * 12;
+  m.coverage = m.mortgagePmt > 0 ? (m.totalNetMonthly / m.mortgagePmt) * 100 : 0;
+  m.monthlySurplus = m.totalNetMonthly - m.mortgagePmt;
+  m.annualSurplus = m.monthlySurplus * 12;
+  const totalPV = m.dpValue + m.buyingPower;
+  m.dpYieldAnnual = m.dpValue > 0 ? (m.dpAnnualDiv / m.dpValue) * 100 : 0;
+  m.portfolioYieldAnnual = totalPV > 0 ? ((m.dpAnnualDiv + m.addGrossAnnual) / totalPV) * 100 : 0;
+  m.effectiveReturnAnnual = s.addCap > 0 ? (m.addNetAnnual / s.addCap) * 100 : 0;
+  m.marginBurden = (m.dpAnnualDiv + m.addGrossAnnual) > 0 ? (m.marginCostAnnual / (m.dpAnnualDiv + m.addGrossAnnual)) * 100 : 0;
+  m.spread = m.portfolioYieldAnnual - s.marginRate;
+  m.totalDividendsLoanTerm = m.totalNetAnnual * s.loanTerm;
+  m.totalMortgageLoanTerm = m.mortgagePmt * 12 * s.loanTerm;
+  m.cumulativeNetFlow = m.totalDividendsLoanTerm - m.totalMortgageLoanTerm;
+  m.finalNetWorth = s.homePrice + (m.dpValue + s.addCap) - m.borrowed;
+  return m;
+}
+
+function getStatus(m) {
+  if (m.coverage >= 120) return { class: 'green', label: 'Strong cash flow positive', verdict: 'strongly viable' };
+  if (m.coverage >= 100) return { class: 'green', label: 'Cash flow positive', verdict: 'viable' };
+  if (m.coverage >= 80) return { class: 'amber', label: 'Near break-even', verdict: 'borderline' };
+  if (m.coverage >= 50) return { class: 'amber', label: 'Subsidy required', verdict: 'requires subsidy' };
+  return { class: 'red', label: 'Not viable', verdict: 'not yet viable' };
+}
+
+// ================== VIEW SWITCHING ==================
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item[data-view]').forEach(i => i.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-view="${name}"]`);
+  if (navItem) navItem.classList.add('active');
+
+  const labels = { home: 'Overview', calc: 'Calculator', book: 'The Playbook', saved: 'Saved Scenarios', account: 'Profile & Billing' };
+  document.getElementById('bc-current').textContent = labels[name] || 'Dashboard';
+
+  if (name === 'saved') renderSaved();
+  if (name === 'home') renderRecent();
+  if (name === 'book' && currentPage === undefined) initBook();
+  if (name === 'calc') setTimeout(recompute, 50);
+  document.getElementById('nav').classList.remove('open');
+}
+
+// ================== TABS ==================
+function showTab(name, ev) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (ev) ev.target.closest('.tab').classList.add('active');
+  setTimeout(() => recompute(), 50);
+}
+
+// ================== NARRATIVE BUILDERS ==================
+function buildSnapshotNarrative(m) {
+  let p = '';
+  if (m.coverage >= 120) {
+    p += `<p>Your structure is generating <strong>${fmtFull(m.totalNetMonthly)}</strong> in monthly net dividend income against a mortgage of <strong>${fmtFull(m.mortgagePmt)}</strong>. The coverage ratio of <em>${m.coverage.toFixed(0)}%</em> means dividends absorb the mortgage entirely with surplus of <span class="num">${fmtFull(m.monthlySurplus)}</span>/mo.</p>`;
+    p += `<p>This is a textbook positive carry. Annualized, you generate <strong>${fmtFull(m.annualSurplus)}</strong> in surplus the corp can deploy: principal paydown, reserves, second property, or portfolio expansion.</p>`;
+  } else if (m.coverage >= 100) {
+    p += `<p>Generating <strong>${fmtFull(m.totalNetMonthly)}</strong> against <strong>${fmtFull(m.mortgagePmt)}</strong>. Coverage of <em>${m.coverage.toFixed(0)}%</em> is positive but tight, with surplus of just ${fmtFull(m.monthlySurplus)}/mo.</p>`;
+    p += `<p>Structurally viable but operationally tight. Aim for 120-130% coverage to absorb adverse scenarios.</p>`;
+  } else if (m.coverage >= 80) {
+    p += `<p>Generating <strong>${fmtFull(m.totalNetMonthly)}</strong> against <strong>${fmtFull(m.mortgagePmt)}</strong>. Coverage of <em>${m.coverage.toFixed(0)}%</em> means a monthly shortfall of ${fmtFull(Math.abs(m.monthlySurplus))}.</p>`;
+    p += `<p>Close to break-even. The dividend engine is doing real work — you need more shares, more leverage, or higher yield to cross the line.</p>`;
+  } else {
+    p += `<p>Currently generating <strong>${fmtFull(m.totalNetMonthly)}</strong> against <strong>${fmtFull(m.mortgagePmt)}</strong>. Coverage of <em>${m.coverage.toFixed(0)}%</em> means a meaningful shortfall of ${fmtFull(Math.abs(m.monthlySurplus))}/mo.</p>`;
+    p += `<p>Not yet self-funding. Try increasing the share count, dividend yield, or adding leveraged additional capital.</p>`;
+  }
+  p += `<p>The corporation holds <strong>${fmtShares(m.dpShares)} unleveraged shares</strong> (${fmtFull(m.dpMonthlyDiv)}/mo clean) plus <strong>${fmtShares(Math.round(m.addShares))} leveraged shares</strong> (${fmtFull(m.addGrossMonthly)}/mo gross, ${fmtFull(m.addNetMonthly)}/mo net after ${fmtFull(m.marginCostMonthly)} margin cost).</p>`;
+  if (m.spread > 0) {
+    p += `<p>The economic engine is healthy: portfolio yields <strong>${m.portfolioYieldAnnual.toFixed(1)}%</strong> against a margin cost of <strong>${state.marginRate.toFixed(1)}%</strong> — a positive spread of <em>${m.spread.toFixed(1)} points</em>.</p>`;
+  } else {
+    p += `<p><strong>Warning:</strong> dividend yield (${m.portfolioYieldAnnual.toFixed(1)}%) is below margin cost (${state.marginRate.toFixed(1)}%). Reduce leverage immediately.</p>`;
+  }
+  return p;
+}
+
+function buildSnapshotCallout(m) {
+  if (m.coverage >= 120) return `Your position is structurally sound. The dividend engine substantially over-covers the mortgage, leaving room for adverse scenarios and strategic optionality.`;
+  if (m.coverage >= 100) return `Position is technically positive but operationally tight. No real cushion against a dividend cut or margin rate increase.`;
+  if (m.coverage >= 80) return `You're close. The gap between viable and not-viable is often one slider's worth of adjustment. Try increasing additional capital or leverage.`;
+  return `In this configuration, the strategy doesn't yet self-fund. Adjust the sidebar inputs and watch coverage climb above 100%.`;
+}
+
+function buildVerdictNarrative(m) {
+  const s = getStatus(m);
+  if (m.coverage >= 120) return `<p>The numbers say this strategy works <em>strongly</em> for your inputs. With ${m.coverage.toFixed(0)}% coverage, you have meaningful margin: dividends pay the mortgage and produce <strong>${fmtFull(m.monthlySurplus)}</strong> in monthly surplus. Over ${state.loanTerm} years, that compounds to roughly <strong>${fmtFull(m.cumulativeNetFlow)}</strong>.</p><p>The most powerful realization is what this <em>doesn't</em> require. No portfolio liquidation. No personal income qualification. No paycheck deductions.</p>`;
+  if (m.coverage >= 100) return `<p>Strategy is technically viable — coverage is positive at ${m.coverage.toFixed(0)}% — but operational margin is thin. <strong>${fmtFull(m.monthlySurplus)}</strong> surplus is real but doesn't leave room for adverse scenarios.</p>`;
+  if (m.coverage >= 80) return `<p>Strategy <em>is doing meaningful work</em> — ${m.coverage.toFixed(0)}% covered — but not yet self-funding. Shortfall of <strong>${fmtFull(Math.abs(m.monthlySurplus))}</strong>/mo needs to be covered.</p>`;
+  return `<p>In this configuration, the strategy does not self-fund — coverage at ${m.coverage.toFixed(0)}%, shortfall of <strong>${fmtFull(Math.abs(m.monthlySurplus))}</strong>. Try adjusting the inputs.</p>`;
+}
+
+// ================== RENDERERS ==================
+function renderInputs() {
+  document.getElementById('v-homePrice').textContent = fmt(state.homePrice);
+  document.getElementById('v-loanTerm').textContent = state.loanTerm + ' yrs';
+  document.getElementById('v-rate').textContent = state.rate.toFixed(2) + '%';
+  document.getElementById('v-shares').textContent = state.shares.toLocaleString();
+  document.getElementById('v-stockPrice').textContent = '$' + state.stockPrice.toFixed(2);
+  document.getElementById('v-divPerShare').textContent = '$' + state.divPerShare.toFixed(2);
+  document.getElementById('v-addCap').textContent = fmt(state.addCap);
+  document.getElementById('v-leverage').textContent = state.leverage.toFixed(1) + '×';
+  document.getElementById('v-marginRate').textContent = state.marginRate.toFixed(2) + '%';
+}
+
+function renderSnapshot(m) {
+  document.getElementById('lede-shares').textContent = state.shares.toLocaleString();
+  document.getElementById('lede-divIncome').textContent = fmtFull(m.dpMonthlyDiv);
+  document.getElementById('lede-mortgage').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('lede-leverage').textContent = state.leverage.toFixed(1) + '×';
+  document.getElementById('lede-totalDiv').textContent = fmtFull(m.totalNetMonthly);
+  document.getElementById('lede-coverage').textContent = m.coverage.toFixed(0) + '%';
+  document.getElementById('stat-mortgage').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('stat-mortgage-sub').textContent = fmt(m.loanAmount) + ' @ ' + state.rate.toFixed(2) + '%';
+  document.getElementById('stat-netDiv').textContent = fmtFull(m.totalNetMonthly);
+  document.getElementById('stat-coverage').textContent = m.coverage.toFixed(0) + '%';
+  const covEl = document.getElementById('stat-coverage');
+  covEl.className = 'value ' + (m.coverage >= 100 ? 'green' : m.coverage >= 80 ? 'amber' : 'red');
+  document.getElementById('stat-surplus').textContent = (m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus);
+  document.getElementById('stat-surplus').className = 'value ' + (m.monthlySurplus >= 0 ? 'green' : 'red');
+  document.getElementById('stat-surplus-sub').textContent = m.monthlySurplus >= 0 ? 'Corporate profit' : 'Subsidy needed';
+
+  const status = getStatus(m);
+  const covPct = document.getElementById('cov-pct');
+  covPct.textContent = m.coverage.toFixed(0) + '%';
+  covPct.className = 'pct ' + status.class;
+  const covBar = document.getElementById('cov-bar');
+  covBar.className = 'coverage-bar ' + (status.class === 'green' ? '' : status.class);
+  covBar.style.width = Math.min(200, Math.max(2, m.coverage)) / 2 + '%';
+  document.getElementById('cov-badge').className = 'badge badge-' + status.class;
+  document.getElementById('cov-badge').textContent = status.label;
+  if (m.coverage >= 100) {
+    document.getElementById('cov-text').innerHTML = `Your dividends cover the mortgage <strong>${(m.coverage/100).toFixed(2)}× over</strong>. Each month, ${fmtFull(m.monthlySurplus)} in surplus accrues to the corp.`;
+  } else {
+    document.getElementById('cov-text').innerHTML = `Your dividends cover <strong>${m.coverage.toFixed(0)}% of the mortgage</strong>. Monthly shortfall: ${fmtFull(Math.abs(m.monthlySurplus))}.`;
+  }
+  document.getElementById('snapshot-narrative').innerHTML = buildSnapshotNarrative(m);
+  document.getElementById('snapshot-callout').textContent = buildSnapshotCallout(m);
+
+  // Update home stats
+  const hsCoverage = document.getElementById('hs-coverage');
+  if (hsCoverage) hsCoverage.textContent = m.coverage.toFixed(0) + '%';
+  const hsSurplus = document.getElementById('hs-surplus');
+  if (hsSurplus) hsSurplus.textContent = (m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus);
+}
+
+function renderStory(m) {
+  document.getElementById('flow-downDiv').textContent = fmtFull(m.dpMonthlyDiv);
+  document.getElementById('flow-downDiv-sub').textContent = state.shares.toLocaleString() + ' shares';
+  document.getElementById('flow-leveredDiv').textContent = fmtFull(m.addNetMonthly);
+  document.getElementById('flow-leveredDiv-sub').textContent = state.leverage.toFixed(1) + '× leverage';
+  document.getElementById('flow-mortPmt').textContent = fmtFull(m.mortgagePmt);
+  document.getElementById('flow-mortPmt-sub').textContent = fmt(m.loanAmount) + ' loan';
+  document.getElementById('flow-surplus').textContent = (m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus);
+  document.getElementById('flow-surplus-sub').textContent = m.monthlySurplus >= 0 ? 'To the corp' : 'Subsidy';
+  document.getElementById('story-leverage-narrative').innerHTML = `
+    <p>Leverage transforms a modest portfolio into a self-funding mortgage engine. Your <strong>${fmtFull(state.addCap)}</strong> in capital, deployed at <em>${state.leverage.toFixed(1)}×</em>, controls <strong>${fmtFull(m.buyingPower)}</strong> of stock — buying ${fmtShares(Math.round(m.addShares))} shares producing ${fmtFull(m.addGrossMonthly)}/mo gross.</p>
+    <p>Leverage isn't free: ${fmtFull(m.borrowed)} borrowed at ${state.marginRate.toFixed(2)}% costs ${fmtFull(m.marginCostMonthly)}/mo. After that, your net leveraged income is <strong>${fmtFull(m.addNetMonthly)}</strong>.</p>
+    <p>The math works because dividend yield (<strong>${m.portfolioYieldAnnual.toFixed(2)}%</strong>) exceeds margin cost (<strong>${state.marginRate.toFixed(2)}%</strong>) — a spread of <em>${m.spread.toFixed(2)} points</em>.</p>`;
+  document.getElementById('shares-table').innerHTML = `
+    <tr><td><strong>Down payment block</strong></td><td class="muted-text">Unleveraged collateral</td><td class="mono">${fmtShares(m.dpShares)}</td><td class="mono green-text">${fmtFull(m.dpMonthlyDiv)}/mo</td></tr>
+    <tr><td><strong>Leveraged engine</strong></td><td class="muted-text">${state.leverage.toFixed(1)}× margin</td><td class="mono">${fmtShares(Math.round(m.addShares))}</td><td class="mono green-text">${fmtFull(m.addGrossMonthly)}/mo gross</td></tr>
+    <tr><td colspan="2" class="muted-text" style="font-style: italic;">Margin cost on borrowed</td><td class="muted-text">${fmtFull(m.borrowed)}</td><td class="mono red-text">−${fmtFull(m.marginCostMonthly)}/mo</td></tr>
+    <tr class="bottom"><td><strong>Total net dividends</strong></td><td>Combined income</td><td class="mono">${fmtShares(Math.round(m.totalShares))}</td><td class="mono green-text"><strong>${fmtFull(m.totalNetMonthly)}/mo</strong></td></tr>`;
+}
+
+function renderBreakdown(m) {
+  const rows = [
+    { n: "Down payment dividends", c: "Income · clean", a: m.dpAnnualDiv, mo: m.dpMonthlyDiv, sign: '+' },
+    { n: "Leveraged dividends (gross)", c: "Income · gross", a: m.addGrossAnnual, mo: m.addGrossMonthly, sign: '+' },
+    { n: "Margin interest", c: "Cost · financing", a: m.marginCostAnnual, mo: m.marginCostMonthly, sign: '−' },
+    { n: "Mortgage P&I", c: "Cost · property", a: m.mortgagePmt * 12, mo: m.mortgagePmt, sign: '−' },
+  ];
+  let html = '';
+  rows.forEach(r => {
+    const cls = r.sign === '+' ? 'green-text' : 'red-text';
+    html += `<tr><td>${r.n}</td><td class="muted-text">${r.c}</td><td class="mono ${cls}">${r.sign}${fmtFull(r.a)}</td><td class="mono ${cls}">${r.sign}${fmtFull(r.mo)}</td></tr>`;
+  });
+  const netClass = m.monthlySurplus >= 0 ? 'green-text' : 'red-text';
+  const sign = m.monthlySurplus >= 0 ? '+' : '';
+  html += `<tr class="bottom"><td><strong>Net cash flow</strong></td><td>Bottom line</td><td class="mono ${netClass}">${sign}${fmtFull(m.annualSurplus)}</td><td class="mono ${netClass}">${sign}${fmtFull(m.monthlySurplus)}</td></tr>`;
+  document.getElementById('pl-table').innerHTML = html;
+  document.getElementById('yield-dpVal').textContent = fmt(m.dpValue);
+  document.getElementById('yield-annual').textContent = m.portfolioYieldAnnual.toFixed(1) + '%';
+  document.getElementById('yield-effective').textContent = m.effectiveReturnAnnual.toFixed(1) + '%';
+  document.getElementById('yield-margin').textContent = m.marginBurden.toFixed(1) + '%';
+}
+
+let charts = {};
+function renderProjection(m) {
+  document.getElementById('proj-totalDiv').textContent = fmt(m.totalDividendsLoanTerm);
+  document.getElementById('proj-totalMort').textContent = fmt(m.totalMortgageLoanTerm);
+  const fe = document.getElementById('proj-netFlow');
+  fe.textContent = (m.cumulativeNetFlow >= 0 ? '+' : '') + fmt(m.cumulativeNetFlow);
+  fe.className = 'value ' + (m.cumulativeNetFlow >= 0 ? 'green' : 'red');
+  document.getElementById('proj-netWorth').textContent = fmt(m.finalNetWorth);
+  drawCharts(m);
+}
+
+function drawCharts(m) {
+  if (charts.cumulative) { charts.cumulative.destroy(); }
+  if (charts.networth) { charts.networth.destroy(); }
+  const ctx1 = document.getElementById('chart-cumulative');
+  const ctx2 = document.getElementById('chart-networth');
+  if (!ctx1 || !ctx2) return;
+  const labels = [], divs = [], mort = [], surp = [];
+  for (let y = 0; y <= state.loanTerm; y++) {
+    labels.push('Y' + y);
+    divs.push(Math.round(m.totalNetAnnual * y));
+    mort.push(Math.round(m.mortgagePmt * 12 * y));
+    surp.push(Math.round((m.totalNetAnnual - m.mortgagePmt * 12) * y));
+  }
+  charts.cumulative = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Cumulative dividends', data: divs, borderColor: '#1f4a32', backgroundColor: 'rgba(31,74,50,0.08)', borderWidth: 2.5, tension: 0.25, pointRadius: 0, fill: true },
+        { label: 'Cumulative mortgage', data: mort, borderColor: '#9a3f1c', borderDash: [5,5], borderWidth: 2, tension: 0.25, pointRadius: 0, fill: false },
+        { label: 'Cumulative surplus', data: surp, borderColor: '#b89968', borderWidth: 1.5, tension: 0.25, pointRadius: 0, fill: false }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { family: 'Inter Tight', size: 12 }, color: '#1a3325' } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtFull(c.parsed.y) } } },
+      scales: { x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569' } }, y: { grid: { color: 'rgba(13,31,21,0.06)' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569', callback: v => fmt(v) } } }
+    }
+  });
+
+  const monthlyR = state.rate / 100 / 12;
+  let bal = m.loanAmount;
+  const labels2 = [], homeEq = [], port = [];
+  homeEq.push(0); port.push(Math.round(m.dpValue + state.addCap)); labels2.push('Y0');
+  for (let y = 1; y <= state.loanTerm; y++) {
+    for (let mo = 0; mo < 12 && bal > 0; mo++) {
+      const interest = bal * monthlyR;
+      bal = Math.max(0, bal - (m.mortgagePmt - interest));
+    }
+    labels2.push('Y' + y);
+    homeEq.push(Math.round(state.homePrice - bal));
+    port.push(Math.round(m.dpValue + state.addCap));
+  }
+  charts.networth = new Chart(ctx2, {
+    type: 'line',
+    data: { labels: labels2, datasets: [
+      { label: 'Home equity', data: homeEq, borderColor: '#1f4a32', backgroundColor: 'rgba(31,74,50,0.15)', borderWidth: 2, tension: 0.25, pointRadius: 0, fill: true, stack: 'a' },
+      { label: 'Portfolio value', data: port, borderColor: '#b89968', backgroundColor: 'rgba(184,153,104,0.15)', borderWidth: 2, tension: 0.25, pointRadius: 0, fill: true, stack: 'a' }
+    ] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { family: 'Inter Tight', size: 12 }, color: '#1a3325' } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtFull(c.parsed.y) } } },
+      scales: { x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569' } }, y: { stacked: true, grid: { color: 'rgba(13,31,21,0.06)' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#6b7569', callback: v => fmt(v) } } }
+    }
+  });
+}
+
+function renderVerdict(m) {
+  const status = getStatus(m);
+  document.getElementById('verdict-status').textContent = status.verdict;
+  document.getElementById('verdict-narrative').innerHTML = buildVerdictNarrative(m);
+}
+
+function recompute() {
+  const m = calcMetrics();
+  renderInputs();
+  renderSnapshot(m);
+  renderStory(m);
+  renderBreakdown(m);
+  renderProjection(m);
+  renderVerdict(m);
+}
+
+// Wire up inputs
+['homePrice', 'loanTerm', 'rate', 'shares', 'stockPrice', 'divPerShare', 'addCap', 'leverage', 'marginRate'].forEach(id => {
+  document.getElementById(id).addEventListener('input', e => {
+    state[id] = parseFloat(e.target.value);
+    recompute();
+  });
+});
+document.getElementById('divFreq').addEventListener('change', e => { state.divFreq = e.target.value; recompute(); });
+
+// ================== SAVED SCENARIOS ==================
+function saveCurrentScenario() {
+  const m = calcMetrics();
+  const id = Date.now();
+  const name = `${fmt(state.homePrice)} home · ${m.coverage.toFixed(0)}% coverage`;
+  const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  savedScenarios.unshift({ id, name, date, state: { ...state } });
+  showToast('Scenario saved');
+  document.getElementById('hs-saved').textContent = savedScenarios.length;
+}
+
+function deleteScenario(id, ev) {
+  ev.stopPropagation();
+  savedScenarios = savedScenarios.filter(s => s.id !== id);
+  renderSaved();
+  document.getElementById('hs-saved').textContent = savedScenarios.length;
+  showToast('Scenario deleted');
+}
+
+function loadScenario(id) {
+  const sc = savedScenarios.find(s => s.id === id);
+  if (!sc) return;
+  Object.assign(state, sc.state);
+  Object.keys(sc.state).forEach(k => {
+    const el = document.getElementById(k);
+    if (el && el.type !== 'select-one') el.value = sc.state[k];
+    if (el && el.type === 'select-one') el.value = sc.state[k];
+  });
+  showView('calc');
+  recompute();
+  showToast('Scenario loaded');
+}
+
+function renderSaved() {
+  const c = document.getElementById('saved-container');
+  if (savedScenarios.length === 0) {
+    c.innerHTML = `
+      <div class="saved-empty">
+        <div class="icon">¶</div>
+        <h3>No scenarios saved yet</h3>
+        <p>Run the calculator with your numbers, then click "Save scenario" to store configurations you want to revisit.</p>
+        <button class="book-action-btn primary" onclick="showView('calc')">Go to calculator →</button>
+      </div>`;
     return;
   }
+  let html = '<div class="saved-grid">';
+  savedScenarios.forEach(sc => {
+    const m = calcMetrics(sc.state);
+    const status = getStatus(m);
+    html += `
+      <div class="saved-card" onclick="loadScenario(${sc.id})">
+        <button class="delete-btn" onclick="deleteScenario(${sc.id}, event)" title="Delete">✕</button>
+        <div class="name">${sc.name}</div>
+        <div class="date">Saved ${sc.date}</div>
+        <div class="pct-row">
+          <span class="pct ${status.class}">${m.coverage.toFixed(0)}%</span>
+          <span class="pct-lbl">Coverage</span>
+        </div>
+        <div class="specs">
+          <div class="spec"><span>Home</span><span class="v">${fmt(sc.state.homePrice)}</span></div>
+          <div class="spec"><span>Shares</span><span class="v">${fmtShares(sc.state.shares)}</span></div>
+          <div class="spec"><span>Leverage</span><span class="v">${sc.state.leverage}×</span></div>
+          <div class="spec"><span>Surplus</span><span class="v">${(m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus)}/mo</span></div>
+        </div>
+      </div>`;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function renderRecent() {
+  const c = document.getElementById('recent-grid');
+  if (!c) return;
+  const recent = savedScenarios.slice(0, 3);
+  if (recent.length === 0) {
+    c.innerHTML = `<div class="saved-empty" style="grid-column: 1 / -1;"><div class="icon">¶</div><h3>No saved scenarios yet</h3><p>Run the calculator and save your first scenario to see it here.</p></div>`;
+    return;
+  }
+  c.innerHTML = recent.map(sc => {
+    const m = calcMetrics(sc.state);
+    const status = getStatus(m);
+    return `
+      <div class="saved-card" onclick="loadScenario(${sc.id})">
+        <div class="name">${sc.name}</div>
+        <div class="date">Saved ${sc.date}</div>
+        <div class="pct-row"><span class="pct ${status.class}">${m.coverage.toFixed(0)}%</span><span class="pct-lbl">Coverage</span></div>
+        <div class="specs">
+          <div class="spec"><span>Home</span><span class="v">${fmt(sc.state.homePrice)}</span></div>
+          <div class="spec"><span>Surplus</span><span class="v">${(m.monthlySurplus >= 0 ? '+' : '') + fmtFull(m.monthlySurplus)}/mo</span></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function resetCalc() {
+  Object.assign(state, { homePrice: 450000, loanTerm: 30, rate: 5.98, shares: 10000, stockPrice: 10, divPerShare: 0.12, divFreq: 'monthly', addCap: 100000, leverage: 2, marginRate: 7 });
+  Object.keys(state).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = state[k];
+  });
+  recompute();
+  showToast('Reset to defaults');
+}
+
+// ================== BOOK / FLIP BOOK ==================
+const bookPages = [
+  // index 0: Cover (single page, displayed as right page first)
+  { type: 'cover' },
+  // index 1: TOC (left of spread 1)
+  { type: 'toc' },
+  // index 2: blank/intro right of spread 1
+  { type: 'intro' },
+  // chapters
+  { type: 'chapter', ch: 'Chapter I', title: 'Choosing the Right <em>Corporate Structure</em>',
+    content: `<p class="page-text dropcap">There are three corporate structures commonly used for the Corporate Dividend Mortgage™: an <strong>LLC taxed as partnership</strong>, an <strong>LLC or corp electing S-Corp status</strong>, or a <strong>traditional C-Corp</strong>.</p>
+    <p class="page-text">Each has materially different tax treatment, asset-protection characteristics, and operational complexity. Choosing wrong is recoverable but expensive.</p>
+    <p class="page-pull">"For most readers, the right answer is an LLC with S-Corp election."</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">The state-of-formation question</h3>
+    <p class="page-text">Where you form the entity matters as much as which type. The general rule: <strong>register in the state where the property sits</strong>.</p>
+    <p class="page-text">Cross-state structures (e.g., a Wyoming LLC owning California real estate) require foreign qualification, which adds annual filing fees, registered agent costs, and complexity.</p>
+    <ul class="page-list">
+      <li><strong>Wyoming or Delaware</strong> — when asset protection is primary</li>
+      <li><strong>Nevada</strong> — for similar privacy reasons (rising fees)</li>
+      <li><strong>Texas / South Dakota</strong> — no state income tax</li>
+    </ul>` },
+  { type: 'chapter', ch: 'Chapter II', title: 'The <em>Lender</em> Shortlist',
+    content: `<p class="page-text dropcap">Walk into a typical retail bank and ask for a mortgage to be issued to a freshly-formed LLC, secured partially by pledged stock — and you'll be met with confusion at best.</p>
+    <p class="page-text">You're not looking for retail banks. You're looking for a specific subset: <em>asset-based lenders</em>, <em>private bank wealth management arms</em>, and <em>specialty commercial RE lenders</em>.</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">The four lender categories</h3>
+    <ul class="page-list">
+      <li><strong>Private Banks</strong> — JPMorgan Private, Morgan Stanley PWM, UBS</li>
+      <li><strong>Asset-Based Boutiques</strong> — Regional private lenders</li>
+      <li><strong>Commercial RE Lenders</strong> — Local/regional commercial banks</li>
+      <li><strong>Specialty Brokers (DSCR)</strong> — Investor-focused brokers</li>
+    </ul>
+    <div class="page-math">
+      <div class="label">The pitch line that works</div>
+      <div class="formula">"I'm financing an investment property through a corporate holding entity. The down payment is structured as a <strong>pledge of marketable securities</strong>..."</div>
+    </div>` },
+  { type: 'chapter', ch: 'Chapter III', title: 'The <em>Brokerage</em> Rankings',
+    content: `<p class="page-text dropcap">Three things matter when choosing the corporate brokerage: the <strong>margin rate</strong>, whether they support <strong>share pledging</strong> to external lenders, and the quality of <strong>corporate-account servicing</strong>.</p>
+    <p class="page-pull">"A 100bps difference between brokerages costs $30,000+ over the loan term."</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">The recommended default</h3>
+    <p class="page-text"><strong>Interactive Brokers Pro</strong> is the default for most readers. Margin rate advantage of 100-250bps over alternatives translates directly to higher coverage ratios.</p>
+    <h3 class="page-h3">The pledging mechanism</h3>
+    <p class="page-text">For shares to function as collateral, they need to be <strong>pledged to the lender</strong> via a tripartite Securities Account Control Agreement (SACA).</p>` },
+  { type: 'chapter', ch: 'Chapter IV', title: 'Selecting <em>Sustainable</em> Dividends',
+    content: `<p class="page-text dropcap">The single most catastrophic failure mode is a <strong>dividend cut</strong>. Picking dividend stocks for this strategy is fundamentally different than picking them for general portfolio income.</p>
+    <p class="page-text">The framework most amateurs use — "find the highest yield" — is exactly wrong. Yields above 15% are usually warning signs, not opportunities.</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">The five sustainability metrics</h3>
+    <ul class="page-list">
+      <li><strong>Payout ratio</strong> — Target 60-85%</li>
+      <li><strong>Dividend coverage history</strong> — 10+ years of consistency</li>
+      <li><strong>Free cash flow trend</strong> — FCF/Dividend &gt; 1.3x</li>
+      <li><strong>Sector concentration</strong> — 3-5 sectors minimum</li>
+      <li><strong>Margin eligibility</strong> — Verify before committing</li>
+    </ul>
+    <p class="page-pull">"A yield you can count on for ten years is worth twice as much as a yield twice as high that disappears in three."</p>` },
+  { type: 'chapter', ch: 'Chapter V', title: '<em>Tax</em> Optimization Inside The Corp',
+    content: `<p class="page-text dropcap">A corporation is a different tax animal than an individual. It pays for things in pre-tax dollars where individuals pay in after-tax. It can deduct interest, depreciation, and operating expenses.</p>
+    <h3 class="page-h3">Interest deduction stacking</h3>
+    <p class="page-text">The corporation deducts both <strong>mortgage interest</strong> and <strong>margin interest</strong> against income — typically reducing taxable income by 60%+.</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">Property depreciation</h3>
+    <p class="page-text">A $450K property generates ~$13K/year of depreciation deductions — combined with interest stacking, often producing <strong>near-zero taxable income</strong> for early years.</p>
+    <h3 class="page-h3">Solo 401(k) opportunities</h3>
+    <p class="page-text">An LLC-S-Corp can sponsor a Solo 401(k) with combined limits of $70K+ — converting taxable dividend income into tax-deferred retirement savings at scales individuals can't access.</p>` },
+  { type: 'chapter', ch: 'Chapter VI', title: 'The Corporate <em>Exit Advantage</em>',
+    content: `<p class="page-text dropcap">When you eventually sell, you have an exit route most homeowners don't: you can sell the <strong>corporation</strong> rather than the house.</p>
+    <p class="page-pull">"The buyer inherits your locked-in mortgage rate. That's worth tens to hundreds of thousands."</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">Why a corporate sale wins</h3>
+    <p class="page-text">For the buyer: they inherit your <em>locked-in mortgage rate</em>. For you: avoidance of transfer taxes, potential capital gains structuring, retained portfolio handling.</p>
+    <h3 class="page-h3">Structure from day one</h3>
+    <ul class="page-list">
+      <li>Keep the corp clean — single purpose, single property</li>
+      <li>Document everything as if for due diligence</li>
+      <li>Choose a structure that supports stock sale</li>
+    </ul>` },
+  { type: 'chapter', ch: 'Chapter VII', title: 'Risk Management <em>Protocols</em>',
+    content: `<p class="page-text dropcap">Every leveraged strategy has a way to break. The Corporate Dividend Mortgage™ has three primary failure modes — <strong>dividend cuts</strong>, <strong>margin calls</strong>, and <strong>spread inversion</strong>.</p>
+    <h3 class="page-h3">The stress-test framework</h3>
+    <p class="page-text">Before launching: rate shock (+200bps), dividend cut (−25%), stock decline (−30%). Coverage should remain above 80% under each.</p>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">The monthly dashboard</h3>
+    <ul class="page-list">
+      <li>Coverage ratio — your single most important number</li>
+      <li>Margin equity ratio — vs maintenance margin</li>
+      <li>Dividend payment confirmations</li>
+      <li>Margin rate notifications</li>
+      <li>Cash reserve — 3-6 months minimum</li>
+    </ul>
+    <p class="page-pull">"Pre-commit to specific actions at specific thresholds. Decisions made under stress are usually wrong."</p>` },
+  { type: 'chapter', ch: 'Chapter VIII', title: 'The <em>Implementation</em> Checklist',
+    content: `<p class="page-text dropcap">The hardest part of implementing a strategy like this is sequencing. Allow <strong>8 to 16 weeks</strong> from start to closing, depending on lender response and your pace.</p>
+    <h3 class="page-h3">Phase 1: Foundations (Weeks 1-3)</h3>
+    <ul class="page-list">
+      <li>Run scenario through calculator (120%+ coverage)</li>
+      <li>Engage CPA familiar with corporate RE structures</li>
+      <li>Engage attorney for formation documents</li>
+    </ul>` },
+  { type: 'chapter-cont', content: `
+    <h3 class="page-h3">Phase 2: Capital Setup (Weeks 3-6)</h3>
+    <p class="page-text">Open corporate brokerage. Confirm SACA support. Build dividend portfolio. Build cash reserve to 3-6 months before closing.</p>
+    <h3 class="page-h3">Phase 3: Property and Financing</h3>
+    <p class="page-text">Approach lenders with the pitch framework. Submit applications to top 2. Coordinate SACA execution. Lock rate when favorable.</p>
+    <p class="page-pull">"This structure is not a get-rich scheme. It's an asset-aware approach to a normal financial transaction."</p>
+    <div class="page-ornament">⌖ ⌖ ⌖</div>` },
+  // closing page
+  { type: 'closing' }
+];
+
+let currentPage = undefined;
+let isFlipping = false;
+
+function initBook() {
+  const book = document.getElementById('book');
+  // Render all pages — they exist in DOM but only visible based on currentPage
+  let html = '';
+  bookPages.forEach((page, idx) => {
+    html += renderPage(page, idx);
+  });
+  book.innerHTML = '<span class="left-edge"></span>' + html;
+  currentPage = 0;
+  updateBookView();
+  renderProgress();
+}
+
+function renderPage(page, idx) {
+  const isLeft = idx % 2 === 1; // odd indices on left
+  const sideClass = isLeft ? 'left' : 'right';
+  let inner = '';
+
+  if (page.type === 'cover') {
+    return `<div class="page right cover" data-idx="${idx}">
+      <div class="cover-top">
+        <div class="cover-vol">VOL. II · 2026</div>
+        <div class="cover-rule"></div>
+        <div class="cover-tag">The Corporate Dividend Mortgage™</div>
+      </div>
+      <div class="cover-center">
+        <div class="cover-title">The <em>Implementation</em> Playbook</div>
+        <div class="cover-subtitle">Corporate structures, lender shortlists, brokerage rankings, tax optimization & exit strategies for the modern asset-powered home financier.</div>
+        <div class="cover-medallion">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="35" fill="none" stroke="#d4b76a" stroke-width="1"/>
+            <circle cx="40" cy="40" r="26" fill="none" stroke="#d4b76a" stroke-width="0.6" opacity="0.6"/>
+            <circle cx="40" cy="40" r="6" fill="#d4b76a"/>
+            <line x1="40" y1="12" x2="40" y2="18" stroke="#d4b76a" stroke-width="1"/>
+            <line x1="40" y1="62" x2="40" y2="68" stroke="#d4b76a" stroke-width="1"/>
+            <line x1="12" y1="40" x2="18" y2="40" stroke="#d4b76a" stroke-width="1"/>
+            <line x1="62" y1="40" x2="68" y2="40" stroke="#d4b76a" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cover-bottom">
+        <div class="cover-byline">SBLMORTGAGE.COM</div>
+      </div>
+    </div>`;
+  }
+
+  if (page.type === 'toc') {
+    return `<div class="page ${sideClass}" data-idx="${idx}">
+      <div class="page-content page-toc">
+        <div class="page-num">— ii —</div>
+        <h2>Table of <em>Contents</em></h2>
+        <p class="page-toc-sub">Eight chapters · approximately 45 minutes reading</p>
+        <ul class="page-toc-list">
+          <li class="page-toc-item" onclick="goToChapter(3)"><span class="ch">i.</span><span class="name">Choosing the Right Corporate Structure</span><span class="dots"></span><span class="pg">3</span></li>
+          <li class="page-toc-item" onclick="goToChapter(5)"><span class="ch">ii.</span><span class="name">The Lender Shortlist</span><span class="dots"></span><span class="pg">5</span></li>
+          <li class="page-toc-item" onclick="goToChapter(7)"><span class="ch">iii.</span><span class="name">The Brokerage Rankings</span><span class="dots"></span><span class="pg">7</span></li>
+          <li class="page-toc-item" onclick="goToChapter(9)"><span class="ch">iv.</span><span class="name">Selecting Sustainable Dividends</span><span class="dots"></span><span class="pg">9</span></li>
+          <li class="page-toc-item" onclick="goToChapter(11)"><span class="ch">v.</span><span class="name">Tax Optimization Inside the Corp</span><span class="dots"></span><span class="pg">11</span></li>
+          <li class="page-toc-item" onclick="goToChapter(13)"><span class="ch">vi.</span><span class="name">The Corporate Exit Advantage</span><span class="dots"></span><span class="pg">13</span></li>
+          <li class="page-toc-item" onclick="goToChapter(15)"><span class="ch">vii.</span><span class="name">Risk Management Protocols</span><span class="dots"></span><span class="pg">15</span></li>
+          <li class="page-toc-item" onclick="goToChapter(17)"><span class="ch">viii.</span><span class="name">The Implementation Checklist</span><span class="dots"></span><span class="pg">17</span></li>
+        </ul>
+      </div>
+    </div>`;
+  }
+
+  if (page.type === 'intro') {
+    return `<div class="page ${sideClass}" data-idx="${idx}">
+      <div class="page-content">
+        <div class="page-num" style="text-align: right;">— iii —</div>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1; text-align: center; padding: 0 1.5rem;">
+          <div class="page-ornament" style="margin-bottom: 1rem;">⌖</div>
+          <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 1.4rem; line-height: 1.5; color: var(--ink); letter-spacing: -0.012em; margin-bottom: 1rem;">
+            "Most people think about buying a house the way their parents did.<br><br>
+            <span style="color: var(--green-2);">This is not that.</span>"
+          </p>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 1rem;">— Foreword</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if (page.type === 'closing') {
+    return `<div class="page ${sideClass}" data-idx="${idx}">
+      <div class="page-content">
+        <div class="page-num" style="text-align: ${isLeft ? 'left' : 'right'};">— end —</div>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1; text-align: center;">
+          <div class="page-ornament" style="font-size: 2rem; margin-bottom: 1.5rem;">— FIN —</div>
+          <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 1.1rem; line-height: 1.5; color: var(--ink-2); max-width: 320px; margin-bottom: 2rem;">
+            Thank you for reading. The playbook is yours, with lifetime updates as the strategy evolves.
+          </p>
+          <button class="book-action-btn primary" onclick="downloadPDF()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download as PDF
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // chapter or chapter-cont
+  const chapterTag = page.type === 'chapter' ? `<div class="page-chapter-tag">${page.ch}</div>` : '';
+  const title = page.type === 'chapter' ? `<h2 class="page-h2">${page.title}</h2>` : '';
+  return `<div class="page ${sideClass}" data-idx="${idx}">
+    <div class="page-content">
+      <div class="page-num" style="text-align: ${isLeft ? 'left' : 'right'};">— ${idx} —</div>
+      ${chapterTag}
+      ${title}
+      ${page.content}
+    </div>
+  </div>`;
+}
+
+function updateBookView() {
+  const pages = document.querySelectorAll('.book .page');
+  pages.forEach((p, idx) => {
+    const pageIdx = parseInt(p.dataset.idx);
+    if (pageIdx < currentPage) {
+      // already turned (left side flipped over)
+      p.style.transform = 'rotateY(-180deg)';
+      p.style.zIndex = pageIdx;
+    } else if (pageIdx === currentPage) {
+      // current spread left
+      p.style.transform = '';
+      p.style.zIndex = bookPages.length - pageIdx;
+    } else if (pageIdx === currentPage + 1) {
+      // current spread right
+      p.style.transform = '';
+      p.style.zIndex = bookPages.length - pageIdx;
+    } else {
+      // unturned
+      p.style.transform = '';
+      p.style.zIndex = bookPages.length - pageIdx;
+    }
+  });
+
+  // Update controls
+  document.getElementById('prevBtn').disabled = currentPage <= 0;
+  document.getElementById('nextBtn').disabled = currentPage >= bookPages.length - 1;
+
+  // Label
+  const cur = bookPages[currentPage];
+  let label = 'Cover';
+  if (cur && cur.type === 'cover') label = 'Cover';
+  else if (cur && cur.type === 'toc') label = 'Contents';
+  else if (cur && cur.type === 'chapter') label = cur.ch;
+  else if (cur && cur.type === 'chapter-cont') label = (bookPages[currentPage - 1] && bookPages[currentPage - 1].ch) || 'Continued';
+  else if (cur && cur.type === 'closing') label = 'End';
+  else label = `Page ${currentPage}`;
+  document.getElementById('pageLabel').textContent = label;
+  document.getElementById('pageNumber').textContent = `${currentPage + 1} of ${bookPages.length}`;
+
+  renderProgress();
+}
+
+function renderProgress() {
+  const pg = document.getElementById('bookProgress');
+  if (!pg) return;
+  pg.innerHTML = bookPages.map((_, i) => `<span class="dot ${i === currentPage ? 'active' : ''}" onclick="jumpTo(${i})"></span>`).join('');
+}
+
+function jumpTo(idx) {
+  if (isFlipping) return;
+  currentPage = idx;
+  updateBookView();
+}
+
+function nextPage() {
+  if (isFlipping || currentPage >= bookPages.length - 1) return;
+  // For double-page advance: skip 2 unless first page (cover is single)
+  isFlipping = true;
+  if (currentPage === 0) {
+    currentPage = 1;
+  } else {
+    currentPage = Math.min(bookPages.length - 1, currentPage + 2);
+  }
+  updateBookView();
+  setTimeout(() => { isFlipping = false; }, 400);
+}
+
+function prevPage() {
+  if (isFlipping || currentPage <= 0) return;
+  isFlipping = true;
+  if (currentPage === 1) {
+    currentPage = 0;
+  } else {
+    currentPage = Math.max(0, currentPage - 2);
+  }
+  updateBookView();
+  setTimeout(() => { isFlipping = false; }, 400);
+}
+
+function goToChapter(idx) {
+  // Make sure idx is even (left of spread) — if odd, subtract 1
+  if (idx % 2 === 0 && idx > 0) idx -= 1;
+  currentPage = idx;
+  updateBookView();
+}
+
+function goToTOC() {
+  currentPage = 1;
+  updateBookView();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('view-book').classList.contains('active')) {
+    if (e.key === 'ArrowRight') nextPage();
+    if (e.key === 'ArrowLeft') prevPage();
+  }
+});
+
+// ================== PDF DOWNLOAD ==================
+function downloadPDF() {
+  // In production, this links to your actual PDF asset
+  // window.location.href = '/downloads/sbl-implementation-playbook-v1.2.pdf';
+  showToast('PDF download initiated');
+}
+
+// ================== TOAST ==================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ================== COMMAND PALETTE ==================
+const cmdkItems = [
+  { section: 'Navigate', items: [
+    { icon: 'i.', text: 'Go to Overview', hint: 'O', action: () => showView('home') },
+    { icon: 'ii.', text: 'Go to Calculator', hint: 'C', action: () => showView('calc') },
+    { icon: 'iii.', text: 'Open the Playbook', hint: 'P', action: () => showView('book') },
+    { icon: 'iv.', text: 'View Saved Scenarios', hint: 'S', action: () => showView('saved') },
+    { icon: 'v.', text: 'Account Settings', hint: 'A', action: () => showView('account') }
+  ]},
+  { section: 'Actions', items: [
+    { icon: '⊕', text: 'Save current scenario', hint: '⌘S', action: () => { showView('calc'); setTimeout(saveCurrentScenario, 100); } },
+    { icon: '⤓', text: 'Download playbook PDF', hint: '⌘D', action: downloadPDF },
+    { icon: '↺', text: 'Reset calculator to defaults', hint: '', action: () => { showView('calc'); setTimeout(resetCalc, 100); } }
+  ]},
+  { section: 'Playbook Chapters', items: [
+    { icon: '§', text: 'Ch I · Corporate Structure', hint: '', action: () => { showView('book'); setTimeout(() => goToChapter(3), 200); } },
+    { icon: '§', text: 'Ch II · Lender Shortlist', hint: '', action: () => { showView('book'); setTimeout(() => goToChapter(5), 200); } },
+    { icon: '§', text: 'Ch III · Brokerages', hint: '', action: () => { showView('book'); setTimeout(() => goToChapter(7), 200); } },
+    { icon: '§', text: 'Ch VI · Exit Advantage', hint: '', action: () => { showView('book'); setTimeout(() => goToChapter(13), 200); } },
+    { icon: '§', text: 'Ch VIII · Implementation', hint: '', action: () => { showView('book'); setTimeout(() => goToChapter(17), 200); } }
+  ]}
+];
+
+function openCmdk() {
+  document.getElementById('cmdkOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('cmdkInput').focus(), 50);
+  filterCmdk();
+}
+
+function closeCmdk(ev) {
+  if (ev && ev.target.id !== 'cmdkOverlay') return;
+  document.getElementById('cmdkOverlay').classList.remove('open');
+  document.getElementById('cmdkInput').value = '';
+}
+
+function closeCmdkForce() {
+  document.getElementById('cmdkOverlay').classList.remove('open');
+  document.getElementById('cmdkInput').value = '';
+}
+
+function filterCmdk() {
+  const q = document.getElementById('cmdkInput').value.toLowerCase().trim();
+  const results = document.getElementById('cmdkResults');
+  let html = '';
+  cmdkItems.forEach(group => {
+    const matches = group.items.filter(it => !q || it.text.toLowerCase().includes(q));
+    if (matches.length === 0) return;
+    html += `<div class="cmdk-section-label">${group.section}</div>`;
+    matches.forEach(it => {
+      html += `<div class="cmdk-item" onclick="cmdkAction(${cmdkItems.indexOf(group)}, ${group.items.indexOf(it)})">
+        <span class="icon">${it.icon}</span>
+        <span class="text">${it.text}</span>
+        ${it.hint ? `<span class="hint">${it.hint}</span>` : ''}
+      </div>`;
+    });
+  });
+  if (!html) html = `<div style="padding: 2rem; text-align: center; color: var(--muted); font-family: 'Fraunces', serif; font-style: italic;">No results</div>`;
+  results.innerHTML = html;
+}
+
+function cmdkAction(groupIdx, itemIdx) {
+  const it = cmdkItems[groupIdx].items[itemIdx];
+  closeCmdkForce();
+  if (it && it.action) it.action();
+}
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openCmdk();
+  }
+  if (e.key === 'Escape') closeCmdkForce();
+});
+
+// ================== INIT ==================
+recompute();
+renderRecent();
+document.getElementById('hs-saved').textContent = savedScenarios.length;
+
+// Populate user name from localStorage
+(function() {
+  const userEmail = localStorage.getItem('sbl_user_email') || 'member@example.com';
+  const userName = userEmail.split('@')[0]; // Get part before @
+  const displayName = userName.charAt(0).toUpperCase() + userName.slice(1); // Capitalize first letter
   
-  // Display user email
-  document.getElementById('userEmail').textContent = userEmail;
+  document.getElementById('userName').textContent = displayName;
+  document.getElementById('welcomeName').textContent = displayName;
+  
+  // Update avatar initial
+  const avatar = document.querySelector('.nav-user-avatar');
+  if (avatar) {
+    avatar.textContent = displayName.charAt(0).toUpperCase();
+  }
 })();
-
-function logout() {
-  localStorage.removeItem('sbl_user_email');
-  localStorage.removeItem('sbl_access_token');
-  window.location.href = 'index.html';
-}
-
-function downloadPlaybook(e) {
-  e.preventDefault();
-  // In production, this would be a real download link
-  alert('Playbook download will be available after Stripe integration. For now, this is a placeholder.');
-}
 </script>
 
 </body>
