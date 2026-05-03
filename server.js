@@ -3,9 +3,17 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? require('stripe')(process.env.STRIPE_SECRET_KEY)
-  : null;
+let stripe = null;
+try {
+  if (process.env.STRIPE_SECRET_KEY) {
+    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    console.log('Stripe initialized OK');
+  } else {
+    console.log('STRIPE_SECRET_KEY not set — Stripe disabled');
+  }
+} catch (e) {
+  console.error('Stripe init failed:', e.message);
+}
 
 // Simple in-memory storage for purchased users (in production, use a database)
 const purchasedUsers = new Set();
