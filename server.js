@@ -140,9 +140,10 @@ const server = http.createServer((req, res) => {
     return;
   }
   
-  // Serve static files
-  let filePath = '.' + req.url;
-  if (filePath === './') {
+  // Serve static files (strip query string first)
+  const parsedPath = req.url.split('?')[0];
+  let filePath = '.' + parsedPath;
+  if (filePath === './' || filePath === '.') {
     filePath = './index.html';
   }
   
