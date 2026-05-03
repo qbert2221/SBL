@@ -275,19 +275,30 @@
 </footer>
 
 <script>
-// Get email from URL parameter (Gumroad passes this)
 (function() {
   const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || localStorage.getItem('sbl_user_email') || 'your@email.com';
-  
+  const redirectStatus = urlParams.get('redirect_status');
+
+  // Stripe passes ?redirect_status=succeeded after payment
+  // If it's anything else (failed, canceled), send back to signup
+  if (redirectStatus && redirectStatus !== 'succeeded') {
+    const e = urlParams.get('email') || localStorage.getItem('sbl_pending_email') || '';
+    window.location.href = '/signup.html?error=payment_failed' + (e ? '&email=' + encodeURIComponent(e) : '');
+    return;
+  }
+
+  // Read email from URL param, then pending email saved before Stripe redirect, then fallback
+  const email = urlParams.get('email')
+    || localStorage.getItem('sbl_pending_email')
+    || localStorage.getItem('sbl_user_email')
+    || 'your@email.com';
+
   document.getElementById('userEmail').textContent = email;
-  
-  // Grant access automatically after Gumroad purchase
+
   if (email !== 'your@email.com') {
     localStorage.setItem('sbl_user_email', email);
-    localStorage.setItem('sbl_access_token', 'gumroad_' + Date.now());
-    
-    // Send welcome email with magic link (optional)
+    localStorage.setItem('sbl_access_token', 'stripe_' + Date.now());
+    localStorage.removeItem('sbl_pending_email');
     console.log('Access granted to:', email);
   }
 })();

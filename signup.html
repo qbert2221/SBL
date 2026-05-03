@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script src="https://gumroad.com/js/gumroad.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
 <style>
   /* Signup-specific layout */
   .signup-shell {
@@ -653,7 +653,7 @@
 
       <!-- INPUT STATE -->
       <div id="formState">
-        <div class="label">Step 1 of 2</div>
+        <div class="label" id="formStepLabel">Step 1 of 2</div>
         <h2>Reserve <em>your copy</em>.</h2>
         <p class="subhead">Enter your details to lock in your purchase. You'll be sent to the secure payment page next.</p>
 
@@ -675,9 +675,9 @@
             <div class="row total"><span>Total today</span><span class="val">$97.00</span></div>
           </div>
 
-          <a href="https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true" class="gumroad-button submit-btn" id="submitBtn" data-gumroad-overlay-checkout="true" onclick="updateGumroadLink(event)">
+          <button type="button" class="submit-btn" id="submitBtn" onclick="handleStep1()">
             Continue to payment <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
-          </a>
+          </button>
 
           <p class="form-fineprint">
             By continuing, you agree to the <a href="#">terms</a> and <a href="#">privacy policy</a>. Your purchase is backed by a 30-day money-back guarantee.
@@ -685,8 +685,20 @@
 
           <div class="secure-row">
             <span class="icon"></span>
-            Secure payment processing
+            Secured by Stripe
           </div>
+        </div>
+
+        <!-- STEP 2: Stripe embedded payment form -->
+        <div id="paymentStep" style="display:none;">
+          <div id="stripe-payment-element" style="margin-bottom: 1rem;"></div>
+          <div id="payment-error" style="color:#c0392b;font-size:0.82rem;margin-bottom:0.75rem;display:none;"></div>
+          <button type="button" class="submit-btn" id="payBtn" onclick="handlePayment()" style="width:100%;">
+            Pay $97 <span style="font-family: 'Fraunces', serif; font-style: italic;">→</span>
+          </button>
+          <button type="button" onclick="resetToStep1()" style="background:transparent;color:var(--ink-2);border:none;font-family:'Inter Tight',sans-serif;font-size:0.82rem;cursor:pointer;margin-top:0.75rem;display:block;">
+            ← Change details
+          </button>
         </div>
       </div>
 
@@ -807,18 +819,99 @@
 </footer>
 
 <script>
-function updateGumroadLink(e) {
-  const email = document.getElementById('email').value;
-  const name = document.getElementById('name').value;
-  
-  // Update the href with the email before Gumroad opens
-  if (email) {
-    const btn = document.getElementById('submitBtn');
-    btn.href = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
+let stripeInstance = null;
+let stripeElements = null;
+
+async function handleStep1() {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  if (!name || !email) {
+    alert('Please enter your name and email to continue.');
+    return;
   }
-  
-  // Let Gumroad's script handle the overlay
-  return true;
+
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = 'Loading…';
+  btn.disabled = true;
+
+  localStorage.setItem('sbl_pending_email', email);
+  localStorage.setItem('sbl_pending_name', name);
+
+  try {
+    const configRes = await fetch('/api/stripe-config');
+    const { publishableKey } = await configRes.json();
+    if (!publishableKey) throw new Error('Payment not configured. Please contact support.');
+
+    stripeInstance = Stripe(publishableKey);
+
+    const piRes = await fetch('/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name })
+    });
+    const { clientSecret, error } = await piRes.json();
+    if (error) throw new Error(error);
+
+    stripeElements = stripeInstance.elements({
+      clientSecret,
+      appearance: {
+        theme: 'stripe',
+        variables: {
+          colorPrimary: '#1f4a32',
+          colorBackground: '#f8f4ee',
+          fontFamily: 'Inter Tight, sans-serif',
+          borderRadius: '4px'
+        }
+      }
+    });
+
+    stripeElements.create('payment').mount('#stripe-payment-element');
+
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('formStepLabel').textContent = 'Step 2 of 2 — Secure payment';
+    document.getElementById('paymentStep').style.display = 'block';
+
+  } catch (err) {
+    console.error(err);
+    btn.innerHTML = 'Continue to payment <span style="font-family:\'Fraunces\',serif;font-style:italic;">→</span>';
+    btn.disabled = false;
+    alert('Could not load payment form: ' + err.message);
+  }
+}
+
+async function handlePayment() {
+  const btn = document.getElementById('payBtn');
+  const errorDiv = document.getElementById('payment-error');
+
+  btn.innerHTML = 'Processing…';
+  btn.disabled = true;
+  errorDiv.style.display = 'none';
+
+  const email = localStorage.getItem('sbl_pending_email') || '';
+
+  const { error } = await stripeInstance.confirmPayment({
+    elements: stripeElements,
+    confirmParams: {
+      return_url: window.location.origin + '/success.html' + (email ? '?email=' + encodeURIComponent(email) : '')
+    }
+  });
+
+  errorDiv.textContent = error.message || 'Payment failed. Please try again.';
+  errorDiv.style.display = 'block';
+  btn.innerHTML = 'Pay $97 <span style="font-family:\'Fraunces\',serif;font-style:italic;">→</span>';
+  btn.disabled = false;
+}
+
+function resetToStep1() {
+  document.getElementById('signupForm').style.display = 'block';
+  document.getElementById('paymentStep').style.display = 'none';
+  document.getElementById('formStepLabel').textContent = 'Step 1 of 2';
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = 'Continue to payment <span style="font-family:\'Fraunces\',serif;font-style:italic;">→</span>';
+  btn.disabled = false;
+  stripeElements = null;
+  stripeInstance = null;
 }
 
 function resetForm() {
@@ -828,17 +921,14 @@ function resetForm() {
   document.getElementById('formState').style.display = 'block';
 }
 
-// Auto-populate from URL parameters
 (function() {
   const urlParams = new URLSearchParams(window.location.search);
   const name = urlParams.get('name');
   const email = urlParams.get('email');
-  
-  if (name) {
-    document.getElementById('name').value = name;
-  }
-  if (email) {
-    document.getElementById('email').value = email;
+  if (name) document.getElementById('name').value = name;
+  if (email) document.getElementById('email').value = email;
+  if (urlParams.get('error') === 'payment_failed') {
+    alert('Your payment was not completed. Please try again.');
   }
 })();
 </script>

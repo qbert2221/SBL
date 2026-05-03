@@ -9,6 +9,9 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "dependencies": {
+    "stripe": "^16.0.0"
+  },
   "keywords": ["mortgage", "calculator", "dividend"],
   "author": "",
   "license": "ISC"

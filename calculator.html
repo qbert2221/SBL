@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://gumroad.com/js/gumroad.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
   (function(){
     emailjs.init("UULcd71jnxhghrsxe");
@@ -599,6 +599,8 @@
     <form id="paywallEmailForm" onsubmit="handlePaywallEmail(event)" style="margin-bottom: 1.5rem;">
       <input type="text" id="paywall_name" placeholder="Your name" required style="width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-family: 'Inter Tight', sans-serif; font-size: 0.95rem; background: var(--pearl); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; outline: none;">
       <input type="email" id="paywall_email" placeholder="Your email" required style="width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-family: 'Inter Tight', sans-serif; font-size: 0.95rem; background: var(--pearl); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; outline: none;">
+      <div id="paywall-stripe-element" style="margin-bottom: 0.75rem; display: none;"></div>
+      <div id="paywall-payment-error" style="color:#c0392b;font-size:0.82rem;margin-bottom:0.5rem;display:none;"></div>
       <button type="submit" class="sbl-modal__cta" id="paywallSubmitBtn" style="width: 100%; margin: 0;">
         Get full access for $97
         <span class="sbl-modal__cta-arrow">→</span>
@@ -1708,45 +1710,94 @@ function downloadPlaybook(e) {
   alert('Playbook download will be available after you upload the PDF file to your server.');
 }
 
-// Email capture handler
-function handlePaywallEmail(e) {
+// Stripe paywall state
+let paywallStripe = null;
+let paywallElements = null;
+let paywallStep = 1;
+
+async function handlePaywallEmail(e) {
   e.preventDefault();
-  
-  const name = document.getElementById('paywall_name').value;
-  const email = document.getElementById('paywall_email').value;
+
+  const name = document.getElementById('paywall_name').value.trim();
+  const email = document.getElementById('paywall_email').value.trim();
   const btn = document.getElementById('paywallSubmitBtn');
-  
-  btn.innerHTML = 'Sending...';
-  btn.disabled = true;
-  
-  const templateParams = {
-    user_name: name,
-    user_email: email,
-    timestamp: new Date().toLocaleString()
-  };
-  
-  emailjs.send('service_2x2pccf', 'template_6iqzrgs', templateParams)
-    .then(function(response) {
-      console.log('Email sent successfully!', response.status, response.text);
-      
-      // Open Gumroad overlay checkout (stays on your site)
-      const gumroadUrl = `https://cabrera220.gumroad.com/l/xcxdwvp?wanted=true&email=${encodeURIComponent(email)}`;
-      
-      if (window.GumroadOverlay) {
-        window.GumroadOverlay.open(gumroadUrl);
-      } else {
-        // Fallback to redirect if overlay doesn't load
-        window.location.href = gumroadUrl;
+  const errorDiv = document.getElementById('paywall-payment-error');
+
+  errorDiv.style.display = 'none';
+
+  if (paywallStep === 1) {
+    if (!name || !email) return;
+
+    btn.innerHTML = 'Loading…';
+    btn.disabled = true;
+
+    localStorage.setItem('sbl_pending_email', email);
+    localStorage.setItem('sbl_pending_name', name);
+
+    try {
+      const configRes = await fetch('/api/stripe-config');
+      const { publishableKey } = await configRes.json();
+      if (!publishableKey) throw new Error('Payment not configured. Please contact support.');
+
+      paywallStripe = Stripe(publishableKey);
+
+      const piRes = await fetch('/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      });
+      const { clientSecret, error } = await piRes.json();
+      if (error) throw new Error(error);
+
+      paywallElements = paywallStripe.elements({
+        clientSecret,
+        appearance: {
+          theme: 'stripe',
+          variables: {
+            colorPrimary: '#1f4a32',
+            fontFamily: 'Inter Tight, sans-serif',
+            borderRadius: '4px'
+          }
+        }
+      });
+
+      paywallElements.create('payment').mount('#paywall-stripe-element');
+
+      document.getElementById('paywall_name').style.display = 'none';
+      document.getElementById('paywall_email').style.display = 'none';
+      document.getElementById('paywall-stripe-element').style.display = 'block';
+      btn.innerHTML = 'Complete payment — $97 <span class="sbl-modal__cta-arrow">→</span>';
+      btn.disabled = false;
+      paywallStep = 2;
+
+    } catch (err) {
+      console.error(err);
+      errorDiv.textContent = 'Could not load payment form. Please try again.';
+      errorDiv.style.display = 'block';
+      btn.innerHTML = 'Get full access for $97 <span class="sbl-modal__cta-arrow">→</span>';
+      btn.disabled = false;
+    }
+
+  } else {
+    btn.innerHTML = 'Processing…';
+    btn.disabled = true;
+
+    const pendingEmail = localStorage.getItem('sbl_pending_email') || '';
+
+    const { error } = await paywallStripe.confirmPayment({
+      elements: paywallElements,
+      confirmParams: {
+        return_url: window.location.origin + '/success.html' + (pendingEmail ? '?email=' + encodeURIComponent(pendingEmail) : '')
       }
-      
-      btn.innerHTML = 'Get full access for $97 <span class="sbl-modal__cta-arrow">→</span>';
-      btn.disabled = false;
-    }, function(error) {
-      console.log('Email send failed...', error);
-      alert('Something went wrong. Please try again or contact us directly.');
-      btn.innerHTML = 'Get full access for $97 <span class="sbl-modal__cta-arrow">→</span>';
-      btn.disabled = false;
     });
+
+    if (error) {
+      errorDiv.textContent = error.message || 'Payment failed. Please try again.';
+      errorDiv.style.display = 'block';
+      btn.innerHTML = 'Complete payment — $97 <span class="sbl-modal__cta-arrow">→</span>';
+      btn.disabled = false;
+    }
+  }
 }
 
 </script>
