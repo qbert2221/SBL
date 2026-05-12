@@ -2569,6 +2569,155 @@
     background: var(--pearl-3);
     border-color: var(--ink-2);
   }
+
+  /* ================== EDIT MODAL ================== */
+  .edit-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 21, 0.65);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: editOverlayIn 0.18s ease;
+  }
+  .edit-modal-overlay.active { display: flex; }
+  @keyframes editOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .edit-modal {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 2.25rem 2.5rem 2rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 64px rgba(13, 31, 21, 0.22);
+    animation: editModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes editModalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  .edit-modal-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-2);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .edit-modal h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    line-height: 1.1;
+  }
+  .edit-modal h3 em { font-style: italic; color: var(--green-2); }
+
+  .edit-modal-sub {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .edit-modal-field {
+    margin-bottom: 1.1rem;
+  }
+
+  .edit-modal-field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+  }
+
+  .edit-modal-field input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.98rem;
+    background: var(--pearl);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.18s;
+  }
+  .edit-modal-field input:focus {
+    border-color: var(--green-2);
+    box-shadow: 0 0 0 3px rgba(31, 74, 50, 0.09);
+  }
+
+  .edit-modal-error {
+    font-size: 0.82rem;
+    color: var(--rust);
+    margin-bottom: 1rem;
+    min-height: 1.2em;
+  }
+
+  .edit-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .edit-modal-actions .btn-save {
+    flex: 1;
+    padding: 0.9rem 1.5rem;
+    background: var(--ink);
+    color: var(--pearl);
+    border: 1px solid var(--ink);
+    border-radius: 5px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .edit-modal-actions .btn-save::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .edit-modal-actions .btn-save:hover::before { transform: scaleX(1); }
+  .edit-modal-actions .btn-save span { position: relative; z-index: 1; }
+  .edit-modal-actions .btn-save:hover { border-color: var(--green); transform: translateY(-1px); }
+
+  .edit-modal-actions .btn-dismiss {
+    padding: 0.9rem 1.5rem;
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .edit-modal-actions .btn-dismiss:hover {
+    background: var(--pearl-2);
+    border-color: var(--ink-2);
+  }
 </style>
 </head>
 <body>
@@ -3189,6 +3338,21 @@
 <div class="toast" id="toast">
   <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
   <span id="toastMsg">Saved</span>
+</div>
+
+<!-- ============ EDIT PROFILE MODAL ============ -->
+<div class="edit-modal-overlay" id="editModalOverlay" onclick="handleEditOverlayClick(event)">
+  <div class="edit-modal">
+    <div class="edit-modal-eyebrow" id="editModalEyebrow">Account Settings</div>
+    <h3 id="editModalTitle">Edit <em>field</em></h3>
+    <p class="edit-modal-sub" id="editModalSub"></p>
+    <div id="editModalFields"></div>
+    <div class="edit-modal-error" id="editModalError"></div>
+    <div class="edit-modal-actions">
+      <button class="btn-dismiss" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-save" id="editModalSave" onclick="submitEditModal()"><span id="editModalSaveLabel">Save changes</span></button>
+    </div>
+  </div>
 </div>
 
 <!-- ============ DELETE CONFIRMATION MODAL ============ -->
@@ -4217,58 +4381,143 @@ function completeTutorial() {
   showToast('Tutorial completed! You\'re ready to start modeling.');
 }
 
-// ================== EDIT PROFILE ==================
+// ================== EDIT PROFILE MODAL ==================
+let _editModalSubmit = null;
+
+function openEditModal({ eyebrow, title, sub, fields, saveLabel, onSubmit }) {
+  document.getElementById('editModalEyebrow').textContent = eyebrow || 'Account Settings';
+  document.getElementById('editModalTitle').innerHTML = title || 'Edit field';
+  document.getElementById('editModalSub').textContent = sub || '';
+  document.getElementById('editModalSaveLabel').textContent = saveLabel || 'Save changes';
+  document.getElementById('editModalError').textContent = '';
+
+  const container = document.getElementById('editModalFields');
+  container.innerHTML = '';
+  fields.forEach(f => {
+    const wrap = document.createElement('div');
+    wrap.className = 'edit-modal-field';
+    const lbl = document.createElement('label');
+    lbl.textContent = f.label;
+    const inp = document.createElement('input');
+    inp.type = f.type || 'text';
+    inp.id = f.id;
+    inp.placeholder = f.placeholder || '';
+    inp.value = f.value || '';
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') submitEditModal(); });
+    wrap.appendChild(lbl);
+    wrap.appendChild(inp);
+    container.appendChild(wrap);
+  });
+
+  _editModalSubmit = onSubmit;
+  document.getElementById('editModalOverlay').classList.add('active');
+  // Focus first input
+  setTimeout(() => { const first = container.querySelector('input'); if (first) first.focus(); }, 80);
+}
+
+function closeEditModal() {
+  document.getElementById('editModalOverlay').classList.remove('active');
+  _editModalSubmit = null;
+}
+
+function handleEditOverlayClick(e) {
+  if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
+}
+
+function setEditModalError(msg) {
+  document.getElementById('editModalError').textContent = msg;
+}
+
+async function submitEditModal() {
+  if (_editModalSubmit) await _editModalSubmit();
+}
+
 function editName() {
   const current = localStorage.getItem('sbl_user_name') || document.getElementById('accountFullName').textContent || '';
-  const next = prompt('Update your full name:', current);
-  if (next === null) return;
-  const trimmed = next.trim();
-  if (!trimmed) { alert('Name cannot be empty.'); return; }
-  localStorage.setItem('sbl_user_name', trimmed);
-  document.getElementById('accountFullName').textContent = trimmed;
-  document.getElementById('welcomeName').textContent = trimmed;
-  document.getElementById('userName').textContent = trimmed;
-  const avatar = document.querySelector('.nav-user-avatar');
-  if (avatar) avatar.textContent = trimmed.charAt(0).toUpperCase();
-  showToast('Name updated');
+  openEditModal({
+    eyebrow: 'Profile',
+    title: 'Edit full <em>name</em>',
+    sub: 'This will update your display name across the dashboard.',
+    fields: [{ id: 'em_name', label: 'Full Name', value: current }],
+    saveLabel: 'Save name',
+    onSubmit: () => {
+      const trimmed = document.getElementById('em_name').value.trim();
+      if (!trimmed) { setEditModalError('Name cannot be empty.'); return; }
+      localStorage.setItem('sbl_user_name', trimmed);
+      document.getElementById('accountFullName').textContent = trimmed;
+      document.getElementById('welcomeName').textContent = trimmed;
+      document.getElementById('userName').textContent = trimmed;
+      const avatar = document.querySelector('.nav-user-avatar');
+      if (avatar) avatar.textContent = trimmed.charAt(0).toUpperCase();
+      closeEditModal();
+      showToast('Name updated');
+    }
+  });
 }
 
 function editEmail() {
   const current = localStorage.getItem('sbl_user_email') || '';
-  const next = prompt('Update your email address (for display only — your login email stays the same):', current);
-  if (next === null) return;
-  const trimmed = next.trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { alert('Please enter a valid email address.'); return; }
-  localStorage.setItem('sbl_user_email', trimmed);
-  document.getElementById('accountEmail').textContent = trimmed;
-  showToast('Email updated');
+  openEditModal({
+    eyebrow: 'Profile',
+    title: 'Edit <em>email</em>',
+    sub: 'Updates your display email. Your login credentials remain unchanged.',
+    fields: [{ id: 'em_email', label: 'Email Address', type: 'email', value: current }],
+    saveLabel: 'Save email',
+    onSubmit: () => {
+      const trimmed = document.getElementById('em_email').value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setEditModalError('Please enter a valid email address.'); return; }
+      localStorage.setItem('sbl_user_email', trimmed);
+      document.getElementById('accountEmail').textContent = trimmed;
+      closeEditModal();
+      showToast('Email updated');
+    }
+  });
 }
 
-async function changePassword() {
-  const currentPw = prompt('Enter your current password:');
-  if (currentPw === null) return;
-  const newPw = prompt('Enter your new password:');
-  if (newPw === null) return;
-  if (!newPw || newPw.length < 6) { alert('New password must be at least 6 characters.'); return; }
-  const confirmPw = prompt('Confirm your new password:');
-  if (confirmPw !== newPw) { alert('Passwords do not match.'); return; }
-
-  const email = localStorage.getItem('sbl_user_email') || '';
-  try {
-    const res = await fetch('/api/change-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, currentPassword: currentPw, newPassword: newPw })
-    });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      showToast('Password changed');
-    } else {
-      alert(data.error || 'Could not change password.');
+function changePassword() {
+  openEditModal({
+    eyebrow: 'Security',
+    title: 'Change <em>password</em>',
+    sub: 'Enter your current password, then choose a new one (min. 6 characters).',
+    fields: [
+      { id: 'em_cur',  label: 'Current Password', type: 'password' },
+      { id: 'em_new',  label: 'New Password',      type: 'password' },
+      { id: 'em_conf', label: 'Confirm New Password', type: 'password' }
+    ],
+    saveLabel: 'Change password',
+    onSubmit: async () => {
+      const cur  = document.getElementById('em_cur').value;
+      const nw   = document.getElementById('em_new').value;
+      const conf = document.getElementById('em_conf').value;
+      if (!cur)           { setEditModalError('Enter your current password.'); return; }
+      if (nw.length < 6)  { setEditModalError('New password must be at least 6 characters.'); return; }
+      if (nw !== conf)    { setEditModalError('Passwords do not match.'); return; }
+      const email = localStorage.getItem('sbl_user_email') || '';
+      const btn = document.getElementById('editModalSave');
+      btn.disabled = true;
+      document.getElementById('editModalSaveLabel').textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, currentPassword: cur, newPassword: nw })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          closeEditModal();
+          showToast('Password changed');
+        } else {
+          setEditModalError(data.error || 'Could not change password.');
+          btn.disabled = false;
+          document.getElementById('editModalSaveLabel').textContent = 'Change password';
+        }
+      } catch (err) {
+        setEditModalError('Could not change password. Please try again.');
+        btn.disabled = false;
+        document.getElementById('editModalSaveLabel').textContent = 'Change password';
+      }
     }
-  } catch (err) {
-    alert('Could not change password. Please try again.');
-  }
+  });
 }
 
 // ================== LOGOUT FUNCTION ==================
