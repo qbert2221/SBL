@@ -157,6 +157,36 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Change password endpoint
+  if (req.url === '/api/change-password' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { email, currentPassword, newPassword } = JSON.parse(body);
+        const key = (email || '').toLowerCase().trim();
+        const user = USERS[key];
+        if (!user || user.password !== currentPassword) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Current password is incorrect.' }));
+          return;
+        }
+        if (!newPassword || newPassword.length < 6) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'New password must be at least 6 characters.' }));
+          return;
+        }
+        user.password = newPassword;
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Bad request.' }));
+      }
+    });
+    return;
+  }
+
   // Handle check access API
   if (req.url.startsWith('/api/check-access') && req.method === 'GET') {
     const url = new URL(req.url, `http://${req.headers.host}`);

@@ -3113,17 +3113,17 @@
           <div class="account-row">
             <span class="lbl">Full Name</span>
             <span class="val" id="accountFullName">Member</span>
-            <span class="edit">Edit →</span>
+            <span class="edit" onclick="editName()" style="cursor:pointer;">Edit →</span>
           </div>
           <div class="account-row">
             <span class="lbl">Email Address</span>
             <span class="val" id="accountEmail">member@example.com</span>
-            <span class="edit">Edit →</span>
+            <span class="edit" onclick="editEmail()" style="cursor:pointer;">Edit →</span>
           </div>
           <div class="account-row">
             <span class="lbl">Password</span>
             <span class="val">••••••••••</span>
-            <span class="edit">Change →</span>
+            <span class="edit" onclick="changePassword()" style="cursor:pointer;">Change →</span>
           </div>
         </div>
 
@@ -4128,16 +4128,19 @@ document.getElementById('hs-saved').textContent = savedScenarios.length;
     'superkc@pompeiisurgical.com': 'Khan',
     'qcabrera32@gmail.com': 'Qcabrera32',
     'aussiepowers555@gmail.com': 'Aussiepowers555',
-    'nickola@sblmortgage.com': 'Nickola'
+    'nickola@sblmortgage.com': 'Nickola',
+    'thecartertheory@gmail.com': 'Markus'
   };
-  
-  // Check if user has custom name, otherwise use email prefix
-  let displayName;
-  if (customNames[userEmail.toLowerCase()]) {
-    displayName = customNames[userEmail.toLowerCase()];
-  } else {
-    const userName = userEmail.split('@')[0];
-    displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
+
+  // 1) User-set name wins, 2) custom mapping, 3) email prefix
+  let displayName = localStorage.getItem('sbl_user_name');
+  if (!displayName) {
+    if (customNames[userEmail.toLowerCase()]) {
+      displayName = customNames[userEmail.toLowerCase()];
+    } else {
+      const userName = userEmail.split('@')[0];
+      displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
+    }
   }
   
   // Update navigation
@@ -4214,9 +4217,64 @@ function completeTutorial() {
   showToast('Tutorial completed! You\'re ready to start modeling.');
 }
 
+// ================== EDIT PROFILE ==================
+function editName() {
+  const current = localStorage.getItem('sbl_user_name') || document.getElementById('accountFullName').textContent || '';
+  const next = prompt('Update your full name:', current);
+  if (next === null) return;
+  const trimmed = next.trim();
+  if (!trimmed) { alert('Name cannot be empty.'); return; }
+  localStorage.setItem('sbl_user_name', trimmed);
+  document.getElementById('accountFullName').textContent = trimmed;
+  document.getElementById('welcomeName').textContent = trimmed;
+  document.getElementById('userName').textContent = trimmed;
+  const avatar = document.querySelector('.nav-user-avatar');
+  if (avatar) avatar.textContent = trimmed.charAt(0).toUpperCase();
+  showToast('Name updated');
+}
+
+function editEmail() {
+  const current = localStorage.getItem('sbl_user_email') || '';
+  const next = prompt('Update your email address (for display only — your login email stays the same):', current);
+  if (next === null) return;
+  const trimmed = next.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { alert('Please enter a valid email address.'); return; }
+  localStorage.setItem('sbl_user_email', trimmed);
+  document.getElementById('accountEmail').textContent = trimmed;
+  showToast('Email updated');
+}
+
+async function changePassword() {
+  const currentPw = prompt('Enter your current password:');
+  if (currentPw === null) return;
+  const newPw = prompt('Enter your new password:');
+  if (newPw === null) return;
+  if (!newPw || newPw.length < 6) { alert('New password must be at least 6 characters.'); return; }
+  const confirmPw = prompt('Confirm your new password:');
+  if (confirmPw !== newPw) { alert('Passwords do not match.'); return; }
+
+  const email = localStorage.getItem('sbl_user_email') || '';
+  try {
+    const res = await fetch('/api/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, currentPassword: currentPw, newPassword: newPw })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('Password changed');
+    } else {
+      alert(data.error || 'Could not change password.');
+    }
+  } catch (err) {
+    alert('Could not change password. Please try again.');
+  }
+}
+
 // ================== LOGOUT FUNCTION ==================
 function logout() {
   localStorage.removeItem('sbl_user_email');
+  localStorage.removeItem('sbl_user_name');
   localStorage.removeItem('sbl_access_token');
   localStorage.removeItem('sbl_tutorial_completed');
   window.location.href = 'login.html';
