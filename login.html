@@ -979,24 +979,36 @@ function togglePassword() {
   }
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
-  
-  const email = document.getElementById('email').value;
+
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const btn = document.getElementById('submitBtn');
-  
+
   btn.classList.add('loading');
 
-  // Accept any login for now (demo mode)
-  setTimeout(() => {
-    // Grant access to anyone
-    localStorage.setItem('sbl_user_email', email);
-    localStorage.setItem('sbl_access_token', 'user_' + Date.now());
-    
-    // Redirect to dashboard
-    window.location.href = 'dashboard.html';
-  }, 1200);
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      localStorage.setItem('sbl_user_email', data.email);
+      localStorage.setItem('sbl_user_name', data.name || '');
+      localStorage.setItem('sbl_access_token', 'user_' + Date.now());
+      window.location.href = 'dashboard.html';
+    } else {
+      btn.classList.remove('loading');
+      alert(data.error || 'Invalid email or password.');
+    }
+  } catch (err) {
+    btn.classList.remove('loading');
+    alert('Login failed. Please try again.');
+  }
 }
 </script>
 

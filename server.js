@@ -18,6 +18,13 @@ try {
 // Simple in-memory storage for purchased users (in production, use a database)
 const purchasedUsers = new Set();
 
+// Hardcoded users granted full access (email → { password, name })
+const USERS = {
+  'thecartertheory@gmail.com': { password: 'Learnthis1!', name: 'Markus' }
+};
+// Pre-seed purchased set so these users bypass the paywall on any check
+Object.keys(USERS).forEach(e => purchasedUsers.add(e.toLowerCase()));
+
 const server = http.createServer((req, res) => {
   // Handle Gumroad webhook
   if (req.url === '/gumroad-webhook' && req.method === 'POST') {
@@ -121,6 +128,31 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ received: true }));
+    });
+    return;
+  }
+
+  // Login endpoint — validate credentials against hardcoded user list
+  if (req.url === '/api/login' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { email, password } = JSON.parse(body);
+        const key = (email || '').toLowerCase().trim();
+        const user = USERS[key];
+        if (user && user.password === password) {
+          purchasedUsers.add(key);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, email: key, name: user.name }));
+        } else {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid email or password.' }));
+        }
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Bad request.' }));
+      }
     });
     return;
   }
